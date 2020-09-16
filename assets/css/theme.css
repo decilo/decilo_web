@@ -1,0 +1,51 @@
+/* Color Theme Swatches in Hex */
+.dark-1 { color: #D948C1 !important; }
+.dark-2 { color: #484FD9 !important; }
+.dark-3 { color: #071C59 !important; }
+.dark-4 { color: #071540 !important; }
+.dark-5 { color: #DCE4F2 !important; }
+
+.bg-dark-1 { background-color: #D948C1 !important; }
+.bg-dark-2 { background-color: #484FD9 !important; }
+.bg-dark-3 { background-color: #071C59 !important; }
+.bg-dark-4 { background-color: #071540 !important; }
+.bg-dark-5 { background-color: #DCE4F2 !important; }
+
+.border-dark-1 { border-color: #D948C1 !important; }
+.border-dark-2 { border-color: #484FD9 !important; }
+.border-dark-3 { border-color: #071C59 !important; }
+.border-dark-4 { border-color: #071540 !important; }
+.border-dark-5 { border-color: #DCE4F2 !important; }
+
+/* Taken from: https://stackoverflow.com/a/44417646 */
+input:focus + label,
+.input-field input:focus + label,
+.materialize-textarea:focus:not([readonly]) + label {
+    color: #DCE4F2 !important;
+}
+
+input:focus,
+.input-field input:focus,
+.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid #DCE4F2 !important;
+    box-shadow: 0 1px 0 0 #DCE4F2 !important;
+}
+/* Taken from: https://stackoverflow.com/a/44417646 */
+
+[type="checkbox"].filled-in:checked+span:not(.lever):after {
+    background-color: #DCE4F2 !important;
+    border-color: #DCE4F2 !important;
+}
+
+.input-field .helper-text {
+    position: relative;
+    min-height: 18px;
+    display: block;
+    font-size: 12px;
+    color: #DCE4F2;
+}
+
+.btn:hover, .btn-large:hover, .btn-small:hover, .btn-floating:hover 
+.btn:focus, .btn-large:focus, .btn-small:focus, .btn-floating:focus {
+    background-color: #f753dc;
+}
