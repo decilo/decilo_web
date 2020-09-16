@@ -1,6 +1,7 @@
 {
     "require": {
         "sendgrid/sendgrid": "~7",
-        "chillerlan/php-qrcode": "^4.1"
+        "chillerlan/php-qrcode": "^4.1",
+        "adhocore/jwt": "^1.0"
     }
 }

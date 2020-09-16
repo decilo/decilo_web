@@ -465,4 +465,14 @@ $(document).ready(function () {
     } else {
         pushLoader();
     }
+
+
+    if (EXCEPTION != null) {
+        switch (parseInt(EXCEPTION)) {
+            case EXPIRED_TOKEN:
+                toast('Ese código ya expiró, por favor pedí otro.');
+
+                break;
+        }
+    }
 });

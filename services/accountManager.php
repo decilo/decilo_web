@@ -1,10 +1,12 @@
 <?php
+use \Ahc\Jwt\JWT;
 
 header('Content-Type: application/json');
 
 chdir('..');
 
 require_once 'includes/main.php';
+require_once 'vendor/autoload.php';
 
 $request = json_decode(
     file_get_contents('php://input'),
@@ -31,7 +33,8 @@ if ($request == null) {
                         $GLOBALS['database']->prepare(
                             'SELECT *
                              FROM   `d_users`
-                             WHERE  `d_users`.`mailAddress` = :mailAddress'
+                             WHERE  `d_users`.`mailAddress` = :mailAddress
+                             AND    `d_users`.`password`    IS NOT NULL'
                         );
 
                     $statement->execute([ 'mailAddress' => $values['mailAddress'] ]);
@@ -45,6 +48,50 @@ if ($request == null) {
                         ||
                         (isset($values['force']) && boolval($values['force']))
                     ) {
+                        $token = getJWT()->encode(
+                            [
+                                'mailAddress'   => $values['mailAddress'],
+                                'timestamp'     => time()
+                            ]
+                        );
+
+                        if ($match == null) {
+                            $statement =
+                                $GLOBALS['database']->prepare(
+                                    'INSERT INTO `d_users` (
+                                        `mailAddress`,
+                                        `allowance`,
+                                        `quickStartToken`
+                                     ) VALUES (
+                                        :mailAddress,
+                                        :allowance,
+                                        :quickStartToken
+                                     );'
+                                );
+
+                            $statement->execute(
+                                [
+                                    'mailAddress'       => $values['mailAddress'],
+                                    'allowance'         => ALLOWANCE_LEVEL['USER_LEVEL_CUSTOMER'],
+                                    'quickStartToken'   => $token
+                                ]
+                            );
+                        } else {
+                            $statement =
+                                $GLOBALS['database']->prepare(
+                                    'UPDATE `d_users`
+                                     SET    `quickStartToken`   = :quickStartToken
+                                     WHERE  `mailAddress`       = :mailAddress'
+                                );
+
+                            $statement->execute(
+                                [
+                                    'mailAddress'       => $values['mailAddress'],
+                                    'quickStartToken'   => $token
+                                ]
+                            );
+                        }
+
                         $email->setFrom(SENDGRID_NOREPLY_ADDRESS, 'Administración de cuentas');
                         
                         $email->setSubject(
@@ -61,10 +108,10 @@ if ($request == null) {
                         $email->addContent(
                             'text/html',
                             '<h2> Queda un sólo paso para que puedas usar tu cuenta. </h2>
-                            <br>
-                            <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . 'DUMMYTOKEN' . '">
+                             <br>
+                             <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . $token . '&from=' . $values['mailAddress'] . '">
                                 Tocá acá
-                            </a>'
+                             </a>'
                         );
 
                         $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
@@ -104,7 +151,10 @@ if ($request == null) {
                             reply(null, NO_SUCH_ELEMENT);
                         } else {
                             if (password_verify($values['password'], $match['password'])) {
-                                session_destroy();
+                                if (session_status() == PHP_SESSION_ACTIVE) {
+                                    session_destroy();
+                                }
+
                                 session_start();
 
                                 setUserId($match['id']);

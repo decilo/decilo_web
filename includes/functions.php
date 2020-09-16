@@ -1,6 +1,7 @@
 <?php
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use \Ahc\Jwt\JWT;
 
 require_once 'vendor/autoload.php';
 
@@ -155,6 +156,23 @@ function verifyCaptcha($token) {
     );
 
     return $response->success;
+}
+
+function getJWT() {
+    return (new JWT(MASTER_MAGIC, CRYPTO['JWT_ALGO'], CRYPTO['JWT_LIFETIME'], CRYPTO['JWT_LEEWAY']));
+}
+
+function getUser($mailAddress) {
+    $statement = 
+        $GLOBALS['database']->prepare(
+            'SELECT *
+             FROM   `d_users`
+             WHERE  `d_users`.`mailAddress` = :mailAddress'
+        );
+
+    $statement->execute([ 'mailAddress' => $mailAddress ]);
+
+    return $statement->fetch();
 }
 
 ?>

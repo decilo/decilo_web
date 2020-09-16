@@ -91,6 +91,8 @@ if (isset($_GET['to'])) {
 
 <script>
     const RECIPIENT = <?= json_encode($recipientUsername); ?>;
+
+    const EXCEPTION = <?= json_encode(isset($_GET['e']) ? $_GET['e'] : null); ?>;
 </script>
 
 <?php require_once 'views/footer.php'; ?>
