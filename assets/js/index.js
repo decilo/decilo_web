@@ -63,7 +63,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
                     </div>
                 </div>
-            </div>`;
+             </div>`;
 }
 
 $(document).ready(function () {
@@ -237,15 +237,15 @@ $(document).ready(function () {
     loader = () => {
         console.info('index/window: success loading assets.');
 
+        createPostBtn.removeAttr('disabled');
+
+        $('.tap-target').tapTarget({
+            onOpen: () => {
+                $('.tap-target-origin').addClass('black-text');
+            }
+        });
+
         $('#preloader').fadeIn(() => {
-            createPostBtn.removeAttr('disabled');
-
-            $('.tap-target').tapTarget({
-                onOpen: () => {
-                    $('.tap-target-origin').addClass('black-text');
-                }
-            });
-
             run('messagesManager', 'getRecent', { recipient: RECIPIENT }, () => {}, true)
             .done(function (response) {
                 console.info(response);
@@ -274,9 +274,9 @@ $(document).ready(function () {
                     default:
                         displayRemovableWarning(
                             `Estamos teniendo problemas para obtener los últimos mensajes.
-                            <br>
-                            <br>
-                            Por favor esperá un rato, vamos a seguir intentándolo.`
+                             <br>
+                             <br>
+                             Por favor esperá un rato, vamos a seguir intentándolo.`
                         );
 
                         queueRetry();
@@ -289,9 +289,9 @@ $(document).ready(function () {
 
                 displayRemovableWarning(
                     `Estamos teniendo problemas para obtener los últimos mensajes.
-                    <br>
-                    <br>
-                    Por favor esperá un rato, vamos a seguir intentándolo.`
+                     <br>
+                     <br>
+                     Por favor esperá un rato, vamos a seguir intentándolo.`
                 );
 
                 queueRetry();

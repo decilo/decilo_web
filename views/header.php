@@ -27,9 +27,6 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             ?>
         </script>
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async defer src="https://www.googletagmanager.com/gtag/js?id=<?= GOOGLE_ANALYTICS_KEY ?>" onload="setupGoogleAnalytics();"></script>
-
         <title> <?= (isset($title) ? $title . ' - ' : '') . SYSTEM_TITLE ?> </title>
 
         <?php

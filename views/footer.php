@@ -39,24 +39,27 @@
         <footer></footer>
 
         <!-- jQuery -->
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" onload="console.info('jQuery: loaded successfully.');"></script>
 
         <!-- Day.js -->
-        <script id="dayJS" src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+        <script id="dayJS" src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js" onload="console.info('Day.js: loaded successfully.');" defer></script>
 
         <!-- Day.js localized format -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js" integrity="sha512-OXy30agOq/KkLVI1lickBn2JCJGlTxoTWXUGEpgrD8XhWG8cuZOHfySxm5cuUo94BwLT7cJ9qAmP1Am93j6IWg=="   crossorigin="anonymous" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js" integrity="sha512-2uenbLpmKVYJT0OEPCEWCiKMkX6aes4OTUv8RQxEquaPw7AsDkwvFCHG87JGzaiC8HUuCVCe2UbUx0HHOkG5pA=="   crossorigin="anonymous" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js" integrity="sha512-OXy30agOq/KkLVI1lickBn2JCJGlTxoTWXUGEpgrD8XhWG8cuZOHfySxm5cuUo94BwLT7cJ9qAmP1Am93j6IWg=="   crossorigin="anonymous" onload="console.info('Day.js/locale-en: loaded successfully.');" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js" integrity="sha512-2uenbLpmKVYJT0OEPCEWCiKMkX6aes4OTUv8RQxEquaPw7AsDkwvFCHG87JGzaiC8HUuCVCe2UbUx0HHOkG5pA=="   crossorigin="anonymous" onload="console.info('Day.js/locale-es: loaded successfully.');" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js" onload="console.info('Day.js/localizedFormat: loaded successfully.');" defer></script>
 
         <!-- MaterializeCSS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
 
         <!-- Masonry -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js" integrity="sha512-JRlcvSZAXT8+5SQQAvklXGJuxXTouyq8oIMaYERZQasB8SBDHZaUbeASsJWpk0UUrf89DP3/aefPPrlMR1h1yQ==" crossorigin="anonymous" defer async></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js" integrity="sha512-JRlcvSZAXT8+5SQQAvklXGJuxXTouyq8oIMaYERZQasB8SBDHZaUbeASsJWpk0UUrf89DP3/aefPPrlMR1h1yQ==" crossorigin="anonymous" onload="console.info('Masonry: loaded successfully.');" defer async></script>
         
         <!-- Common script -->
         <script src="assets/js/common.js"></script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script src="https://www.googletagmanager.com/gtag/js?id=<?= GOOGLE_ANALYTICS_KEY ?>" onload="setupGoogleAnalytics();" async defer></script>
 
         <?php
 
