@@ -31,6 +31,15 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
 
                 $match = getUser($decoded['mailAddress']);
 
+                $statement =
+                    $GLOBALS['database']->prepare(
+                        'UPDATE `d_users`
+                         SET    `d_users`.`quickStartToken` = NULL
+                         WHERE  `d_users`.`id`              = :id'
+                    );
+
+                $statement->execute([ 'id' => $match['id'] ]);
+
                 setUserId($match['id']);
                 setAllowance($match['allowance']);
 
