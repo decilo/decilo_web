@@ -33,8 +33,7 @@ if ($request == null) {
                         $GLOBALS['database']->prepare(
                             'SELECT *
                              FROM   `d_users`
-                             WHERE  `d_users`.`mailAddress` = :mailAddress
-                             AND    `d_users`.`password`    IS NOT NULL'
+                             WHERE  `d_users`.`mailAddress` = :mailAddress'
                         );
 
                     $statement->execute([ 'mailAddress' => $values['mailAddress'] ]);
@@ -45,6 +44,8 @@ if ($request == null) {
 
                     if (
                         $match == null
+                        ||
+                        $match['password'] == null
                         ||
                         (isset($values['force']) && boolval($values['force']))
                     ) {
@@ -80,13 +81,13 @@ if ($request == null) {
                             $statement =
                                 $GLOBALS['database']->prepare(
                                     'UPDATE `d_users`
-                                     SET    `quickStartToken`   = :quickStartToken
-                                     WHERE  `mailAddress`       = :mailAddress'
+                                     SET    `d_users`.`quickStartToken`     = :quickStartToken
+                                     WHERE  `d_users`.`id`                  = :id'
                                 );
 
                             $statement->execute(
                                 [
-                                    'mailAddress'       => $values['mailAddress'],
+                                    'id'                => $match['id'],
                                     'quickStartToken'   => $token
                                 ]
                             );
