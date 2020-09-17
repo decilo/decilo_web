@@ -13,6 +13,22 @@ function getUserId() {
     return isset($_SESSION[USER_ID_STORE]) ? $_SESSION[USER_ID_STORE] : null;
 }
 
+function setUserName($username) {
+    $_SESSION[USER_NAME_STORE] = $username;
+}
+
+function getUserName() {
+    return isset($_SESSION[USER_NAME_STORE]) ? $_SESSION[USER_NAME_STORE] : null;
+}
+
+function setUserMailAddress($mailAddress) {
+    $_SESSION[USER_MAIL_ADDRESS_STORE] = $mailAddress;
+}
+
+function getUserMailAddress() {
+    return isset($_SESSION[USER_MAIL_ADDRESS_STORE]) ? $_SESSION[USER_MAIL_ADDRESS_STORE] : null;
+}
+
 function setAllowance($level) {
     $_SESSION[ALLOWANCE_LEVEL_STORE] = $level;
 }

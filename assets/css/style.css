@@ -87,3 +87,5 @@ div:focus { outline: none !important; }
 .grecaptcha-badge { visibility: hidden; }
 
 .pl-05 { padding-left: 0.5em; }
+
+.soft-link { color: rgb(59, 225, 255); }

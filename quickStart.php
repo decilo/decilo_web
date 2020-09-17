@@ -41,6 +41,8 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                 $statement->execute([ 'id' => $match['id'] ]);
 
                 setUserId($match['id']);
+                setUserName($match['username']);
+                setUserMailAddress($match['mailAddress']);
                 setAllowance($match['allowance']);
 
                 redirect('private.php');

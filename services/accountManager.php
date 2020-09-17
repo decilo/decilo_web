@@ -140,8 +140,8 @@ if ($request == null) {
                         $statement =
                             $GLOBALS['database']->prepare(
                                 'SELECT *
-                                FROM   `d_users`
-                                WHERE  LOWER(`d_users`.`mailAddress`) = LOWER(:mailAddress)'
+                                 FROM   `d_users`
+                                 WHERE  LOWER(`d_users`.`mailAddress`) = LOWER(:mailAddress)'
                             );
 
                         $statement->execute([ 'mailAddress' => $values['mailAddress' ]]);
@@ -159,6 +159,8 @@ if ($request == null) {
                                 session_start();
 
                                 setUserId($match['id']);
+                                setUserName($match['username']);
+                                setUserMailAddress($match['mailAddress']);
                                 setAllowance($match['allowance']);
 
                                 reply([

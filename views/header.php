@@ -1,6 +1,8 @@
 <?php
 
-$userId = getUserId();
+$userId             = getUserId();
+$userName           = getUserName();
+$userMailAddress    = getUserMailAddress();
 
 if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < MIN_ACCESS_LEVEL)) {
     redirect('index.php');
@@ -143,8 +145,24 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <div class="background">
                             <img src="services/getRandomImage.php" style="filter: blur(1px);">
                         </div>
-                        <a href="#name"><span class="white-text name">John Doe</span></a>
-                        <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+                        <a href="profile.php" class="custom-link">
+                            <span class="white-text name">
+                                <?=
+                                    $userId == null
+                                        ? 'No iniciaste sesión'
+                                        : (
+                                            $userName == null
+                                                ? '<span class="medium"> Creá tu nombre de usuario </span>'
+                                                : $userName
+                                        )
+                                ?>
+                            </span>
+                        </a>
+                        <a href="#email">
+                            <span class="white-text email">
+                                <?= $userId == null ? '' : $userMailAddress ?>
+                            </span>
+                        </a>
                     </div>
                 </li>
                 <?= $userId == null ? '
