@@ -118,10 +118,30 @@ $(document).ready(function () {
         if (event.ctrlKey && event.key == 'Enter') {
             $('#createPostBtn').click();
         } else {
-            if ($(this).val().trim().length > 0) {
-                markValid($(this));
+            length = $(this).val().trim().length;
+
+            if (length > 0) {
+                if (
+                    typeof($(this).attr('data-length')) == 'undefined'
+                    ||
+                    length <= parseInt($(this).attr('data-length'))
+                ) {
+                    markValid($(this));
+                } else {
+                    $(this)
+                        .parent()
+                        .find('.helper-text')
+                        .attr('data-error', 'El mensaje es muy largo');
+
+                    markInvalid($(this));
+                }
             } else {
                 markInvalid($(this));
+
+                $(this)
+                    .parent()
+                    .find('.helper-text')
+                    .attr('data-error', 'Tenés que escribir un mensaje');
             }
         }
     });
@@ -133,12 +153,27 @@ $(document).ready(function () {
 
         let messageContent  = $('<span>' + messageInput.val().trim() + '</span>').text();
 
-        if (messageContent.length > 0) {
-            markValid(messageInput);
-        } else {
+        if (messageContent.length > 65535) {
             markInvalid(messageInput);
-            
+            messageInput
+                .parent()
+                .find('.helper-text')
+                .attr('data-error', 'El mensaje es muy largo');
+
             return;
+        } else {
+            if (messageContent.length > 0) {
+                markValid(messageInput);
+            } else {
+                markInvalid(messageInput);
+
+                messageInput
+                    .parent()
+                    .find('.helper-text')
+                    .attr('data-error', 'Tenés que escribir un mensaje');
+                
+                return;
+            }
         }
 
         grecaptcha.ready(() => {
