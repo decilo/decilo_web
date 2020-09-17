@@ -4,6 +4,70 @@ let createPostBtn       = null;
 let maxScrollTop        = null;
 let isPullingChunks     = false;
 
+let toRemove = null;
+
+function requestRemoval(id) {
+    toRemove = id;
+
+    $('#requestRemovalModal').modal('open');
+}
+
+function tryToRemove() {
+    if (toRemove == null) {
+        toast('Tenés que seleccionar un mensaje a eliminar');
+
+        console.warn('tryToRemove: I was called but "toRemove" was null, there\'s either a severe problem or it\'s just that the user is having fun with the console.');
+    } else {
+        run('messagesManager', 'tryToRemove', { id: toRemove }, () => {
+            disable($('#requestRemovalModal').find('button'));
+        })
+        .done((response) => {
+            console.info(response);
+
+            switch (response.status) {
+                case NOT_ALLOWED:
+                    toast('No tenés permitido hacer eso, probá recargando la página.');
+
+                    break;
+                case BAD_REQUEST:
+                    toast('El servidor no entendió la solicitud, probá recargando la página.');
+
+                    break;
+                case ERROR:
+                    toast('Algo salió mal, probá recargando la página.');
+
+                    break;
+                case OK:
+                    $('#requestRemovalModal').modal('close');
+
+                    $('.message[message="' + toRemove + '"]').fadeOut(() => {
+                        toRemove = null;
+
+                        $('.message[message="' + toRemove + '"]').remove();
+
+                        toast('¡Eliminado!');
+
+                        if ($('.message:visible').length < 1) {
+                            displayRemovableWarning(
+                                `¡Nada por acá!
+                                <br>
+                                <br>
+                                Pasále el link a tus amigos y empezá a recibir mensajes.`
+                            );
+                        } else {
+                            reloadLayout();
+                        }
+                    });
+
+                    break;
+            }
+        })
+        .always(() => {
+            enable($('#requestRemovalModal').find('button'));
+        });
+    }
+}
+
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry != 'undefined')) {
         if (toAppend == null) {
@@ -55,6 +119,13 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
 
     return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` message="` + id + `">
                 <div class="card bg-dark-3">
+                    <button
+                        type="button"
+                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light red"
+                        onclick="requestRemoval(` + id + `);"
+                    >
+                        <i class="material-icons mid-card-fab-icon">delete</i>
+                    </button>
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
                         <p class="lato word-wrap process-whitespaces">` + auxiliaryContent + `</p>
@@ -149,15 +220,14 @@ $(document).ready(function () {
 
             switch (response.status) {
                 case OK:
-                    $('.message')
-                        .first()
-                        .parent()
+                    $('#recentsContainer')
+                        .find('.row')
                         .prepend(
                             getRenderedMessage(
                                 response.id, messageContent, declaredName
                             )
                         );
-        
+
                     $('.message')
                         .first()
                         .fadeIn();
@@ -281,9 +351,9 @@ $(document).ready(function () {
                     default:
                         displayRemovableWarning(
                             `Estamos teniendo problemas para obtener los últimos mensajes.
-                            <br>
-                            <br>
-                            Por favor esperá un rato, vamos a seguir intentándolo.`
+                             <br>
+                             <br>
+                             Por favor esperá un rato, vamos a seguir intentándolo.`
                         );
 
                         queueRetry();
@@ -296,14 +366,16 @@ $(document).ready(function () {
 
                 displayRemovableWarning(
                     `Estamos teniendo problemas para obtener los últimos mensajes.
-                    <br>
-                    <br>
-                    Por favor esperá un rato, vamos a seguir intentándolo.`
+                     <br>
+                     <br>
+                     Por favor esperá un rato, vamos a seguir intentándolo.`
                 );
 
                 queueRetry();
             })
             .always(() => {})
+
+            $('#requestRemovalModal').modal();
         });
     };
 });

@@ -140,6 +140,35 @@ if ($request == null) {
                 } else {
                     reply($values, BAD_REQUEST);
                 }
+
+                break;
+            case 'tryToRemove':
+                $userId = getUserId();
+
+                if ($userId == null) {
+                    reply(null, NOT_ALLOWED);
+                } else {
+                    if (isset($values['id'])) {
+                        $statement = 
+                            $GLOBALS['database']->prepare(
+                                'DELETE
+                                 FROM   `d_messages_private`
+                                 WHERE  `d_messages_private`.`id`        = :id
+                                 AND    `d_messages_private`.`recipient` = :recipient'
+                            );
+
+                        $statement->execute([
+                            'id'        => $values['id'],
+                            'recipient' => getUserId()
+                        ]);
+
+                        reply(null, $statement->rowCount() == 1 ? OK : ERROR);
+                    } else {
+                        reply(null, BAD_REQUEST);
+                    }
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

@@ -195,25 +195,33 @@ $(document).ready(function () {
 
                             break;
                         case OK:
-                            $('.message')
-                                .first()
-                                .parent()
-                                .prepend(
-                                    getRenderedMessage(
-                                        response.id, messageContent, declaredName
-                                    )
-                                );
-                
-                            $('.message')
-                                .first()
-                                .fadeIn();
+                            callable = () => {
+                                $('#recentsContainer')
+                                    .find('.row')
+                                    .prepend(
+                                        getRenderedMessage(
+                                            response.id, messageContent, declaredName
+                                        )
+                                    );
+    
+                                $('.message')
+                                    .first()
+                                    .fadeIn();
+    
+                                $('#messageInput, #declaredName')
+                                    .removeClass('valid')
+                                    .val('');
+                    
+                                reloadLayout();
+                            }
 
-                            $('#messageInput, #declaredName')
-                                .removeClass('valid')
-                                .val('');
-                
-                            reloadLayout();
-
+                            if ($('#recentsContainer').find('.removableWarning').length > 0) {
+                                $('#recentsContainer')
+                                    .find('.removableWarning')
+                                    .fadeOut(callable);
+                            } else {
+                                callable();
+                            }
                             break;
                         case ERROR:
                             toast('Algo anda mal, probá otra vez.');
@@ -288,21 +296,30 @@ $(document).ready(function () {
                 switch (response.status) {
                     case OK:
                         $('#preloader').fadeOut(() => {
-                            let renderedHTML = '';
+                            if (response.result.length > 0) {
+                                let renderedHTML = '';
 
-                            response.result.forEach((message) => {
-                                renderedHTML += getRenderedMessage(
-                                    message['id'], message['content'], message['declaredName'], typeof(message['created']) == 'undefined' ? null : message['created']
+                                response.result.forEach((message) => {
+                                    renderedHTML += getRenderedMessage(
+                                        message['id'], message['content'], message['declaredName'], typeof(message['created']) == 'undefined' ? null : message['created']
+                                    );
+                                });
+
+                                $('#preloader')
+                                    .next()
+                                    .append(renderedHTML)
+                                    .find('.message')
+                                    .fadeIn();
+
+                                reloadLayout();
+                            } else {
+                                displayRemovableWarning(
+                                    `¡Nada por acá!
+                                     <br>
+                                     <br>
+                                     Dejá un mensaje y empezá a conversar.`
                                 );
-                            });
-
-                            $('#preloader')
-                                .next()
-                                .append(renderedHTML)
-                                .find('.message')
-                                .fadeIn();
-
-                            reloadLayout();
+                            }
                         });
 
                         break;

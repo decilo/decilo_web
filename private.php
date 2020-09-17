@@ -90,4 +90,17 @@ require_once 'views/header.php';
     </div>
 </div>
 
+<!-- Modal Structure -->
+<div id="requestRemovalModal" class="modal">
+    <div class="modal-content bg-dark-4 dark-5">
+        <p class="flow-text roboto thin"> ¿Querés eliminar este mensaje? </h4>
+        <p class="lato thin"> El mensaje que seleccionaste se va a eliminar permanentemente, por lo que este proceso es irreversible. </p>
+    </div>
+    <div class="divider"></div>
+    <div class="modal-footer bg-dark-4">
+        <button href="#!" class="modal-close waves-effect waves-light btn-flat dark-5"> Cancelar </button>
+        <button onclick="tryToRemove();" class="waves-effect waves-light btn-flat dark-5"> Eliminar </button>
+    </div>
+</div>
+
 <?php require_once 'views/footer.php'; ?>
