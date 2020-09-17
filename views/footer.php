@@ -38,6 +38,10 @@
         </main>
         <footer></footer>
 
+        <script>
+            const EXCEPTION = <?= json_encode(isset($_GET['e']) ? $_GET['e'] : null); ?>
+        </script>
+
         <!-- jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" onload="console.info('jQuery: loaded successfully.');"></script>
 
