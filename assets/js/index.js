@@ -57,7 +57,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                 <div class="card bg-dark-3">
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato word-wrap process-whitespaces">` + auxiliaryContent + `</p>
+                        <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + auxiliaryContent + `</p>
                     </div>
                     <div class="card-action center">
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>

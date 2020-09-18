@@ -76,6 +76,11 @@ div:focus { outline: none !important; }
 
 .word-wrap { word-break: break-word; }
 
+.overflow-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .process-whitespaces { white-space: pre-line; }
 
 .tap-target-content h5  { margin: 0.093333rem 0 .656rem 0; }
