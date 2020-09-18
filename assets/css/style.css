@@ -92,3 +92,10 @@ div:focus { outline: none !important; }
 
 .mid-card-fab       { bottom: 2.45rem   !important; }
 .mid-card-fab-icon  { font-size: 1.4rem !important; }
+
+.preloader-bottom-small {
+    top:            0.8em;
+    margin-left:    0.5em;
+    width:          28px !important;
+    height:         28px !important;
+}

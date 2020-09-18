@@ -30,6 +30,19 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-dark-4">
+                    <div id="loginPreloader" class="preloader-wrapper small active preloader-bottom-small left" style="display: none;">
+                        <div class="spinner-layer border-dark-5">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
                     <button id="tryAccountRecoveryBtn" class="waves-effect waves-light btn-flat dark-5" style="display: none;"> Olvidé la contraseña </button>
                     <button id="continueLoginBtn" class="waves-effect waves-light btn-flat dark-5"> Continuar </button>
                 </div>

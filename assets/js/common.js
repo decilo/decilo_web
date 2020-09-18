@@ -2,6 +2,8 @@ let loader = () => {
     console.info('loader: no loader was specified.');
 };
 
+let deferredPreloader = null;
+
 function run(url, action, values, before = function () {}, overridesFailure = false) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
@@ -128,6 +130,22 @@ function setupGoogleAnalytics() {
     gtag('config', GOOGLE_ANALYTICS_KEY);
 
     console.info('setupGoogleAnalytics: success setting up Google Analytics.');
+}
+
+function deferLoginPreloader() {
+    deferredPreloader = setTimeout(() => {
+        $('#loginPreloader').fadeIn();
+    }, FAILURE_RETRY_INTERVAL);
+}
+
+function stopPreloader() {
+    if (deferredPreloader != null) {
+        clearInterval(deferredPreloader);
+
+        deferredPreloader = null;
+    }
+
+    $('#loginPreloader').fadeOut();
 }
 
 $(document).ready(function () {
@@ -294,6 +312,8 @@ $(document).ready(function () {
             loginPassword.parent().is(':visible')
         ) {
             if (loginPassword.val().length > 0) {
+                deferLoginPreloader();
+
                 grecaptcha.ready(() => {
                     grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
                         run('accountManager', 'tryLogin', {
@@ -331,14 +351,20 @@ $(document).ready(function () {
                         })
                         .always(() => {
                             enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
+
+                            stopPreloader();
                         });
                     });
                 });
             } else {
                 markInvalid(loginPassword);
+
+                stopPreloader();
             }
         } else {
             if ($('#loginMailAddress').hasClass('valid')) {
+                deferLoginPreloader();
+
                 run('accountManager', 'trySendLoginMail', {
                     'mailAddress'   : $('#loginMailAddress').val(),
                     'force'         : event.target.id == 'tryAccountRecoveryBtn'
@@ -405,6 +431,8 @@ $(document).ready(function () {
                     enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
 
                     $('#signupMailAddress').val('');
+
+                    stopPreloader();
                 });
             }
         }
@@ -432,6 +460,8 @@ $(document).ready(function () {
 
             $('#tryAccountRecoveryBtn').hide();
             $('#continueLoginBtn').html('Continuar');
+
+            allowDeferredPreloader = true;
         }
     });
 
