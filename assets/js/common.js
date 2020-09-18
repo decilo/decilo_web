@@ -47,9 +47,19 @@ function redirect(url, timeout = null) {
 
 function animateRedirect(url, fullBody = false, timeout = null) {
     setTimeout(function () {
-        $(fullBody ? 'body' : 'main').fadeOut(MATERIALIZE_TRANSITION_TIME, () => {
-            redirect(url, 0);
-        });
+        redirCall = () => {
+            $(fullBody ? 'body' : 'main').fadeOut(MATERIALIZE_TRANSITION_TIME, () => {
+                redirect(url, 0);
+            });
+        };
+
+        if ($('.sidenav').length > 0) {
+            $('.sidenav').sidenav('close');
+
+            setTimeout(redirCall, M.Sidenav.getInstance($('.sidenav')).options.outDuration);
+        } else {
+            redirCall();
+        }
     }, timeout = null ? MATERIALIZE_TRANSITION_TIME : timeout);
 }
 
@@ -176,12 +186,6 @@ $(document).ready(function () {
         }
     });
 
-    $('.custom-link').on('click', function () {
-        animateRedirect(
-            $(this).attr('href')
-        );
-    });
-
     if (!window.location.href.includes('login') && HEARTBEAT_INTERVAL > -1) {
         let heartbeat = setInterval(function () {
             run('accountManager', 'areYouThere?', undefined, function () {}, true)
@@ -225,6 +229,14 @@ $(document).ready(function () {
 
     $(window).on('load', function () {
         console.log('common/window: success loading assets.');
+
+        $('.custom-link').on('click', function (event) {
+            event.preventDefault();
+
+            animateRedirect(
+                $(this).attr('href')
+            );
+        });
 
         $(window).on('scroll wheel', () => {
             if ($('html, body').scrollTop() > document.documentElement.clientHeight) {
