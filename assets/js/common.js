@@ -431,7 +431,17 @@ $(document).ready(function () {
     $('#loginMailAddress').on('keyup change', function () {
         value = $(this).val().trim();
 
-        if (value.length > 0 && value.includes('@') && value.includes('.')) {
+        if (
+            value.length > 0
+            &&
+            value.includes('@')
+            &&
+            value.split('@').length > 1
+            &&
+            value.split('@')[1].split('.').length > 1
+            &&
+            value.split('@')[1].split('.')[1].length > 0
+        ) {
             markValid($(this));
         } else {
             markInvalid($(this));
