@@ -40,7 +40,7 @@ function redirect(url, timeout = null) {
         if (url == window.location.href) {
             window.location.reload();
         } else {
-        window.location.href = url;
+            window.location.href = url;
         }
     }, timeout = null ? MATERIALIZE_TRANSITION_TIME : timeout);
 }
@@ -324,73 +324,75 @@ $(document).ready(function () {
                 markInvalid(loginPassword);
             }
         } else {
-            run('accountManager', 'trySendLoginMail', {
-                'mailAddress'   : $('#loginMailAddress').val(),
-                'force'         : event.target.id == 'tryAccountRecoveryBtn'
-            }, () => {
-                console.info('accountManager/trySendLoginMail: account creation/recovery started.');
+            if ($('#loginMailAddress').hasClass('valid')) {
+                run('accountManager', 'trySendLoginMail', {
+                    'mailAddress'   : $('#loginMailAddress').val(),
+                    'force'         : event.target.id == 'tryAccountRecoveryBtn'
+                }, () => {
+                    console.info('accountManager/trySendLoginMail: account creation/recovery started.');
 
-                disable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
-            })
-            .done((response) => {
-                console.log(response);
+                    disable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
+                })
+                .done((response) => {
+                    console.log(response);
 
-                switch (response.status) {
-                    case BAD_REQUEST:
-                        toast('Algo anda mal, probá otra vez.');
+                    switch (response.status) {
+                        case BAD_REQUEST:
+                            toast('Algo anda mal, probá otra vez.');
 
-                        break;
-                    case ALREADY_EXISTS:
-                        loginPassword
-                            .parent()
-                            .slideDown(() => {
-                                loginPassword
-                                    .focus()
-                                    .click();
+                            break;
+                        case ALREADY_EXISTS:
+                            loginPassword
+                                .parent()
+                                .slideDown(() => {
+                                    loginPassword
+                                        .focus()
+                                        .click();
+                                });
+
+                            $('#continueLoginBtn').html('Iniciar sesión');
+                            $('#tryAccountRecoveryBtn').fadeIn();
+
+                            break;
+                        case OK:
+                            $('#loginForm').fadeOut(() => {
+                                loginModal = $('#loginModal');
+                
+                                loginModal.animate(
+                                    { bottom : -1 * loginModal.find('.modal-footer').outerHeight() },
+                                    MATERIALIZE_TRANSITION_TIME,
+                                    () => {
+                                        loginStatus = $('#loginStatus');
+
+                                        loginStatus
+                                            .html('¡Listo! En un rato vas a recibir un mail para continuar.')
+                                            .fadeIn(() => {
+                                                setTimeout(() => {
+                                                    loginModal.animate(
+                                                        { bottom : -1 * loginModal.outerHeight() },
+                                                        MATERIALIZE_TRANSITION_TIME,
+                                                        () => { loginModal.modal('close'); }
+                                                    )
+                                                }, INFORMATION_MODAL_TIMEOUT);
+                                            });
+                                    }
+                                );
                             });
 
-                        $('#continueLoginBtn').html('Iniciar sesión');
-                        $('#tryAccountRecoveryBtn').fadeIn();
+                            break;
+                        case ERROR:
+                            toast('Hubo un problema, probá otra vez.');
 
-                        break;
-                    case OK:
-                        $('#loginForm').fadeOut(() => {
-                            loginModal = $('#loginModal');
-            
-                            loginModal.animate(
-                                { bottom : -1 * loginModal.find('.modal-footer').outerHeight() },
-                                MATERIALIZE_TRANSITION_TIME,
-                                () => {
-                                    loginStatus = $('#loginStatus');
+                            break;
+                    }
+                    
+                })
+                .always(() => {
+                    enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
 
-                                    loginStatus
-                                        .html('¡Listo! En un rato vas a recibir un mail para continuar.')
-                                        .fadeIn(() => {
-                                            setTimeout(() => {
-                                                loginModal.animate(
-                                                    { bottom : -1 * loginModal.outerHeight() },
-                                                    MATERIALIZE_TRANSITION_TIME,
-                                                    () => { loginModal.modal('close'); }
-                                                )
-                                            }, INFORMATION_MODAL_TIMEOUT);
-                                        });
-                                }
-                            );
-                        });
-
-                        break;
-                    case ERROR:
-                        toast('Hubo un problema, probá otra vez.');
-
-                        break;
-                }
-                
-            })
-            .always(() => {
-                enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
-
-                $('#signupMailAddress').val('');
-            });
+                    $('#signupMailAddress').val('');
+                });
+            }
         }
     });
 
