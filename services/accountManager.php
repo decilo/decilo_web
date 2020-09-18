@@ -130,7 +130,7 @@ if ($request == null) {
                         reply(null, ALREADY_EXISTS);
                     }
                 } else {
-                    reply(null, NOT_ALLOWED);
+                    reply(null, BAD_REQUEST);
                 }
 
                 break;

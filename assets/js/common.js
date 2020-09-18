@@ -332,6 +332,10 @@ $(document).ready(function () {
                 console.log(response);
 
                 switch (response.status) {
+                    case BAD_REQUEST:
+                        toast('Algo anda mal, probá otra vez.');
+
+                        break;
                     case ALREADY_EXISTS:
                         loginPassword
                             .parent()
