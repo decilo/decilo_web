@@ -37,7 +37,11 @@ function toast(html) {
 
 function redirect(url, timeout = null) {
     setTimeout(function () {
+        if (url == window.location.href) {
+            window.location.reload();
+        } else {
         window.location.href = url;
+        }
     }, timeout = null ? MATERIALIZE_TRANSITION_TIME : timeout);
 }
 
