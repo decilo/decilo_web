@@ -1,4 +1,6 @@
-let loader = null;
+let loader = () => {
+    console.info('loader: no loader was specified.');
+};
 
 function run(url, action, values, before = function () {}, overridesFailure = false) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
