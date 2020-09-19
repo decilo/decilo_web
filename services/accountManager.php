@@ -93,7 +93,7 @@ if ($request == null) {
                             );
                         }
 
-                        $email->setFrom(SENDGRID_NOREPLY_ADDRESS, 'Administración de cuentas');
+                        $email->setFrom(SENDGRID_NOREPLY_ADDRESS, SYSTEM_TITLE);
                         
                         $email->setSubject(
                             ($match == null ? 'Te damos la bienvenida' : 'Hola de nuevo') .
