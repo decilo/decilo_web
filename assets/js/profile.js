@@ -136,6 +136,8 @@ $(document).ready(() => {
 
                         enable($('#requestDataDownloadBtn, #requestAccountRemovalBtn'));
 
+                        $('#requestAccountRemovalBtn').find('span').html('Eliminar cuenta');
+
                         toast('¡Listo! Confirmálo en ' + response.result.mailAddress + '.');
                     } else {
                         let remaining = response.result.waitFor;
