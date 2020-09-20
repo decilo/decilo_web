@@ -180,6 +180,8 @@ $(document).ready(() => {
         });
     });
 
+    $('#username').on('keyup change', validateUsername);
+
     $('#password, #passwordVerifier').on('keyup change', validatePassword);
 
     $('#mailAddress').on('keyup change', validateMailAddress);
