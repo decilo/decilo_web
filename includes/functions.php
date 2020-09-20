@@ -225,7 +225,7 @@ function getPrivateMessages($userId, $includeId = true, $includeRecipient = true
 function getColumnNames($table, $ignore = []) {
     $names = [];
 
-    $statement = $GLOBALS['database']->query('DESCRIBE `' . $table . '');
+    $statement = $GLOBALS['database']->query('DESCRIBE `' . $table . '`');
 
     foreach ($statement->fetchAll() as $columnMetadata) {
         if (
