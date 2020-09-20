@@ -22,13 +22,13 @@ if ($request == null) {
 
         switch ($request['action']) {
             case 'getRecent':
-                if (isset($values['after'])) {
+                if (isset($values['after']) && !isset($values['private'])) {
                     $statement = $GLOBALS['database']
                         ->prepare(
                             'SELECT     *
                              FROM       `d_messages_public`
                              WHERE      `id` < :after
-                             ORDER BY   `created` DESC
+                             ORDER BY   `id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
                         );
 
@@ -39,12 +39,17 @@ if ($request == null) {
                     $statement = $GLOBALS['database']
                         ->prepare(
                             'SELECT     *
-                             FROM       `d_messages_private`
-                             ORDER BY   `created` DESC
+                             FROM       `d_messages_private`' . (isset($values['after']) ? '
+                             WHERE      `id` < :after' : '') . '
+                             ORDER BY   `id` DESC
                              LIMIT      ' . MESSAGES['PUBLIC_MESSAGES_LIMIT']
                         );
 
-                    $statement->execute();
+                    $statement->execute(
+                        isset($values['after'])
+                            ? [ 'after' => $values['after'] ]
+                            : []
+                    );
 
                     reply($statement->fetchAll());
                 } else if (isset($values['recipient']) && !empty($values['recipient'])) {
@@ -55,7 +60,7 @@ if ($request == null) {
                              JOIN       `d_users`
                                 ON      `d_users`.`id`          = `d_messages_private`.`recipient`
                                 AND     `d_users`.`username`    = :recipient
-                             ORDER BY   `d_messages_private`.`created` DESC
+                             ORDER BY   `d_messages_private`.`id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
                         );
 
@@ -67,7 +72,7 @@ if ($request == null) {
                         ->prepare(
                             'SELECT     *
                              FROM       `d_messages_public`
-                             ORDER BY   `created` DESC
+                             ORDER BY   `id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
                         );
 
