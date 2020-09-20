@@ -104,3 +104,5 @@ div:focus { outline: none !important; }
     width:          28px !important;
     height:         28px !important;
 }
+
+.disc li { list-style-type: disc !important; }

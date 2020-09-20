@@ -148,6 +148,18 @@ function stopPreloader() {
     $('#loginPreloader').fadeOut();
 }
 
+function isMailAddressValid(mailAddress) {
+    return  mailAddress.length > 0
+            &&
+            mailAddress.includes('@')
+            &&
+            mailAddress.split('@').length > 1
+            &&
+            mailAddress.split('@')[1].split('.').length > 1
+            &&
+            mailAddress.split('@')[1].split('.')[1].length > 0;
+}
+
 $(document).ready(function () {
     let isGoingTop = false;
 
@@ -485,17 +497,7 @@ $(document).ready(function () {
     $('#loginMailAddress').on('keyup change', function () {
         value = $(this).val().trim();
 
-        if (
-            value.length > 0
-            &&
-            value.includes('@')
-            &&
-            value.split('@').length > 1
-            &&
-            value.split('@')[1].split('.').length > 1
-            &&
-            value.split('@')[1].split('.')[1].length > 0
-        ) {
+        if (isMailAddressValid(value)) {
             markValid($(this));
         } else {
             markInvalid($(this));
@@ -530,11 +532,18 @@ $(document).ready(function () {
         pushLoader();
     }
 
-
     if (EXCEPTION != null) {
         switch (parseInt(EXCEPTION)) {
             case EXPIRED_TOKEN:
                 toast('Ese código ya expiró, por favor pedí otro.');
+
+                break;
+            case QUICKSTART['INVALID_MAIL_ADDRESS']:
+                toast('El mail que ingresaste no es válido.');
+
+                break;
+            case QUICKSTART['MAIL_CHANGE_OK']:
+                toast('¡Listo! Ya cambiaste tu mail.');
 
                 break;
         }

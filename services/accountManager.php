@@ -254,6 +254,192 @@ if ($request == null) {
                 }
 
                 break;
+            case 'profileUpdateTry':
+                if (
+                    isset ($values['username']) && isset ($values['mailAddress']) && isset ($values['password'])
+                    &&
+                    !empty($values['username']) && !empty($values['mailAddress'])
+                ) {
+                    if (filter_var($values['mailAddress'], FILTER_VALIDATE_EMAIL)) {
+                        $user = getCurrentUser();
+
+                        $matchByUsername    = getUserByUsername($values['username']);
+                        $matchByMailAddress = getUserByMailAddress($values['mailAddress']);
+
+                        if ($matchByUsername != null && $matchByUsername['id'] != $user['id']) {
+                            reply([ 'matchesUsername' => true ], ALREADY_EXISTS);
+                        }
+
+                        if ($values['mailAddress'] != $user['mailAddress']) {
+                            if ($matchByMailAddress == null || $matchByMailAddress ['id'] == $user['id']) {
+                                $result = [ 'needsMailVerification' => true ];
+
+                                $email = new \SendGrid\Mail\Mail();
+
+                                $token = getJWT()->encode(
+                                    [
+                                        'mailAddress'   => $user['mailAddress'],
+                                        'timestamp'     => time()
+                                    ]
+                                );
+
+                                $statement =
+                                    $GLOBALS['database']->prepare(
+                                        'UPDATE `d_users`
+                                         SET    `d_users`.`quickStartToken`     = :quickStartToken
+                                         WHERE  `d_users`.`id`                  = :id'
+                                    );
+
+                                $statement->execute(
+                                    [
+                                        'id'                => $user['id'],
+                                        'quickStartToken'   => $token
+                                    ]
+                                );
+
+                                $email->setFrom(SENDGRID_NOREPLY_ADDRESS, SYSTEM_TITLE);
+                                
+                                $email->setSubject('Necesitamos que verifiques tu mail - ' . SYSTEM_TITLE);
+                                
+                                $email->addTo(
+                                    $values['mailAddress'],
+                                    $user['username'] == null ? $values['mailAddress'] : $user['username']
+                                );
+
+                                $email->addContent(
+                                    'text/html',
+                                    '<h2> Necesitamos que verifiques este mail. </h2>
+                                     <br>
+                                     <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&changeTo=' . $values['mailAddress'] . '">
+                                        Tocá acá
+                                     </a>'
+                                );
+
+                                $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
+
+                                try {
+                                    $response = $sendgrid->send($email);
+
+                                    $statusCode = $response->statusCode();
+
+                                    reply($result, $statusCode == 200 || $statusCode == 202 ? OK : ERROR);
+                                } catch (Exception $exception) {
+                                    reply($exception->getMessage(), ERROR);
+                                }
+                            } else {
+                                reply([ 'matchesUsername' => false ], ALREADY_EXISTS);
+                            }
+                        } else {
+                            $result = [ 'needsMailVerification' => false ];
+                        }
+
+                        $statement =
+                            $GLOBALS['database']->prepare(
+                                'UPDATE `d_users`
+                                 SET
+                                    `d_users`.`username` = :username ' . (empty($values['password']) ? '' : ',
+                                    `d_users`.`password` = :password ') .
+                                'WHERE  `d_users`.`id`   = :id'
+                            );
+
+                        $statement->bindParam('username', $values['username']);
+
+                        $hashedPassword = password_hash($values['password'], PASSWORD_ARGON2ID);
+
+                        if (!empty($values['password'])) {
+                            $statement->bindParam('password', $hashedPassword);
+                        }
+
+                        $statement->bindParam('id', $user['id']);
+
+                        $statement->execute();
+
+                        setUserName($values['username']);
+                        setUserMailAddress($values['mailAddress']);
+
+                        reply($result, OK);
+                    } else {
+                        reply(null, BAD_REQUEST);
+                    }
+                } else {
+                    reply(null, BAD_REQUEST);
+                }
+
+                break;
+            case 'requestAccountRemoval':
+                if ($values['deleteNow']) {
+                    if (
+                        isset($_SESSION[ACCOUNT_DELETION_CD_STORE])
+                        &&
+                        time() - $_SESSION[ACCOUNT_DELETION_CD_STORE] >= PROFILE['ACCOUNT_DELETION_TIME']
+                    ) {
+                        $user = getCurrentUser();
+
+                        $email = new \SendGrid\Mail\Mail();
+
+                        $token = getJWT()->encode(
+                            [
+                                'mailAddress'   => $user['mailAddress'],
+                                'timestamp'     => time()
+                            ]
+                        );
+
+                        $statement =
+                            $GLOBALS['database']->prepare(
+                                'UPDATE `d_users`
+                                 SET    `d_users`.`quickStartToken`     = :quickStartToken
+                                 WHERE  `d_users`.`id`                  = :id'
+                            );
+
+                        $statement->execute(
+                            [
+                                'id'                => $user['id'],
+                                'quickStartToken'   => $token
+                            ]
+                        );
+
+                        $email->setFrom(SENDGRID_NOREPLY_ADDRESS, SYSTEM_TITLE);
+                        
+                        $email->setSubject('Eliminá tu cuenta - ' . SYSTEM_TITLE);
+                        
+                        $email->addTo(
+                            $user['mailAddress'],
+                            $user['username'] == null ? $values['mailAddress'] : $user['username']
+                        );
+
+                        $email->addContent(
+                            'text/html',
+                            '<h2> Confirmá que querés eliminar tu cuenta. </h2>
+                             <br>
+                             <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&removeAccount">
+                                Tocá acá
+                             </a>'
+                        );
+
+                        $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
+
+                        try {
+                            $response = $sendgrid->send($email);
+
+                            $statusCode = $response->statusCode();
+
+                            reply(
+                                [ 'mailAddress' => getCurrentUser()['mailAddress'] ],
+                                $statusCode == 200 || $statusCode == 202 ? OK : ERROR
+                            );
+                        } catch (Exception $exception) {
+                            reply($exception->getMessage(), ERROR);
+                        }
+                    } else {
+                        reply(null, NOT_ALLOWED);
+                    }
+                } else {
+                    $_SESSION[ACCOUNT_DELETION_CD_STORE] = time();
+
+                    reply([ 'waitFor' => PROFILE['ACCOUNT_DELETION_TIME'] ]);
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }
@@ -270,7 +456,72 @@ if ($request == null) {
             case 'tryLogout':
                 session_destroy();
 
-                reply(null, OK);
+                reply(null);
+
+                break;
+            case 'requestDataDownload':
+                if (getUserId() == null) {
+                    reply(null, NOT_ALLOWED);
+                } else {
+                    $user = getCurrentUser();
+
+                    $email = new \SendGrid\Mail\Mail();
+
+                    $email->setFrom(SENDGRID_NOREPLY_ADDRESS, SYSTEM_TITLE);
+
+                    $email->setSubject('Te dejamos una copia de tus datos - ' . SYSTEM_TITLE);
+
+                    $email->addTo(
+                        $user['mailAddress'],
+                        $user['username'] == null ? $user['mailAddress'] : $user['username']
+                    );
+
+                    $writer = new XLSXWriter();
+
+                    $writer->writeSheet(
+                        getExcelSheet(
+                            getColumnNames('d_messages_private', [ 'recipient' ]),
+                            getPrivateMessages($user['id'], false, false)
+                        ),
+                        'Mensajes privados'
+                    );
+
+                    $writer->writeSheet(
+                        getExcelSheet(
+                            getColumnNames('d_challenges'),
+                            getChallenges($_SERVER['REMOTE_ADDR'], false)
+                        ),
+                        'Desafíos de seguridad'
+                    );
+
+                    $email->addAttachment(
+                        base64_encode($writer->writeToString()),
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'tus_datos.xlsx',
+                        'attachment'
+                    );
+
+                    $email->addContent(
+                        'text/html',
+                        '<h2> Esperamos que te sea de utilidad </h2>
+                         <p> A continuación, te dejamos una copia de lo que sabemos de vos. </p>'
+                    );
+
+                    $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
+
+                    try {
+                        $response = $sendgrid->send($email);
+
+                        $statusCode = $response->statusCode();
+
+                        reply(
+                            [ 'mailAddress' => $user['mailAddress'] ],
+                            $statusCode == 200 || $statusCode == 202 ? OK : ERROR
+                        );
+                    } catch (Exception $exception) {
+                        reply($exception->getMessage(), ERROR);
+                    }
+                }
 
                 break;
             default:

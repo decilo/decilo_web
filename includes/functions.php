@@ -178,7 +178,20 @@ function getJWT() {
     return (new JWT(MASTER_MAGIC, CRYPTO['JWT_ALGO'], CRYPTO['JWT_LIFETIME'], CRYPTO['JWT_LEEWAY']));
 }
 
-function getUser($mailAddress) {
+function getUserByUsername($username) {
+    $statement = 
+        $GLOBALS['database']->prepare(
+            'SELECT *
+             FROM   `d_users`
+             WHERE  `d_users`.`username` = :username'
+        );
+
+    $statement->execute([ 'username' => $username ]);
+
+    return $statement->fetch();
+}
+
+function getUserByMailAddress($mailAddress) {
     $statement = 
         $GLOBALS['database']->prepare(
             'SELECT *
@@ -189,6 +202,78 @@ function getUser($mailAddress) {
     $statement->execute([ 'mailAddress' => $mailAddress ]);
 
     return $statement->fetch();
+}
+
+function getPrivateMessages($userId, $includeId = true, $includeRecipient = true) {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT
+                ' . ($includeId         ? 'id, '        : '') . '
+                ' . ($includeRecipient  ? 'recipient, ' : '') . '
+                content,
+                declaredName,
+                created
+             FROM   `d_messages_private`
+             WHERE  `d_messages_private`.`recipient` = :recipient'
+        );
+
+    $statement->execute([ 'recipient' => $userId ]);
+
+    return $statement->fetchAll();
+}
+
+function getColumnNames($table, $ignore = []) {
+    $names = [];
+
+    $statement = $GLOBALS['database']->query('DESCRIBE `' . $table . '');
+
+    foreach ($statement->fetchAll() as $columnMetadata) {
+        if (
+            $columnMetadata['Extra'] != 'auto_increment'
+            &&
+            !in_array($columnMetadata['Field'], $ignore)
+        ) {
+            $names[] = $columnMetadata['Field'];
+        }
+    }
+
+    return $names;
+}
+
+function getExcelSheet($header, $body) {
+    $sheet = [ $header ];
+
+    foreach ($body as $row) {
+        $processedMessage = [];
+        foreach ($row as $key => $column) {
+            if (!is_numeric($key)) {
+                $processedMessage[] = $column;
+            }
+        }
+        
+        $sheet[] = $processedMessage;
+    }
+
+    return $sheet;
+}
+
+function getChallenges($ip, $includeId = true) {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT 
+                ' . ($includeId ? 'id, ' : '') . '
+                ip,
+                token,
+                serverTimestamp,
+                remoteTimestamp,
+                success
+             FROM   `d_challenges`
+             WHERE  `d_challenges`.`ip` = :ip'
+        );
+
+    $statement->execute([ 'ip' => $ip ]);
+
+    return $statement->fetchAll();
 }
 
 ?>

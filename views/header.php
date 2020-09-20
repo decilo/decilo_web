@@ -114,9 +114,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <i class="material-icons">menu</i>
                     </a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
-                        <!-- <li>
+                        <li>
                             <a href="privacy.php" class="lato center"> Privacidad </a>
-                        </li> -->
+                        </li>
                         <?= $userId == null ? '
                         <li>
                             <a id="loginBtn" class="lato center"> Iniciá sesión </a>
@@ -130,6 +130,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         </li>' : '
                         <li>
                             <a href="private.php" class="lato center custom-link"> Mis mensajes </a>
+                        </li>
+                        <li>
+                            <a href="profile.php" class="lato center custom-link"> Mi cuenta </a>
                         </li>
                         <li>
                             <a id="logoutBtn" class="lato"> Salir </a>
@@ -165,12 +168,19 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         </a>
                     </div>
                 </li>
+
+                <li>
+                    <a href="privacy.php" class="dark-5 hand custom-link"> Privacidad </a>
+                </li>
                 <?= $userId == null ? '
                 <li>
                     <a id="loginBtnMobile" class="dark-5 hand"> Iniciá sesión </a>
                 </li>' : '
                 <li>
                     <a href="private.php" class="dark-5 custom-link"> Mis mensajes </a>
+                </li>
+                <li>
+                    <a href="profile.php" class="dark-5 custom-link"> Mi cuenta </a>
                 </li>
                 <li>
                     <a id="logoutBtnMobile" class="dark-5 hand"> Salir </a>
