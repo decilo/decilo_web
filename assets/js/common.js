@@ -455,6 +455,12 @@ $(document).ready(function () {
         $('#loginModal').modal('open');
     });
 
+    $('.modal').modal({
+        onOpenStart: () => {
+            $('.tooltipped').tooltip('close');
+        }
+    });
+
     $('#loginModal').modal({ 
         onCloseEnd: () => {
             $('#loginModal').css({ bottom : '' });
