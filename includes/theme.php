@@ -41,3 +41,5 @@ input:focus,
 .btn:focus, .btn-large:focus, .btn-small:focus, .btn-floating:focus {
     background-color: #<?= THEME[5] ?>;
 }
+
+.card-box { box-shadow: 1px 1px #<?= THEME[6] ?>; }

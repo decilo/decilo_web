@@ -118,7 +118,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
     });
 
     return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` message="` + id + `">
-                <div class="card bg-dark-3">
+                <div class="card bg-dark-3 card-box">
                     <button
                         type="button"
                         class="btn-floating halfway-fab mid-card-fab waves-effect waves-light red"

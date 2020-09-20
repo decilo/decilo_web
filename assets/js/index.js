@@ -54,7 +54,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
     });
 
     return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` message="` + id + `">
-                <div class="card bg-dark-3">
+                <div class="card bg-dark-3 card-box">
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
                         <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + auxiliaryContent + `</p>
