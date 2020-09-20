@@ -60,7 +60,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     <button
                         type="button"
                         class="btn-floating halfway-fab mid-card-fab waves-effect waves-light ` + (reported ? 'grey' : 'red') + ` tooltipped"
-                        data-position="right"` + (reported ? `
+                        data-position="left"` + (reported ? `
                         data-tooltip="Ya lo reportaste"` : `
                         data-tooltip="Reportar"
                         onclick="reportMessage(` + id + `);"`) + `
