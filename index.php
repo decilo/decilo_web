@@ -13,7 +13,7 @@ if (isset($_GET['to'])) {
 ?>
 
 <div class="dark-5 row">
-    <div class="col s12 m5 offset-m1">
+    <div class="col s12 m5 offset-m1 l4 offset-l1">
         <div class="section"></div>
         <p class="flow-text center">
             <?=
@@ -33,12 +33,12 @@ if (isset($_GET['to'])) {
                         <span class="helper-text" data-error="Tenés que escribir un mensaje" data-success="Ya podés publicar">Escribí tu mensaje público</span>
                     </div>
 
-                    <div class="input-field col s7 m6 l5">
+                    <div class="input-field col s6 m6 l5">
                         <input id="declaredName" type="text" placeholder="Anónimo" class="validate dark-5">
                         <label for="declaredName"> Tu nombre </label>
                     </div>
 
-                    <button id="createPostBtn" class="btn waves-effect waves-light col s4 m4 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
+                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m4 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
                         Publicar
                         <i class="material-icons right">send</i>
                     </button>
@@ -46,7 +46,8 @@ if (isset($_GET['to'])) {
             </form>
         </div>
     </div>
-    <div class="col s12 m5">
+
+    <div class="col s12 m5 l6">
         <div class="section"></div>
         <p class="flow-text center">
             Mirá lo que dicen los demás
