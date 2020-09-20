@@ -113,7 +113,7 @@ if ($request == null) {
                                 'Para que puedas usar tu cuenta, es necesario que incies sesión tocando el botón de abajo. <br>
                                  <br>
                                  Después, vas a poder cambiar tu contraseña y otros datos desde <b>Mi cuenta</b>.',
-                                 '/quickStart.php?token=' . $token . '&from=' . $values['mailAddress'],
+                                 'quickStart.php?token=' . $token . '&from=' . $values['mailAddress'],
                                  'Iniciar sesión'
                             )
                         );
@@ -316,7 +316,7 @@ if ($request == null) {
                                         'Para hacerlo, tocá el botón de abajo. <br>
                                          <br>
                                          Si no pediste este cambio o no recordás tener una cuenta en <b>' . SYSTEM_TITLE . '</b>, simplemente ignorá este mensaje.',
-                                        '/quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&changeTo=' . $values['mailAddress'],
+                                        'quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&changeTo=' . $values['mailAddress'],
                                         'Verificar'
                                     )
                                 );
