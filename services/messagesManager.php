@@ -25,14 +25,22 @@ if ($request == null) {
                 if (isset($values['after']) && !isset($values['private'])) {
                     $statement = $GLOBALS['database']
                         ->prepare(
-                            'SELECT     *
+                            'SELECT     *, (
+                                SELECT  COUNT(*)
+                                FROM    `d_reports`
+                                WHERE   `d_reports`.`message`    = `d_messages_public`.`id`
+                                AND     `d_reports`.`reportedBy` = :userId
+                             ) > 0 AS reported
                              FROM       `d_messages_public`
                              WHERE      `id` < :after
                              ORDER BY   `id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
                         );
 
-                    $statement->execute([ 'after' => $values['after'] ]);
+                    $statement->execute([
+                        'after'     => $values['after'],
+                        'userId'    => getUserId()
+                    ]);
 
                     reply($statement->fetchAll());
                 } else if (isset($values['private']) && $values['private']) {
@@ -70,13 +78,18 @@ if ($request == null) {
                 } else if (!isset($values['recipient']) || $values['recipient'] == null) {
                     $statement = $GLOBALS['database']
                         ->prepare(
-                            'SELECT     *
+                            'SELECT     *, (
+                                SELECT  COUNT(*)
+                                FROM    `d_reports`
+                                WHERE   `d_reports`.`message`    = `d_messages_public`.`id`
+                                AND     `d_reports`.`reportedBy` = :userId
+                             ) > 0 AS reported
                              FROM       `d_messages_public`
                              ORDER BY   `id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
                         );
 
-                    $statement->execute();
+                    $statement->execute([ 'userId' => getUserId() ]);
 
                     reply($statement->fetchAll());
                 } else {

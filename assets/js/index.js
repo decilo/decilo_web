@@ -42,7 +42,7 @@ function getLastMessageId() {
                 .data('message');
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false) {
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -59,10 +59,11 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                 <div class="card bg-dark-3 card-box">` + (LOGGED_IN ? `
                     <button
                         type="button"
-                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light red tooltipped"
-                        data-position="right"
+                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light ` + (reported ? 'grey' : 'red') + ` tooltipped"
+                        data-position="right"` + (reported ? `
+                        data-tooltip="Ya lo reportaste"` : `
                         data-tooltip="Reportar"
-                        onclick="reportMessage(` + id + `);"
+                        onclick="reportMessage(` + id + `);"`) + `
                     >
                         <i class="material-icons mid-card-fab-icon">flag</i>
                     </button>` : ``) + ` 
@@ -108,7 +109,7 @@ $(document).ready(function () {
                     
                     response.result.forEach((message) => {
                         renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true
+                            message['id'], message['content'], message['declaredName'], message['created'], true, message['reported'] == 1
                         );
                     });
 
@@ -217,7 +218,7 @@ $(document).ready(function () {
                                     .find('.row')
                                     .prepend(
                                         getRenderedMessage(
-                                            response.id, messageContent, declaredName
+                                            response.id, messageContent, declaredName, null, false, message['reported'] == 1
                                         )
                                     );
     
@@ -318,7 +319,7 @@ $(document).ready(function () {
 
                                 response.result.forEach((message) => {
                                     renderedHTML += getRenderedMessage(
-                                        message['id'], message['content'], message['declaredName'], typeof(message['created']) == 'undefined' ? null : message['created']
+                                        message['id'], message['content'], message['declaredName'], typeof(message['created']) == 'undefined' ? null : message['created'], false, message['reported'] == 1
                                     );
                                 });
 
@@ -393,19 +394,28 @@ $(document).ready(function () {
                         case OK:
                             toast('¡Gracias! Ya recibimos tu reporte.');
 
+                            $('.message[data-message=' + toReport + ']')
+                                .find('.tooltipped')
+                                .removeClass('red')
+                                .addClass('grey')
+                                .attr('data-tooltip', 'Ya lo reportaste')
+                                .removeAttr('onclick');
+
                             break;
                         case ALREADY_EXISTS:
                             toast('Ya reportaste este mensaje.');
 
                             break;
                         case NOT_ALLOWED:
-                            toast('No tenés permitido reportar mensajes.');
+                            toast('No podés reportar mensajes, probá recargando la página.');
 
                             break;
                     }
                 })
                 .always(() => {
                     enable($('input[name="reportReason"], #sendReportBtn'));
+
+                    $('#reportMessageModal').modal('close');
                 });
             } else {
                 toast('Para enviar tu reporte, seleccioná una opción.');
