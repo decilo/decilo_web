@@ -182,7 +182,7 @@ if ($request == null) {
                     &&
                     isset($values['reason'])
                     &&
-                    getMessage($values['id'] != null)
+                    getMessage($values['id']) != null
                     &&
                     isReportReasonValid($values['reason'])
                 ) {
