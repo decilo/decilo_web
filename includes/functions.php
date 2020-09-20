@@ -306,4 +306,42 @@ function getRenderedMail($heading, $content, $buttonAction = null, $buttonLabel 
     </div>';
 }
 
+function getReportReasons() {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT     *
+             FROM       `d_report_reasons`
+             ORDER BY   `d_report_reasons`.`score`'
+        );
+
+    $statement->execute();
+
+    return $statement->fetchAll();
+}
+
+function getMessage($id) {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT *
+             FROM   `d_messages_public`
+             WHERE  `d_messages_public`.`id` = :id'
+        );
+
+    $statement->execute([ 'id' => $id ]);
+
+    return $statement->fetch();
+}
+
+function isReportReasonValid($id) {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT COUNT(*)
+             FROM   `d_report_reasons`
+             WHERE  `d_report_reasons`.`id` = :id'
+        );
+
+    $statement->execute([ 'id' => $id ]);
+
+    return $statement->fetch()[0] > 0;
+}
 ?>

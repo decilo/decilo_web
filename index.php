@@ -83,14 +83,33 @@ if (isset($_GET['to'])) {
     </div>
 </div>
 
-<!-- <div class="fixed-action-btn">
-    <button id="createRequest" class="btn-floating btn-large waves-effect waves-light bg-dark-1 pulse tooltipped" data-position="left" data-tooltip="Crear pedido">
-        <i class="large material-icons">add</i>
-    </button>
-</div> -->
+<!-- Modal Structure -->
+<div id="reportMessageModal" class="modal bg-dark-4 dark-5">
+    <div class="modal-content">
+        <p class="flow-text">
+            Reportar una publicación
+        </p>
+
+        <?php
+        foreach (getReportReasons() as $reportReason) {
+            print '
+            <p>
+                <label>
+                    <input name="reportReason" type="radio" value="' . $reportReason['id'] . '" />
+                    <span class="' . ($reportReason['score'] < 0 ? 'red-text' : 'thin') . '"> ' . $reportReason['reason'] . ' </span>
+                </label>
+            </p>';
+        }
+        ?>
+    </div>
+    <div class="modal-footer bg-dark-4 dark-5">
+        <button id="sendReportBtn" href="#!" class="waves-effect waves-light btn-flat dark-5"> Enviar </a>
+    </div>
+</div>
 
 <script>
-    const RECIPIENT = <?= json_encode($recipientUsername); ?>;;
+    const RECIPIENT = <?= json_encode($recipientUsername)   ?>;
+    const LOGGED_IN = <?= json_encode(getUserId() != null)  ?>;
 </script>
 
 <?php require_once 'views/footer.php'; ?>

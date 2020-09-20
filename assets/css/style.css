@@ -70,6 +70,8 @@ div:focus { outline: none !important; }
 
 .small      { font-size: small !important; }
 
+.material-tooltip { font-weight: 150 !important; } /* Should match .thin */
+
 .fixed-height-btn { transform: translate(5px, 65%); }
 
 #createPostBtn { margin-right: 1em; }
@@ -106,3 +108,4 @@ div:focus { outline: none !important; }
 }
 
 .disc li { list-style-type: disc !important; }
+

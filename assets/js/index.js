@@ -4,6 +4,8 @@ let createPostBtn       = null;
 let maxScrollTop        = null;
 let isPullingChunks     = false;
 
+let toReport = null;
+
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry != 'undefined')) {
         if (toAppend == null) {
@@ -26,6 +28,8 @@ function reloadLayout(toAppend = null) {
             grid.appended($(toAppend));
             grid.reloadItems();
             grid.layout();
+
+            $('.tooltipped').tooltip();
         }
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
@@ -52,7 +56,16 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
     });
 
     return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
-                <div class="card bg-dark-3 card-box">
+                <div class="card bg-dark-3 card-box">` + (LOGGED_IN ? `
+                    <button
+                        type="button"
+                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light red tooltipped"
+                        data-position="right"
+                        data-tooltip="Reportar"
+                        onclick="reportMessage(` + id + `);"
+                    >
+                        <i class="material-icons mid-card-fab-icon">flag</i>
+                    </button>` : ``) + ` 
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
                         <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + auxiliaryContent + `</p>
@@ -62,6 +75,12 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>
                 </div>
              </div>`;
+}
+
+function reportMessage(id) {
+    toReport = id;
+
+    $('#reportMessageModal').modal('open');
 }
 
 $(document).ready(function () {
@@ -318,6 +337,8 @@ $(document).ready(function () {
                                      Dejá un mensaje y empezá a conversar.`
                                 );
                             }
+
+                            $('.tooltipped').tooltip();
                         });
 
                         break;
@@ -349,6 +370,46 @@ $(document).ready(function () {
             .always(() => {})
         });
 
-        $('#modal1').modal();
+        $('#reportMessageModal').modal({
+            onCloseEnd: () => {
+                $('input[name="reportReason"]').prop('checked', false);
+            }
+        });
+
+        $('#sendReportBtn').on('click', () => {
+            let markedRadio = $('input[name="reportReason"]:checked');
+
+            if (markedRadio.length > 0) {
+                run('messagesManager', 'reportMessage', {
+                    id      : toReport,
+                    reason  : parseInt(markedRadio.val())
+                }, () => {
+                    disable($('input[name="reportReason"], #sendReportBtn'));
+                })
+                .done((response) => {
+                    console.log(response);
+
+                    switch (response.status) {
+                        case OK:
+                            toast('¡Gracias! Ya recibimos tu reporte.');
+
+                            break;
+                        case ALREADY_EXISTS:
+                            toast('Ya reportaste este mensaje.');
+
+                            break;
+                        case NOT_ALLOWED:
+                            toast('No tenés permitido reportar mensajes.');
+
+                            break;
+                    }
+                })
+                .always(() => {
+                    enable($('input[name="reportReason"], #sendReportBtn'));
+                });
+            } else {
+                toast('Para enviar tu reporte, seleccioná una opción.');
+            }
+        });
     };
 });

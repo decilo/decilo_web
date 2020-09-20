@@ -174,6 +174,64 @@ if ($request == null) {
                 }
 
                 break;
+            case 'reportMessage':
+                $userId = getUserId();
+
+                if (
+                    isset($values['id'])
+                    &&
+                    isset($values['reason'])
+                    &&
+                    getMessage($values['id'] != null)
+                    &&
+                    isReportReasonValid($values['reason'])
+                ) {
+                    if ($userId == null) {
+                        reply(null, NOT_ALLOWED);
+                    } else {
+                        $statement =
+                            $GLOBALS['database']->prepare(
+                                'SELECT COUNT(*)
+                                 FROM   `d_reports`
+                                 WHERE  `d_reports`.`message`    = :message
+                                 AND    `d_reports`.`reportedBy` = :reportedBy'
+                            );
+
+                        $statement->execute([
+                            'message'       => $values['id'],
+                            'reportedBy'    => $userId
+                        ]);
+
+                        if ($statement->fetch()[0] > 0) {
+                            reply(null, ALREADY_EXISTS);
+                        } else {
+                            $statement =
+                                $GLOBALS['database']->prepare(
+                                    'INSERT INTO `d_reports` (
+                                        `message`,
+                                        `reason`,
+                                        `reportedBy`
+                                     ) VALUES (
+                                        :message,
+                                        :reason,
+                                        :reportedBy
+                                     )'
+                                );
+
+                            $statement->execute([
+                                'message'       => $values['id'],
+                                'reason'        => $values['reason'],
+                                'reportedBy'    => $userId
+                            ]);
+
+                            reply(null);
+                        }
+                    }
+                } else {
+                    reply(null, BAD_REQUEST);
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

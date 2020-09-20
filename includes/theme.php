@@ -33,6 +33,20 @@ input:focus,
     border-color: #<?= THEME[4] ?> !important;
 }
 
+[type="radio"]:checked+span:after,
+[type="radio"].with-gap:checked+span:after {
+    background-color: #<?= THEME[4] ?>;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before,
+[type="radio"].with-gap:checked+span:after {
+    border: 2px solid #<?= THEME[4] ?>;
+}
+
+[type="radio"]:disabled+span {
+    color: #<?= THEME[7] ?>;
+}
+
 .input-field .helper-text {
     color: #<?= THEME[4] ?>;
 }
