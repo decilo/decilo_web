@@ -97,11 +97,9 @@ function reloadLayout(toAppend = null) {
 }
 
 function getLastMessageId() {
-    return parseInt(
-        $('.message')
-            .last()
-            .attr('message')
-    );
+    return  $('.message')
+                .last()
+                .data('message');
 }
 
 function getRenderedMessage(id, content, declaredName, created = null, display = false) {
@@ -117,7 +115,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
         });
     });
 
-    return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` message="` + id + `">
+    return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
                 <div class="card bg-dark-3 card-box">
                     <button
                         type="button"
