@@ -8,6 +8,8 @@ require_once 'views/header.php';
 ?>
 
 <div class="container dark-5">
+    <div class="section"></div>
+
     <p class="flow-text center"> Procesamiento de datos </p>
 
     <div class="divider"></div>
