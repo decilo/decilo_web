@@ -108,11 +108,14 @@ if ($request == null) {
 
                         $email->addContent(
                             'text/html',
-                            '<h2> Queda un sólo paso para que puedas usar tu cuenta. </h2>
-                             <br>
-                             <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . $token . '&from=' . $values['mailAddress'] . '">
-                                Tocá acá
-                             </a>'
+                            getRenderedMail(
+                                $match == null ? 'Te damos la bienvenida' : 'Hola de nuevo',
+                                'Para que puedas usar tu cuenta, es necesario que incies sesión tocando el botón de abajo. <br>
+                                 <br>
+                                 Después, vas a poder cambiar tu contraseña y otros datos desde <b>Mi cuenta</b>.',
+                                 '/quickStart.php?token=' . $token . '&from=' . $values['mailAddress'],
+                                 'Iniciar sesión'
+                            )
                         );
 
                         $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
@@ -308,11 +311,14 @@ if ($request == null) {
 
                                 $email->addContent(
                                     'text/html',
-                                    '<h2> Necesitamos que verifiques este mail. </h2>
-                                     <br>
-                                     <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&changeTo=' . $values['mailAddress'] . '">
-                                        Tocá acá
-                                     </a>'
+                                    getRenderedMail(
+                                        'Necesitamos que verifiques tu mail',
+                                        'Para hacerlo, tocá el botón de abajo. <br>
+                                         <br>
+                                         Si no pediste este cambio o no recordás tener una cuenta en <b>' . SYSTEM_TITLE . '</b>, simplemente ignorá este mensaje.',
+                                        '/quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&changeTo=' . $values['mailAddress'],
+                                        'Verificar'
+                                    )
                                 );
 
                                 $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
@@ -409,11 +415,12 @@ if ($request == null) {
 
                         $email->addContent(
                             'text/html',
-                            '<h2> Confirmá que querés eliminar tu cuenta. </h2>
-                             <br>
-                             <a href="' . SYSTEM_HOSTNAME . '/quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&removeAccount">
-                                Tocá acá
-                             </a>'
+                            getRenderedMail(
+                                'Confirmá que querés eliminar tu cuenta',
+                                'Para eliminar tu cuenta, es necesario que verifiquemos si vos pediste hacerlo. Podés hacerlo usando el botón a continuación.',
+                                'quickStart.php?token=' . $token . '&from=' . $user['mailAddress'] . '&removeAccount',
+                                'Eliminar cuenta'
+                            )
                         );
 
                         $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
@@ -503,8 +510,10 @@ if ($request == null) {
 
                     $email->addContent(
                         'text/html',
-                        '<h2> Esperamos que te sea de utilidad </h2>
-                         <p> A continuación, te dejamos una copia de lo que sabemos de vos. </p>'
+                        getRenderedMail(
+                            'Te dejamos una copia de tus datos',
+                            'Tenés un archivo adjunto disponible con una copia de lo que sabemos de vos.'
+                        )
                     );
 
                     $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);

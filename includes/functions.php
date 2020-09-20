@@ -276,4 +276,34 @@ function getChallenges($ip, $includeId = true) {
     return $statement->fetchAll();
 }
 
+function getRenderedMail($heading, $content, $buttonAction = null, $buttonLabel = null) {
+    return '
+    <div style="background-color: #' . THEME[3] . '; padding-bottom: 1.5em;">
+        <h1 style="width: 100%; padding: 0.2em; text-align: center; font-weight: lighter; background-color: #' . THEME[0] . '; color: #' . THEME[4] . ';"> ' . SYSTEM_TITLE . ' </h1>
+
+        <div style="padding-left: 1em; padding-right: 1em; margin: 0 auto;">
+            <div style="height: 1em;"></div>
+
+            <p style="font-size: 1rem; text-align: center; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; color: #' . THEME[4] . '; line-height: 1.5;">
+                ' . $heading . '
+            </p>
+
+            <div style="height: 1em;"></div>
+            <div style="height: 1px; overflow: hidden; background-color: #e0e0e0;"></div>
+            <div style="height: 1em;"></div>
+
+            <p style="font-weight: 150; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; text-align: center; color: #' . THEME[4] . ';">
+                ' . $content . '
+            </p>
+
+            <div style="height: 1em;"></div>
+
+            ' . ($buttonAction == null || $buttonLabel == null ? '' : '
+            <a href="' . SYSTEM_HOSTNAME . '/' . $buttonAction . '" style="background-color: #' . THEME[0] . '; display: block; text-decoration: none; color: #fff; text-align: center; letter-spacing: .5px; transition: background-color .2s ease-out; font-size: 14px; outline: 0; border: none; border-radius: 2px; height: 36px; line-height: 36px; padding: 0 16px; width: 10rem; margin: 0 auto; text-transform: uppercase;">
+                ' . $buttonLabel . '
+            </a>') . '
+        </div>
+    </div>';
+}
+
 ?>
