@@ -241,7 +241,7 @@ if ($request == null) {
                                         [
                                             'url'       => $response['url'],
                                             'message'   => $messageId,
-                                            'private'   => isset($values['recipient'])
+                                            'private'   => isset($values['recipient']) ? 1 : 0
                                         ]
                                     );
 
