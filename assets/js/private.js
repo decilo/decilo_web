@@ -152,14 +152,18 @@ $(document).ready(function () {
     createPostBtn = $('#createPostBtn');
 
     $(window).on('scroll', function () {
-        maxScrollTop = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-
         if (
-            $(window).scrollTop() > (maxScrollTop / 2)
+            $('.message').length > 0
+            &&
+            $(window).scrollTop() > (
+                $('.message').last().offset()['top']
+                -
+                (
+                    (SCROLLTOP_TRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+                )
+            )
             &&
             !isPullingChunks
-            &&
-            $('.message').length > 0
         ) {
             run('messagesManager', 'getRecent', { private: true, after: getLastMessageId() }, () => { isPullingChunks = true; })
             .done(function (response) {
@@ -170,7 +174,7 @@ $(document).ready(function () {
                     
                     response.result.forEach((message) => {
                         renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true, false, message['image']
+                            message['id'], message['content'], message['declaredName'], message['created'], true, message['image']
                         );
                     });
 

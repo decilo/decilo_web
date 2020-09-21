@@ -185,14 +185,18 @@ $(document).ready(function () {
     imageInput      = $('#imageInput');
 
     $(window).on('scroll', function () {
-        maxScrollTop = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-
         if (
-            $(window).scrollTop() > (maxScrollTop / 2)
+            $('.message').length > 0
+            &&
+            $(window).scrollTop() > (
+                $('.message').last().offset()['top']
+                -
+                (
+                    (SCROLLTOP_TRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+                )
+            )
             &&
             !isPullingChunks
-            &&
-            $('.message').length > 0
         ) {
             run('messagesManager', 'getRecent', {
                 after:      getLastMessageId(),
