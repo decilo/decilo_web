@@ -68,7 +68,7 @@ function animateRedirect(url, fullBody = false, timeout = null) {
 }
 
 function disable(element) {
-    element.prop('disabled', true);
+    element.attr('disabled', '');
 }
 
 function enable(element) {

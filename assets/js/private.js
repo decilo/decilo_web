@@ -102,7 +102,7 @@ function getLastMessageId() {
                 .data('message');
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false) {
+function getRenderedMessage(id, content, declaredName, created = null, display = false, image = null) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -123,7 +123,20 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         onclick="requestRemoval(` + id + `);"
                     >
                         <i class="material-icons mid-card-fab-icon">delete</i>
-                    </button>
+                    </button>` + (image == null ? '' : `
+                    <div class="card-image">
+                        <img
+                            src="` + image + `"
+                            onload="
+                                $(this)
+                                    .parent()
+                                    .parent()
+                                    .parent()
+                                    .fadeIn();
+
+                                reloadLayout();
+                            ">
+                    </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
                         <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + auxiliaryContent + `</p>
@@ -157,7 +170,7 @@ $(document).ready(function () {
                     
                     response.result.forEach((message) => {
                         renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true
+                            message['id'], message['content'], message['declaredName'], message['created'], true, false, message['image']
                         );
                     });
 
@@ -324,15 +337,24 @@ $(document).ready(function () {
 
                                 response.result.forEach((message) => {
                                     renderedHTML += getRenderedMessage(
-                                        message['id'], message['content'], message['declaredName'], typeof(message['created']) == 'undefined' ? null : message['created']
+                                        message['id'],
+                                        message['content'],
+                                        message['declaredName'],
+                                        typeof(message['created']) == 'undefined' ? null : message['created'],
+                                        false,
+                                        message['image']
                                     );
                                 });
 
                                 $('#preloader')
                                     .next()
-                                    .append(renderedHTML)
-                                    .find('.message')
-                                    .fadeIn();
+                                    .append(renderedHTML);
+
+                                $('.message').each(function () {
+                                    if ($(this).find('img').length < 1) {
+                                        $(this).fadeIn();
+                                    }
+                                });
 
                                 reloadLayout();
                             });

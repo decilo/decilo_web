@@ -54,7 +54,7 @@ div:focus { outline: none !important; }
 .light-paragraph { font-weight: lighter; }
 
 .custom-link { cursor: pointer; }
-.hand { cursor: pointer; }
+.hand { cursor: pointer !important; }
 .no-select { user-select: none; }
 
 .align-to-button {
@@ -73,6 +73,17 @@ div:focus { outline: none !important; }
 .material-tooltip { font-weight: 150 !important; } /* Should match .thin */
 
 .fixed-height-btn { transform: translate(5px, 65%); }
+.fixed-width-btn {
+    width: 100%;
+    text-align: center !important;
+}
+
+.special-file-btn { 
+    transform: translate(-1.5em, 8px) !important;
+    height: 36px !important;
+}
+
+.special-file-btn-icon { transform: translate(-4px, -1px); }
 
 #createPostBtn { margin-right: 1em; }
 
@@ -109,3 +120,4 @@ div:focus { outline: none !important; }
 
 .disc li { list-style-type: disc !important; }
 
+input[type="file"] { display: none; }

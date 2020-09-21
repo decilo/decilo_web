@@ -1,6 +1,7 @@
 let grid = null;
 
 let createPostBtn       = null;
+let imageInput          = null;
 let maxScrollTop        = null;
 let isPullingChunks     = false;
 
@@ -36,13 +37,29 @@ function reloadLayout(toAppend = null) {
     }
 }
 
+function resetMessageInputs() {
+    $('#messageInput, #declaredName')
+        .removeClass('valid')
+        .val('');
+
+    $('#imageInput')
+        .parent()
+        .removeClass('green')
+        .addClass('bg-dark-1');
+
+    $('#imageInput')
+        .parent()
+        .find('.material-icons')
+        .html('add_a_photo');
+}
+
 function getLastMessageId() {
     return  $('.message')
                 .last()
                 .data('message');
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported) {
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -66,7 +83,22 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         onclick="reportMessage(` + id + `);"`) + `
                     >
                         <i class="material-icons mid-card-fab-icon">flag</i>
-                    </button>` : ``) + ` 
+                    </button>` : ``) + (image == null ? '' : `
+                    <div class="card-image">
+                        <img
+                            src="` + image + `"
+                            onload="
+                                $(this)
+                                    .parent()
+                                    .parent()
+                                    .parent()
+                                    .fadeIn();
+
+                                reloadLayout();
+                                
+                                resetMessageInputs();
+                            ">
+                    </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
                         <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + auxiliaryContent + `</p>
@@ -84,8 +116,73 @@ function reportMessage(id) {
     $('#reportMessageModal').modal('open');
 }
 
+function postMessage(messageContent, declaredName, token, image = null) {
+    run('messagesManager', 'postMessage', {
+        'content'       : messageContent,
+        'declaredName'  : declaredName,
+        'recipient'     : RECIPIENT,
+        'image'         : image,
+        'token'         : token
+    }, () => {
+        disable($('#createPostBtn'));
+        disable($('#imageInput').parent());
+    })
+    .done(function (response) {
+        console.log(response);
+
+        switch (response.status) {
+            case SUSPICIOUS_OPERATION:
+                toast('Necesitamos que resuelvas un desafío.');
+
+                break;
+            case OK:
+                callable = () => {
+                    $('#recentsContainer')
+                        .find('.row')
+                        .prepend(
+                            getRenderedMessage(
+                                response.result.id, messageContent, declaredName, null, false, false, response.result.image
+                            )
+                        );
+
+                    if (response.result.image == null) {
+                        $('.message')
+                            .first()
+                            .fadeIn();
+
+                        $('#messageInput, #declaredName')
+                            .removeClass('valid')
+                            .val('');
+            
+                        reloadLayout();
+                    }
+                }
+
+                if ($('#recentsContainer').find('.removableWarning').length > 0) {
+                    $('#recentsContainer')
+                        .find('.removableWarning')
+                        .fadeOut(callable);
+                } else {
+                    callable();
+                }
+                break;
+            case ERROR:
+                toast('Algo anda mal, probá otra vez.');
+
+                break;
+        }
+    })
+    .always(() => {
+        setTimeout(() => {
+            enable($('#createPostBtn'));
+            enable($('#imageInput').parent());
+        }, INDEX['POST_OK_COOLDOWN']);
+    });
+}
+
 $(document).ready(function () {
-    createPostBtn = $('#createPostBtn');
+    createPostBtn   = $('#createPostBtn');
+    imageInput      = $('#imageInput');
 
     $(window).on('scroll', function () {
         maxScrollTop = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -196,62 +293,23 @@ $(document).ready(function () {
 
         grecaptcha.ready(() => {
             grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
-                run('messagesManager', 'postMessage', {
-                    'content'       : messageContent,
-                    'declaredName'  : declaredName,
-                    'recipient'     : RECIPIENT,
-                    'token'         : token
-                }, () => {
-                    disable($('#createPostBtn'));
-                })
-                .done(function (response) {
-                    console.log(response);
+                if (
+                    $('#imageInput')[0].files.length > 0
+                    &&
+                    $('#imageInput')[0].files[0].type.includes('image')
+                ) {
+                    var reader  = new FileReader();
 
-                    switch (response.status) {
-                        case SUSPICIOUS_OPERATION:
-                            toast('Necesitamos que resuelvas un desafío.');
-
-                            break;
-                        case OK:
-                            callable = () => {
-                                $('#recentsContainer')
-                                    .find('.row')
-                                    .prepend(
-                                        getRenderedMessage(
-                                            response.id, messageContent, declaredName, null, false, message['reported'] == 1
-                                        )
-                                    );
-    
-                                $('.message')
-                                    .first()
-                                    .fadeIn();
-    
-                                $('#messageInput, #declaredName')
-                                    .removeClass('valid')
-                                    .val('');
-                    
-                                reloadLayout();
-                            }
-
-                            if ($('#recentsContainer').find('.removableWarning').length > 0) {
-                                $('#recentsContainer')
-                                    .find('.removableWarning')
-                                    .fadeOut(callable);
-                            } else {
-                                callable();
-                            }
-                            break;
-                        case ERROR:
-                            toast('Algo anda mal, probá otra vez.');
-
-                            break;
+                    reader.onloadend = () => {
+                        postMessage(messageContent, declaredName, token, reader.result);
                     }
-                })
-                .always(() => {
-                    setTimeout(() => {
-                        enable($('#createPostBtn'));
-                    }, INDEX['POST_OK_COOLDOWN']);
-                });
+
+                    reader.readAsDataURL(
+                        $('#imageInput')[0].files[0]
+                    );
+                } else {
+                    postMessage(messageContent, declaredName, token);
+                }
             });
         });
     });
@@ -298,7 +356,50 @@ $(document).ready(function () {
     loader = () => {
         console.info('index/window: success loading assets.');
 
-        createPostBtn.removeAttr('disabled');
+        enable(createPostBtn);
+        enable(imageInput.parent());
+
+        $('#imageInput').on('change', function () {
+            let files = $(this)[0].files;
+
+            if (files.length > 0) {
+                if (files[0].type.includes('image')) {
+                    $(this)
+                        .parent()
+                        .removeClass('bg-dark-1')
+                        .addClass('green');
+
+                    $(this)
+                        .parent()
+                        .find('.material-icons')
+                        .html('check');
+
+                    toast('Listo, agregaste ' + files[0].name + '.');
+                } else {
+                    $(this)
+                        .parent()
+                        .removeClass('green')
+                        .addClass('bg-dark-1');
+    
+                    $(this)
+                        .parent()
+                        .find('.material-icons')
+                        .html('add_a_photo');
+
+                    toast('El archivo seleccionado no es una imagen');
+                }
+            } else {
+                $(this)
+                    .parent()
+                    .removeClass('green')
+                    .addClass('bg-dark-1');
+
+                $(this)
+                    .parent()
+                    .find('.material-icons')
+                    .html('add_a_photo');
+            }
+        });
 
         $('.tap-target').tapTarget({
             onOpen: () => {
@@ -319,15 +420,25 @@ $(document).ready(function () {
 
                                 response.result.forEach((message) => {
                                     renderedHTML += getRenderedMessage(
-                                        message['id'], message['content'], message['declaredName'], typeof(message['created']) == 'undefined' ? null : message['created'], false, message['reported'] == 1
+                                        message['id'],
+                                        message['content'],
+                                        message['declaredName'],
+                                        typeof(message['created']) == 'undefined' ? null : message['created'],
+                                        false,
+                                        message['reported'] == 1,
+                                        message['image']
                                     );
                                 });
 
                                 $('#preloader')
                                     .next()
-                                    .append(renderedHTML)
-                                    .find('.message')
-                                    .fadeIn();
+                                    .append(renderedHTML);
+
+                                $('.message').each(function () {
+                                    if ($(this).find('img').length < 1) {
+                                        $(this).fadeIn();
+                                    }
+                                });
 
                                 reloadLayout();
                             } else {
@@ -383,7 +494,8 @@ $(document).ready(function () {
             if (markedRadio.length > 0) {
                 run('messagesManager', 'reportMessage', {
                     id      : toReport,
-                    reason  : parseInt(markedRadio.val())
+                    reason  : parseInt(markedRadio.val()),
+                    private : RECIPIENT != null
                 }, () => {
                     disable($('input[name="reportReason"], #sendReportBtn'));
                 })

@@ -1,5 +1,7 @@
 <?php
 
+use \Gumlet\ImageResize;
+
 header('Content-Type: application/json');
 
 chdir('..');
@@ -25,12 +27,18 @@ if ($request == null) {
                 if (isset($values['after']) && !isset($values['private'])) {
                     $statement = $GLOBALS['database']
                         ->prepare(
-                            'SELECT     *, (
+                            'SELECT     `d_messages_public`.*, (
                                 SELECT  COUNT(*)
                                 FROM    `d_reports`
                                 WHERE   `d_reports`.`message`    = `d_messages_public`.`id`
                                 AND     `d_reports`.`reportedBy` = :userId
-                             ) > 0 AS reported
+                                AND     `d_reports`.`private`    = FALSE
+                             ) > 0 AS reported, (
+                                SELECT  `d_images`.`url`
+                                FROM    `d_images`
+                                WHERE   `d_images`.`message`     = `d_messages_public`.`id`
+                                AND     `d_images`.`private`     = FALSE
+                             ) AS image
                              FROM       `d_messages_public`
                              WHERE      `id` < :after
                              ORDER BY   `id` DESC
@@ -46,44 +54,77 @@ if ($request == null) {
                 } else if (isset($values['private']) && $values['private']) {
                     $statement = $GLOBALS['database']
                         ->prepare(
-                            'SELECT     *
+                            'SELECT     `d_messages_private`.*, (
+                                SELECT  COUNT(*)
+                                FROM    `d_reports`
+                                WHERE   `d_reports`.`message`    = `d_messages_private`.`id`
+                                AND     `d_reports`.`reportedBy` = :userId
+                                AND     `d_reports`.`private`    = FALSE
+                             ) > 0 AS reported, (
+                                SELECT  `d_images`.`url`
+                                FROM    `d_images`
+                                WHERE   `d_images`.`message` = `d_messages_private`.`id`
+                                AND     `d_images`.`private` = TRUE
+                             ) AS image
                              FROM       `d_messages_private`' . (isset($values['after']) ? '
                              WHERE      `id` < :after' : '') . '
                              ORDER BY   `id` DESC
                              LIMIT      ' . MESSAGES['PUBLIC_MESSAGES_LIMIT']
                         );
 
-                    $statement->execute(
-                        isset($values['after'])
-                            ? [ 'after' => $values['after'] ]
-                            : []
-                    );
+                    $params = [ 'userId' => getUserId() ];
+
+                    if (isset($values['after'])) {
+                        $params['after'] = $values['after'];
+                    }
+
+                    $statement->execute($params);
 
                     reply($statement->fetchAll());
                 } else if (isset($values['recipient']) && !empty($values['recipient'])) {
                     $statement = $GLOBALS['database']
                         ->prepare(
-                            'SELECT     *
+                            'SELECT     `d_messages_private`.*, (
+                                SELECT  COUNT(*)
+                                FROM    `d_reports`
+                                WHERE   `d_reports`.`message`    = `d_messages_private`.`id`
+                                AND     `d_reports`.`reportedBy` = :userId
+                                AND     `d_reports`.`private`    = TRUE
+                             ) > 0 AS reported, (
+                                SELECT  `d_images`.`url`
+                                FROM    `d_images`
+                                WHERE   `d_images`.`message`     = `d_messages_private`.`id`
+                                AND     `d_images`.`private`     = TRUE
+                             ) AS image
                              FROM       `d_messages_private`
                              JOIN       `d_users`
-                                ON      `d_users`.`id`          = `d_messages_private`.`recipient`
-                                AND     `d_users`.`username`    = :recipient
+                                ON      `d_users`.`id`           = `d_messages_private`.`recipient`
+                                AND     `d_users`.`username`     = :recipient
                              ORDER BY   `d_messages_private`.`id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
                         );
 
-                    $statement->execute([ 'recipient' => $values['recipient'] ]);
+                    $statement->execute([
+                        'userId'    => getUserId(),
+                        'recipient' => $values['recipient']
+                    ]);
 
                     reply($statement->fetchAll());
                 } else if (!isset($values['recipient']) || $values['recipient'] == null) {
                     $statement = $GLOBALS['database']
                         ->prepare(
-                            'SELECT     *, (
+                            'SELECT     `d_messages_public`.*, (
                                 SELECT  COUNT(*)
                                 FROM    `d_reports`
                                 WHERE   `d_reports`.`message`    = `d_messages_public`.`id`
                                 AND     `d_reports`.`reportedBy` = :userId
-                             ) > 0 AS reported
+                                AND     `d_reports`.`private`     = FALSE
+                             ) > 0 AS reported, (
+                                SELECT  `d_images`.`url`
+                                FROM    `d_images`
+                                WHERE   `d_images`.`message`     = `d_messages_public`.`id`
+                                AND     `d_images`.`private`     = FALSE
+                             ) AS image
                              FROM       `d_messages_public`
                              ORDER BY   `id` DESC
                              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
@@ -129,18 +170,16 @@ if ($request == null) {
                                     'recipient'     => $values['recipient']
                                 ]
                             );
-
-                            reply((int) $GLOBALS['database']->lastInsertId());
                         } else {
                             $statement = $GLOBALS['database']
                                 ->prepare(
                                     'INSERT INTO `d_messages_public` (
                                         `content`,
                                         `declaredName`
-                                    ) VALUES (
+                                     ) VALUES (
                                         :content,
                                         :declaredName
-                                    )'
+                                     )'
                                 );
 
                             $statement->execute(
@@ -149,8 +188,79 @@ if ($request == null) {
                                     'declaredName'  => $values['declaredName']
                                 ]
                             );
+                        }
 
-                            reply((int) $GLOBALS['database']->lastInsertId());
+                        if ($values['image'] == null) {
+                            reply(
+                                [
+                                    'id'    => (int) $GLOBALS['database']->lastInsertId(),
+                                    'image' => null
+                                ]
+                            );
+                        } else {
+                            if (strpos($values['image'], 'image') !== false) {
+                                try {
+                                    $messageId = (int) $GLOBALS['database']->lastInsertId();
+
+                                    $values['image'] = explode(',', $values['image'])[1];
+
+                                    $image = ImageResize::createFromString(
+                                        base64_decode($values['image'])
+                                    );
+
+                                    $image->resizeToBestFit(
+                                        IMAGE_PROCESSING['CROP_WIDTH'],
+                                        IMAGE_PROCESSING['CROP_HEIGHT'],
+                                    );
+
+                                    \Cloudinary::config(CLOUDINARY_AUTH);
+
+                                    $response = \Cloudinary\Uploader::upload(
+                                        'data:image/png;base64,' .
+                                        base64_encode(
+                                            $image->getImageAsString(IMAGETYPE_PNG, 100)
+                                        )
+                                    );
+
+                                    $statement =
+                                        $GLOBALS['database']->prepare(
+                                            'INSERT INTO `d_images` (
+                                                `url`,
+                                                `message`,
+                                                `private`
+                                             ) VALUES (
+                                                :url,
+                                                :message,
+                                                :private
+                                             )'
+                                        );
+
+                                    $statement->execute(
+                                        [
+                                            'url'       => $response['url'],
+                                            'message'   => $messageId,
+                                            'private'   => isset($values['recipient'])
+                                        ]
+                                    );
+
+                                    reply(
+                                        [
+                                            'id'    => (int) $GLOBALS['database']->lastInsertId(),
+                                            'image' => $response['url']
+                                        ]
+                                    );
+                                } catch (Exception $exception) {
+                                    reply(
+                                        [
+                                            'id'    => (int) $GLOBALS['database']->lastInsertId(),
+                                            'image' => null,
+                                            'error' => $exception->getMessage()
+                                        ]
+                                    );
+                                }
+                            } else {
+                                reply(null, ERROR);
+                            }
                         }
                     } else {
                         reply(null, SUSPICIOUS_OPERATION);
@@ -172,7 +282,12 @@ if ($request == null) {
                                 'DELETE
                                  FROM   `d_messages_private`
                                  WHERE  `d_messages_private`.`id`        = :id
-                                 AND    `d_messages_private`.`recipient` = :recipient'
+                                 AND    `d_messages_private`.`recipient` = :recipient;
+                                 
+                                 DELETE
+                                 FROM   `d_images`
+                                 WHERE  `d_images`.`message`             = :id
+                                 AND    `d_images`.`private`             = TRUE'
                             );
 
                         $statement->execute([
@@ -195,6 +310,8 @@ if ($request == null) {
                     &&
                     isset($values['reason'])
                     &&
+                    isset($values['private'])
+                    &&
                     getMessage($values['id']) != null
                     &&
                     isReportReasonValid($values['reason'])
@@ -207,12 +324,14 @@ if ($request == null) {
                                 'SELECT COUNT(*)
                                  FROM   `d_reports`
                                  WHERE  `d_reports`.`message`    = :message
-                                 AND    `d_reports`.`reportedBy` = :reportedBy'
+                                 AND    `d_reports`.`reportedBy` = :reportedBy
+                                 AND    `d_reports`.`private`    = :private'
                             );
 
                         $statement->execute([
                             'message'       => $values['id'],
-                            'reportedBy'    => $userId
+                            'reportedBy'    => $userId,
+                            'private'       => $values['private']
                         ]);
 
                         if ($statement->fetch()[0] > 0) {
@@ -223,18 +342,21 @@ if ($request == null) {
                                     'INSERT INTO `d_reports` (
                                         `message`,
                                         `reason`,
-                                        `reportedBy`
+                                        `reportedBy`,
+                                        `private`
                                      ) VALUES (
                                         :message,
                                         :reason,
-                                        :reportedBy
+                                        :reportedBy,
+                                        :private
                                      )'
                                 );
 
                             $statement->execute([
                                 'message'       => $values['id'],
                                 'reason'        => $values['reason'],
-                                'reportedBy'    => $userId
+                                'reportedBy'    => $userId,
+                                'private'       => $values['private']
                             ]);
 
                             reply(null);

@@ -13,7 +13,7 @@ if (isset($_GET['to'])) {
 ?>
 
 <div class="dark-5 row">
-    <div class="col s12 m5 offset-m1 l4 offset-l1">
+    <div class="col s12 m5 offset-m1">
         <div class="section"></div>
         <p class="flow-text center">
             <?=
@@ -38,16 +38,23 @@ if (isset($_GET['to'])) {
                         <label for="declaredName"> Tu nombre </label>
                     </div>
 
-                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m4 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
+                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m3 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
                         Publicar
                         <i class="material-icons right">send</i>
                     </button>
+
+                    <div class="input-field col s1 right">
+                        <label for="imageInput" class="btn waves-effect waves-light btn-block bg-dark-1 fixed-width-btn special-file-btn hand" disabled>
+                            <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
+                            <input id="imageInput" type="file">
+                        </label>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="col s12 m5 l6">
+    <div class="col s12 m5">
         <div class="section"></div>
         <p class="flow-text center">
             Mirá lo que dicen los demás
