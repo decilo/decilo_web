@@ -66,8 +66,10 @@ if ($request == null) {
                                 WHERE   `d_images`.`message` = `d_messages_private`.`id`
                                 AND     `d_images`.`private` = TRUE
                              ) AS image
-                             FROM       `d_messages_private`' . (isset($values['after']) ? '
-                             WHERE      `id` < :after' : '') . '
+                             FROM       `d_messages_private`
+                             WHERE      TRUE' . (isset($values['after']) ? '
+                             AND        `d_messages_private`.`id` < :after' : '') . '
+                             AND        `d_messages_private`.`recipient` = :userId
                              ORDER BY   `id` DESC
                              LIMIT      ' . MESSAGES['PUBLIC_MESSAGES_LIMIT']
                         );
@@ -283,11 +285,11 @@ if ($request == null) {
                                  FROM   `d_messages_private`
                                  WHERE  `d_messages_private`.`id`        = :id
                                  AND    `d_messages_private`.`recipient` = :recipient;
-                                 
+
                                  DELETE
                                  FROM   `d_images`
                                  WHERE  `d_images`.`message`             = :id
-                                 AND    `d_images`.`private`             = TRUE'
+                                 AND    `d_images`.`private`             = TRUE;'
                             );
 
                         $statement->execute([
@@ -295,7 +297,7 @@ if ($request == null) {
                             'recipient' => getUserId()
                         ]);
 
-                        reply(null, $statement->rowCount() == 1 ? OK : ERROR);
+                        reply(null, $statement->rowCount() > 0 ? OK : ERROR);
                     } else {
                         reply(null, BAD_REQUEST);
                     }

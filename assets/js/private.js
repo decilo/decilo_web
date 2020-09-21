@@ -40,10 +40,10 @@ function tryToRemove() {
                 case OK:
                     $('#requestRemovalModal').modal('close');
 
-                    $('.message[message="' + toRemove + '"]').fadeOut(() => {
-                        toRemove = null;
+                    $('.message[data-message="' + toRemove + '"]').fadeOut(() => {
+                        $('.message[data-message="' + toRemove + '"]').remove();
 
-                        $('.message[message="' + toRemove + '"]').remove();
+                        toRemove = null;
 
                         toast('¡Eliminado!');
 
@@ -90,6 +90,8 @@ function reloadLayout(toAppend = null) {
             grid.appended($(toAppend));
             grid.reloadItems();
             grid.layout();
+
+            $('.tooltipped').tooltip();
         }
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
