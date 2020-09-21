@@ -124,8 +124,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
         'image'         : image,
         'token'         : token
     }, () => {
-        disable($('#createPostBtn'));
-        disable($('#imageInput').parent());
+        disable($('#createPostBtn, label[for="imageInput"]'));
     })
     .done(function (response) {
         console.log(response);
@@ -173,10 +172,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
         }
     })
     .always(() => {
-        setTimeout(() => {
-            enable($('#createPostBtn'));
-            enable($('#imageInput').parent());
-        }, INDEX['POST_OK_COOLDOWN']);
+        enable($('#createPostBtn, label[for="imageInput"]'));
     });
 }
 
