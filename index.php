@@ -25,6 +25,7 @@ if (isset($_GET['to'])) {
         <div class="divider"></div>
         <div class="row">
             <form class="col s12">
+                <input id="imageInput" type="file">
                 <div class="row">
                     <div class="section"></div>
                     <div class="input-field col s12">
@@ -33,22 +34,19 @@ if (isset($_GET['to'])) {
                         <span class="helper-text" data-error="Tenés que escribir un mensaje" data-success="Ya podés publicar">Escribí tu mensaje público</span>
                     </div>
 
-                    <div class="input-field col s6 m6 l5">
+                    <div class="input-field col s12 l6">
                         <input id="declaredName" type="text" placeholder="Anónimo" class="validate dark-5">
                         <label for="declaredName"> Tu nombre </label>
                     </div>
 
-                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m3 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
+                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m5 l3 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
                         Publicar
-                        <i class="material-icons right">send</i>
+                        <i class="material-icons right"> send </i>
                     </button>
 
-                    <div class="input-field col s1 right">
-                        <label for="imageInput" class="btn waves-effect waves-light btn-block bg-dark-1 fixed-width-btn special-file-btn hand" disabled>
-                            <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
-                            <input id="imageInput" type="file">
-                        </label>
-                    </div>
+                    <label for="imageInput" class="btn waves-effect waves-light bg-dark-1 fixed-height-btn hand right mr-1" disabled>
+                        <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
+                    </label>
                 </div>
             </form>
         </div>

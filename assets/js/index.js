@@ -42,15 +42,15 @@ function resetMessageInputs() {
         .removeClass('valid')
         .val('');
 
-    $('#imageInput')
-        .parent()
+    $('label[for="imageInput"]')
         .removeClass('green')
         .addClass('bg-dark-1');
 
-    $('#imageInput')
-        .parent()
+    $('label[for="imageInput"]')
         .find('.material-icons')
         .html('add_a_photo');
+
+    enable($('label[for="imageInput"]'));
 }
 
 function getLastMessageId() {
@@ -361,34 +361,25 @@ $(document).ready(function () {
         console.info('index/window: success loading assets.');
 
         enable(createPostBtn);
-        enable(imageInput.parent());
+
+        resetMessageInputs();
 
         $('#imageInput').on('change', function () {
             let files = $(this)[0].files;
 
             if (files.length > 0) {
                 if (files[0].type.includes('image')) {
-                    $(this)
-                        .parent()
+                    $('label[for="imageInput"]')
                         .removeClass('bg-dark-1')
                         .addClass('green');
 
-                    $(this)
-                        .parent()
+                    $('label[for="imageInput"]')
                         .find('.material-icons')
                         .html('check');
 
                     toast('Listo, agregaste ' + files[0].name + '.');
                 } else {
-                    $(this)
-                        .parent()
-                        .removeClass('green')
-                        .addClass('bg-dark-1');
-    
-                    $(this)
-                        .parent()
-                        .find('.material-icons')
-                        .html('add_a_photo');
+                    resetMessageInputs();
 
                     toast('El archivo seleccionado no es una imagen');
                 }

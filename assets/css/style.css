@@ -78,13 +78,6 @@ div:focus { outline: none !important; }
     text-align: center !important;
 }
 
-.special-file-btn { 
-    transform: translate(-1.5em, 8px) !important;
-    height: 36px !important;
-}
-
-.special-file-btn-icon { transform: translate(-4px, -1px); }
-
 #createPostBtn { margin-right: 1em; }
 
 .word-wrap { word-break: break-word; }
@@ -121,3 +114,5 @@ div:focus { outline: none !important; }
 .disc li { list-style-type: disc !important; }
 
 input[type="file"] { display: none; }
+
+.mr-1 { margin-right: 1em; }
