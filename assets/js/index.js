@@ -380,13 +380,11 @@ $(document).ready(function () {
                     toast('El archivo seleccionado no es una imagen');
                 }
             } else {
-                $(this)
-                    .parent()
+                $('label[for="imageInput"]')
                     .removeClass('green')
                     .addClass('bg-dark-1');
 
-                $(this)
-                    .parent()
+                $('label[for="imageInput"]')
                     .find('.material-icons')
                     .html('add_a_photo');
             }
