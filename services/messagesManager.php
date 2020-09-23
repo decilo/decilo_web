@@ -216,7 +216,7 @@ if ($request == null) {
                                         IMAGE_PROCESSING['CROP_HEIGHT']
                                     );
 
-                                    $image = $image->getImageAsString(IMAGETYPE_JPEG, IMAGE_PROCESSING['QUALITY']);
+                                    $image = $image->getImageAsString(IMAGE_PROCESSING['FORMAT'], IMAGE_PROCESSING['QUALITY']);
 
                                     $filename = sha1($image) . IMAGE_PROCESSING['EXTENSION'];
 
