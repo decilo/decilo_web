@@ -32,16 +32,6 @@
     if ($minShapes > $maxShapes)
         $minShapes = $maxShapes;
 
-    if (isset($_GET['width']))
-        $width = $_GET['width'];
-    else
-        $width = 500;
-
-    if (isset($_GET['height']))
-        $height = $_GET['height'];
-    else
-        $height = 214;
-
     if (isset($_GET['min_size']))
         $minSize = $_GET['min_size'];
     else
@@ -177,6 +167,6 @@
         drawRandomShape($handle, $color);
     }
 
-    header("Content-type: image/png");
-    ImagePng($handle);
+    header("Content-type: image/webp");
+    imagejpeg($handle);
 ?>

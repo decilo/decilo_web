@@ -519,8 +519,6 @@ $(document).ready(function () {
 
             let timeParsers = [
                 'https://unpkg.com/dayjs@1.8.21/dayjs.min.js',
-                'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js',
-                'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js'
             ];
 
@@ -535,17 +533,39 @@ $(document).ready(function () {
                     loaded++;
 
                     if (loaded == timeParsers.length) {
-                        dayjs.extend(dayjs_plugin_localizedFormat);
-                    
-                        dayjs.locale(
-                            (window.navigator.userLanguage || window.navigator.language).split('-')[0]
-                        );
-                
-                        if (typeof(dayjs.locale()) == 'undefined') {
-                            dayjs.locale('en'); // Fallback to English.
-                        }
+                        loaded = 0;
 
-                        loader();
+                        timeParsers = [
+                            'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js',
+                            'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js'
+                        ];
+
+                        timeParsers.forEach((target) => {
+                            loaded++;
+
+                            if (loaded == timeParsers.length) {
+                                postScript          = document.createElement('script');
+                                postScript.src      = target;
+                                postScript.onload   = () => {
+                                    dayjs.extend(dayjs_plugin_localizedFormat);
+                                
+                                    dayjs.locale(
+                                        (window.navigator.userLanguage || window.navigator.language).split('-')[0]
+                                    );
+                            
+                                    if (typeof(dayjs.locale()) == 'undefined') {
+                                        dayjs.locale('en'); // Fallback to English.
+                                    }
+            
+                                    loader();
+                                }
+
+                                postScript.setAttribute('defer', true);
+                                postScript.setAttribute('async', true);
+                
+                                document.getElementsByTagName('body')[0].appendChild(postScript);
+                            }
+                        });
                     }
                 }
 
@@ -607,4 +627,11 @@ $(document).ready(function () {
                 break;
         }
     }
+
+    // Officially proposed fix, read https://github.com/jquery/jquery/issues/2871.
+    jQuery.event.special.touchstart = {
+        setup: function( _, ns, handle ){
+            this.addEventListener('touchstart, wheel, scroll', handle, { passive: true });
+        }
+    };
 });

@@ -89,6 +89,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
                         <img
+                            alt="Imagen adjunta"
                             src="` + image + `"
                             onload="
                                 $(this)

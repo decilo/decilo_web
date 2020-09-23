@@ -11,7 +11,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <!-- Let browser know website is optimized for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -66,7 +66,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             ];
 
             foreach ($fonts as $font) {
-                print '<link rel="preload" as="style" href="' . $font . '">';
+                print '<link rel="stylesheet" href="' . $font . '">';
             }
         ?>
 
@@ -150,7 +150,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 <li>
                     <div class="user-view">
                         <div class="background">
-                            <img src="services/getRandomImage.php" style="filter: blur(1px);">
+                            <img alt="Fondo de pantalla aleatorio" src="services/getRandomImage.php" style="filter: blur(1px);">
                         </div>
                         <a href="profile.php" class="custom-link">
                             <span class="white-text name">
