@@ -59,27 +59,6 @@ if (isset($_GET['to'])) {
         </p>
         <div class="divider"></div>
         <div id="recentsContainer">
-            <!-- Waiting for the server to reply with at least one chunk. -->
-
-            <div id="preloader">
-                <div class="section"></div>
-                
-                <div class="section center">
-                    <div class="preloader-wrapper active">
-                        <div class="spinner-layer border-dark-5">
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="row">
                 <!-- Messages container -->
@@ -114,8 +93,10 @@ if (isset($_GET['to'])) {
 </div>
 
 <script>
-    const RECIPIENT = <?= json_encode($recipientUsername)   ?>;
-    const LOGGED_IN = <?= json_encode(getUserId() != null)  ?>;
+    const RECIPIENT = <?= json_encode($recipientUsername)        ?>;
+    const LOGGED_IN = <?= json_encode(getUserId() != null)       ?>;
+
+    const RECENTS   = <?= json_encode(getRecentMessages($recipientUsername)) ?>;
 </script>
 
 <?php require_once 'views/footer.php'; ?>

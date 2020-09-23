@@ -60,27 +60,6 @@ require_once 'views/header.php';
         </p>
         <div class="divider"></div>
         <div id="recentsContainer">
-            <!-- Waiting for the server to reply with at least one chunk. -->
-
-            <div id="preloader">
-                <div class="section"></div>
-                
-                <div class="section center">
-                    <div class="preloader-wrapper active">
-                        <div class="spinner-layer border-dark-5">
-                            <div class="circle-clipper left">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="gap-patch">
-                                <div class="circle"></div>
-                            </div>
-                            <div class="circle-clipper right">
-                                <div class="circle"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="row">
                 <!-- Messages container -->
@@ -102,5 +81,9 @@ require_once 'views/header.php';
         <button onclick="tryToRemove();" class="waves-effect waves-light btn-flat dark-5"> Eliminar </button>
     </div>
 </div>
+
+<script>
+    const RECENTS   = <?= json_encode(getRecentMessages(getUserName())) ?>;
+</script>
 
 <?php require_once 'views/footer.php'; ?>

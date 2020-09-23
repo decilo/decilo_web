@@ -114,28 +114,7 @@ if ($request == null) {
 
                     reply($statement->fetchAll());
                 } else if (!isset($values['recipient']) || $values['recipient'] == null) {
-                    $statement = $GLOBALS['database']
-                        ->prepare(
-                            'SELECT     `d_messages_public`.*, (
-                                SELECT  COUNT(*)
-                                FROM    `d_reports`
-                                WHERE   `d_reports`.`message`    = `d_messages_public`.`id`
-                                AND     `d_reports`.`reportedBy` = :userId
-                                AND     `d_reports`.`private`     = FALSE
-                             ) > 0 AS reported, (
-                                SELECT  `d_images`.`url`
-                                FROM    `d_images`
-                                WHERE   `d_images`.`message`     = `d_messages_public`.`id`
-                                AND     `d_images`.`private`     = FALSE
-                             ) AS image
-                             FROM       `d_messages_public`
-                             ORDER BY   `id` DESC
-                             LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
-                        );
-
-                    $statement->execute([ 'userId' => getUserId() ]);
-
-                    reply($statement->fetchAll());
+                    reply(getRecentPublicMessages());
                 } else {
                     reply($values, BAD_REQUEST);
                 }

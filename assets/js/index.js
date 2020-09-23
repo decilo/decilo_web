@@ -75,7 +75,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
         });
     });
 
-    return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
+    return `<div class="col s12 m12 l6 message" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (LOGGED_IN ? `
                     <button
                         type="button"
@@ -98,11 +98,11 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                     .parent()
                                     .fadeIn(() => {
                                         if ($('.message:visible').length == $('.message').length) {
-                                            reloadLayout();
-                                
                                             resetMessageInputs();
                                         }
                                     });
+
+                                reloadLayout();
                             "
                             onerror="
                                 $(this)
@@ -115,11 +115,10 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                     .parent()
                                     .fadeIn(() => {
                                         if ($('.message:visible').length == $('.message').length) {
-                                            reloadLayout();
-                                
                                             resetMessageInputs();
                                         }
                                     });
+                                    reloadLayout();
                             "
                         >
                     </div>`) + `
@@ -208,12 +207,16 @@ $(document).ready(function () {
         if (
             $('.message').length > 0
             &&
-            $(window).scrollTop() > (
-                $('.message').last().offset()['top']
-                -
-                (
-                    (SCROLLTOP_THRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+            (
+                $(window).scrollTop() > (
+                    $('.message').last().offset()['top']
+                    -
+                    (
+                        (SCROLLTOP_THRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+                    )
                 )
+                ||
+                $(window).scrollTop() == document.documentElement.scrollHeight - document.documentElement.clientHeight
             )
             &&
             !isPullingChunks
@@ -420,83 +423,6 @@ $(document).ready(function () {
             }
         });
 
-        $('#preloader').fadeIn(() => {
-            run('messagesManager', 'getRecent', { recipient: RECIPIENT }, () => {}, true)
-            .done(function (response) {
-                console.info(response);
-
-                switch (response.status) {
-                    case OK:
-                        $('#preloader').fadeOut(() => {
-                            if (response.result.length > 0) {
-                                let renderedHTML = '';
-
-                                response.result.forEach((message) => {
-                                    renderedHTML += getRenderedMessage(
-                                        message['id'],
-                                        message['content'],
-                                        message['declaredName'],
-                                        typeof(message['created']) == 'undefined' ? null : message['created'],
-                                        false,
-                                        message['reported'] == 1,
-                                        message['image']
-                                    );
-                                });
-
-                                $('#preloader')
-                                    .next()
-                                    .append(renderedHTML);
-
-                                $('.message').each(function () {
-                                    if ($(this).find('img').length < 1) {
-                                        $(this).fadeIn(() => {
-                                            if ($('.message:visible').length == $('.message').length) {
-                                                reloadLayout();
-                                            }
-                                        });
-                                    }
-                                });
-                            } else {
-                                displayRemovableWarning(
-                                    `¡Nada por acá!
-                                     <br>
-                                     <br>
-                                     Dejá un mensaje y empezá a conversar.`
-                                );
-                            }
-
-                            $('.tooltipped').tooltip();
-                        });
-
-                        break;
-                    default:
-                        displayRemovableWarning(
-                            `Estamos teniendo problemas para obtener los últimos mensajes.
-                             <br>
-                             <br>
-                             Por favor esperá un rato, vamos a seguir intentándolo.`
-                        );
-
-                        queueRetry();
-
-                        break;
-                }
-            })
-            .fail(function (error) {
-                console.error(error);
-
-                displayRemovableWarning(
-                    `Estamos teniendo problemas para obtener los últimos mensajes.
-                     <br>
-                     <br>
-                     Por favor esperá un rato, vamos a seguir intentándolo.`
-                );
-
-                queueRetry();
-            })
-            .always(() => {})
-        });
-
         $('#reportMessageModal').modal({
             onCloseEnd: () => {
                 $('input[name="reportReason"]').prop('checked', false);
@@ -549,4 +475,89 @@ $(document).ready(function () {
             }
         });
     };
+
+    // Day.js loader
+    let timeParsers = [
+        'https://unpkg.com/dayjs@1.8.21/dayjs.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js'
+    ];
+
+    let loaded = 0;
+
+    let postScript = null;
+
+    timeParsers.forEach((target) => {
+        postScript          = document.createElement('script');
+        postScript.src      = target;
+        postScript.onload   = () => {
+            loaded++;
+
+            if (loaded == timeParsers.length) {
+                loaded = 0;
+
+                timeParsers = [
+                    'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js'
+                ];
+
+                timeParsers.forEach((target) => {
+                    loaded++;
+
+                    if (loaded == timeParsers.length) {
+                        postScript          = document.createElement('script');
+                        postScript.src      = target;
+                        postScript.onload   = () => {
+                            dayjs.extend(dayjs_plugin_localizedFormat);
+                        
+                            dayjs.locale(
+                                (window.navigator.userLanguage || window.navigator.language).split('-')[0]
+                            );
+                    
+                            if (typeof(dayjs.locale()) == 'undefined') {
+                                dayjs.locale('en'); // Fallback to English.
+                            }
+    
+                            loadPreloadedRecents();
+                        }
+
+                        postScript.setAttribute('defer', true);
+                        postScript.setAttribute('async', true);
+        
+                        document.getElementsByTagName('body')[0].appendChild(postScript);
+                    }
+                });
+            }
+        }
+
+        postScript.onerror = () => {
+            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+        }
+
+        postScript.setAttribute('defer', true);
+        postScript.setAttribute('async', true);
+
+        document.getElementsByTagName('body')[0].appendChild(postScript);
+    });
+
+    function loadPreloadedRecents() {
+        if (RECENTS.length > 0) {
+            RECENTS.forEach((message) => {
+                $('#recentsContainer')
+                    .find('.row')
+                    .append(
+                        getRenderedMessage(
+                            message['id'],
+                            message['content'],
+                            message['declaredName'],
+                            message['created'],
+                            true,
+                            message['reported'] == 1,
+                            message['image']
+                        )
+                    );
+            });
+
+            reloadLayout();
+        }
+    }
 });

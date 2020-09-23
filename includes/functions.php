@@ -352,4 +352,38 @@ function getParsedString(string $string, Array $replacements) {
 
     return $string;
 }
+
+function getRecentMessages($recipient = null) {
+    $messagesTableSuffix = $recipient == null ? 'public' : 'private';
+
+    $statement = $GLOBALS['database']
+        ->prepare(
+            'SELECT     `d_messages_' . $messagesTableSuffix . '`.*, (
+                SELECT  COUNT(*)
+                FROM    `d_reports`
+                WHERE   `d_reports`.`message`    = `d_messages_' . $messagesTableSuffix . '`.`id`
+                AND     `d_reports`.`reportedBy` = :userId
+                AND     `d_reports`.`private`    = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+             ) > 0 AS reported, (
+                SELECT  `d_images`.`url`
+                FROM    `d_images`
+                WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
+                AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+             ) AS image
+             FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? '' : '
+             JOIN       `d_users`                ON `d_users`.`username` = :recipient') . '
+             ORDER BY   `id` DESC
+             LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
+        );
+
+    $params = [ 'userId' => getUserId() ];
+
+    if ($recipient != null) {
+        $params['recipient'] = $recipient;
+    }
+
+    $statement->execute($params);
+
+    return $statement->fetchAll();
+}
 ?>

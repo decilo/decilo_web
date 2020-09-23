@@ -87,7 +87,10 @@ function reloadLayout(toAppend = null) {
         } else {
             console.info('reloadLayout: reloading newly added items.');
 
-            grid.appended($(toAppend));
+            if (toAppend != null) {
+                grid.appended($(toAppend));
+            }
+
             grid.reloadItems();
             grid.layout();
 
@@ -138,7 +141,21 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                     .fadeIn();
 
                                 reloadLayout();
-                            ">
+                            "
+                            onerror="
+                                $(this)
+                                    .parent()
+                                    .hide();
+
+                                $(this)
+                                    .parent()
+                                    .parent()
+                                    .parent()
+                                    .fadeIn();
+
+                                reloadLayout();
+                            "
+                        >
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
@@ -158,12 +175,16 @@ $(document).ready(function () {
         if (
             $('.message').length > 0
             &&
-            $(window).scrollTop() > (
-                $('.message').last().offset()['top']
-                -
-                (
-                    (SCROLLTOP_TRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+            (
+                $(window).scrollTop() > (
+                    $('.message').last().offset()['top']
+                    -
+                    (
+                        (SCROLLTOP_THRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+                    )
                 )
+                ||
+                $(window).scrollTop() == document.documentElement.scrollHeight - document.documentElement.clientHeight
             )
             &&
             !isPullingChunks
@@ -323,86 +344,91 @@ $(document).ready(function () {
     loader = () => {
         console.info('index/window: success loading assets.');
 
-        $('#preloader').fadeIn(() => {
-            createPostBtn.removeAttr('disabled');
+        $('#requestRemovalModal').modal();
+    };
 
-            $('.tap-target').tapTarget({
-                onOpen: () => {
-                    $('.tap-target-origin').addClass('black-text');
-                }
-            });
+    // Day.js loader
+    let timeParsers = [
+        'https://unpkg.com/dayjs@1.8.21/dayjs.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js'
+    ];
 
-            run('messagesManager', 'getRecent', { private: true }, () => {}, true)
-            .done(function (response) {
-                console.info(response);
+    let loaded = 0;
 
-                switch (response.status) {
-                    case OK:
-                        if (response.result.length > 0) {
-                            $('#preloader').fadeOut(() => {
-                                let renderedHTML = '';
+    let postScript = null;
 
-                                response.result.forEach((message) => {
-                                    renderedHTML += getRenderedMessage(
-                                        message['id'],
-                                        message['content'],
-                                        message['declaredName'],
-                                        typeof(message['created']) == 'undefined' ? null : message['created'],
-                                        false,
-                                        message['image']
-                                    );
-                                });
+    timeParsers.forEach((target) => {
+        postScript          = document.createElement('script');
+        postScript.src      = target;
+        postScript.onload   = () => {
+            loaded++;
 
-                                $('#preloader')
-                                    .next()
-                                    .append(renderedHTML);
+            if (loaded == timeParsers.length) {
+                loaded = 0;
 
-                                $('.message').each(function () {
-                                    if ($(this).find('img').length < 1) {
-                                        $(this).fadeIn();
-                                    }
-                                });
+                timeParsers = [
+                    'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js'
+                ];
 
-                                reloadLayout();
-                            });
-                        } else {
-                            displayRemovableWarning(
-                                `¡Nada por acá!
-                                 <br>
-                                 <br>
-                                 Pasále el link a tus amigos y empezá a recibir mensajes.`
+                timeParsers.forEach((target) => {
+                    loaded++;
+
+                    if (loaded == timeParsers.length) {
+                        postScript          = document.createElement('script');
+                        postScript.src      = target;
+                        postScript.onload   = () => {
+                            dayjs.extend(dayjs_plugin_localizedFormat);
+                        
+                            dayjs.locale(
+                                (window.navigator.userLanguage || window.navigator.language).split('-')[0]
                             );
+                    
+                            if (typeof(dayjs.locale()) == 'undefined') {
+                                dayjs.locale('en'); // Fallback to English.
+                            }
+    
+                            loadPreloadedRecents();
                         }
 
-                        break;
-                    default:
-                        displayRemovableWarning(
-                            `Estamos teniendo problemas para obtener los últimos mensajes.
-                             <br>
-                             <br>
-                             Por favor esperá un rato, vamos a seguir intentándolo.`
-                        );
+                        postScript.setAttribute('defer', true);
+                        postScript.setAttribute('async', true);
+        
+                        document.getElementsByTagName('body')[0].appendChild(postScript);
+                    }
+                });
+            }
+        }
 
-                        queueRetry();
+        postScript.onerror = () => {
+            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+        }
 
-                        break;
-                }
-            })
-            .fail(function (error) {
-                console.error(error);
+        postScript.setAttribute('defer', true);
+        postScript.setAttribute('async', true);
 
-                displayRemovableWarning(
-                    `Estamos teniendo problemas para obtener los últimos mensajes.
-                     <br>
-                     <br>
-                     Por favor esperá un rato, vamos a seguir intentándolo.`
-                );
+        document.getElementsByTagName('body')[0].appendChild(postScript);
+    });
 
-                queueRetry();
-            })
-            .always(() => {})
+    function loadPreloadedRecents() {
+        if (RECENTS.length > 0) {
+            RECENTS.forEach((message) => {
+                $('#recentsContainer')
+                    .find('.row')
+                    .append(
+                        getRenderedMessage(
+                            message['id'],
+                            message['content'],
+                            message['declaredName'],
+                            message['created'],
+                            true,
+                            message['reported'] == 1,
+                            message['image']
+                        )
+                    );
+            });
 
-            $('#requestRemovalModal').modal();
-        });
-    };
+            reloadLayout();
+        }
+    }
 });
