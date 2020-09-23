@@ -298,16 +298,6 @@ $(document).ready(function () {
     
         $('.scrollspy').scrollSpy();
 
-        dayjs.extend(dayjs_plugin_localizedFormat);
-    
-        dayjs.locale(
-            (window.navigator.userLanguage || window.navigator.language).split('-')[0]
-        );
-
-        if (typeof(dayjs.locale()) == 'undefined') {
-            dayjs.locale('en'); // Fallback to English.
-        }
-
         M.updateTextFields();
 
         if ($('textarea').length > 0) {
@@ -526,9 +516,53 @@ $(document).ready(function () {
         script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
         script.onload   = () => {
             console.log('reCaptcha v3: successfully loaded.');
-    
-            loader();
+
+            let timeParsers = [
+                'https://unpkg.com/dayjs@1.8.21/dayjs.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js'
+            ];
+
+            let loaded = 0;
+
+            let postScript = null;
+
+            timeParsers.forEach((target) => {
+                postScript          = document.createElement('script');
+                postScript.src      = target;
+                postScript.onload   = () => {
+                    loaded++;
+
+                    if (loaded == timeParsers.length) {
+                        dayjs.extend(dayjs_plugin_localizedFormat);
+                    
+                        dayjs.locale(
+                            (window.navigator.userLanguage || window.navigator.language).split('-')[0]
+                        );
+                
+                        if (typeof(dayjs.locale()) == 'undefined') {
+                            dayjs.locale('en'); // Fallback to English.
+                        }
+
+                        loader();
+                    }
+                }
+
+                postScript.onerror = () => {
+                    toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+                }
+
+                postScript.setAttribute('defer', true);
+                postScript.setAttribute('async', true);
+
+                document.getElementsByTagName('body')[0].appendChild(postScript);
+            });
         };
+
+        script.onerror  = () => {
+            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+        }
 
         script.setAttribute('defer', true);
         script.setAttribute('async', true);
@@ -540,6 +574,10 @@ $(document).ready(function () {
         script          = document.createElement('script');
         script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
         script.onload   = setupGoogleAnalytics;
+
+        script.onerror  = () => {
+            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+        }
 
         script.setAttribute('defer', true);
         script.setAttribute('async', true);
