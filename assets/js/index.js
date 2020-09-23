@@ -350,12 +350,21 @@ $(document).ready(function () {
         }
 
         idleRunner = setTimeout(() => {
-            $('.tap-target').tapTarget('open');
 
             localStorage.setItem('hasSeenFeatures', true);
 
-            if ($(window).scrollTop() > 0) {
-                $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION);
+            if ($('.sidenav-trigger').is(':visible')) {
+                $('.sidenav').sidenav('open');
+
+                $('#loginBtnMobile').addClass('pulse bg-dark-1');
+
+                toast('Recibí mensajes, reportá y mucho más.');
+            } else {
+                if ($(window).scrollTop() > 0) {
+                    $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
+                        $('.tap-target[data-target="loginBtn"]').tapTarget('open');
+                    });
+                }
             }
         }, IDLE_TIMEOUT);
     }
