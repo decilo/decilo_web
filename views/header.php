@@ -16,8 +16,12 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         <!-- Let browser know website is optimized for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="apple-mobile-web-app-title" content="<?= SYSTEM_TITLE ?>">
+        <!-- SEO meta -->
         <meta name="application-name" content="<?= SYSTEM_TITLE ?>">
+        <meta name="description" content="Dejá tu mensaje, contá un secreto o compartí lo que pensás.">
+        <meta name="keywrods" content="secret, secreto, secretos, contar, contá, compartir, compartí, multimedia, contenido, fotos, imágenes, imagenes, comparti, conta, hablar, charlar, charlá, charla, di, deci, decí">
+
+        <meta name="apple-mobile-web-app-title" content="<?= SYSTEM_TITLE ?>">
         <meta name="msapplication-TileColor" content="#2196f3">
         <meta name="msapplication-config" content="assets/misc/browserconfig.xml">
         <meta name="theme-color" content="#1d7fcd">
