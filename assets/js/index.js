@@ -50,7 +50,7 @@ function resetMessageInputs() {
         .find('.material-icons')
         .html('add_a_photo');
 
-    enable($('label[for="imageInput"]'));
+    enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
 }
 
 function getLastMessageId() {
@@ -140,7 +140,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
         'image'         : image,
         'token'         : token
     }, () => {
-        disable($('#createPostBtn, label[for="imageInput"]'));
+        disable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
     })
     .done(function (response) {
         console.log(response);
@@ -165,7 +165,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
                             .first()
                             .fadeIn();
 
-                        $('#messageInput, #declaredName')
+                        $('#messageInput, #declaredName, #messageInput, #declaredName')
                             .removeClass('valid')
                             .val('');
             
@@ -188,7 +188,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
         }
     })
     .always(() => {
-        enable($('#createPostBtn, label[for="imageInput"]'));
+        enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
     });
 }
 
