@@ -519,17 +519,26 @@ $(document).ready(function () {
     });
 
     function pushLoader() {
+        var script = null;
+
         // Google reCaptcha v3
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
-        script.onload = () => {
+        script          = document.createElement('script');
+        script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
+        script.onload   = () => {
             console.log('reCaptcha v3: successfully loaded.');
     
             loader();
         };
     
         document.getElementsByTagName('head')[0].appendChild(script);
+
+
+        // Global site tag (gtag.js) - Google Analytics
+        script          = document.createElement('script');
+        script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
+        script.onload   = setupGoogleAnalytics;
+
+        document.getElementsByTagName('body')[0].appendChild(script);
     }
     
     if (document.readyState != 'complete') {

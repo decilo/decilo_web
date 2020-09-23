@@ -75,9 +75,6 @@
         <!-- Common script -->
         <script src="assets/js/common.js"></script>
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script src="https://www.googletagmanager.com/gtag/js?id=<?= GOOGLE_ANALYTICS_KEY ?>" onload="setupGoogleAnalytics();" async defer></script>
-
         <?php
 
         if (isset($js)) {
