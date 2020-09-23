@@ -97,7 +97,23 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                 reloadLayout();
                                 
                                 resetMessageInputs();
-                            ">
+                            "
+                            onerror="
+                                $(this)
+                                    .parent()
+                                    .hide();
+
+                                $(this)
+                                    .parent()
+                                    .parent()
+                                    .parent()
+                                    .fadeIn();
+
+                                reloadLayout();
+                                
+                                resetMessageInputs();
+                            "
+                        >
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
