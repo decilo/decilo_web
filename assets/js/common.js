@@ -518,7 +518,7 @@ $(document).ready(function () {
         }
     });
 
-    function pushLoader() {
+    async function pushLoader() {
         var script = null;
 
         // Google reCaptcha v3
@@ -529,6 +529,9 @@ $(document).ready(function () {
     
             loader();
         };
+
+        script.setAttribute('defer', true);
+        script.setAttribute('async', true);
     
         document.getElementsByTagName('head')[0].appendChild(script);
 
@@ -537,6 +540,9 @@ $(document).ready(function () {
         script          = document.createElement('script');
         script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
         script.onload   = setupGoogleAnalytics;
+
+        script.setAttribute('defer', true);
+        script.setAttribute('async', true);
 
         document.getElementsByTagName('body')[0].appendChild(script);
     }
