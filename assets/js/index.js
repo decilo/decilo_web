@@ -204,7 +204,7 @@ $(document).ready(function () {
                 $('.message').last().offset()['top']
                 -
                 (
-                    (SCROLLTOP_TRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+                    (SCROLLTOP_THRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
                 )
             )
             &&
