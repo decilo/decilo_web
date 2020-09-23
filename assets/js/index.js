@@ -26,7 +26,10 @@ function reloadLayout(toAppend = null) {
         } else {
             console.info('reloadLayout: reloading newly added items.');
 
-            grid.appended($(toAppend));
+            if (toAppend != null) {
+                grid.appended($(toAppend));
+            }
+
             grid.reloadItems();
             grid.layout();
 
@@ -92,11 +95,13 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                     .parent()
                                     .parent()
                                     .parent()
-                                    .fadeIn();
-
-                                reloadLayout();
+                                    .fadeIn(() => {
+                                        if ($('.message:visible').length == $('.message').length) {
+                                            reloadLayout();
                                 
-                                resetMessageInputs();
+                                            resetMessageInputs();
+                                        }
+                                    });
                             "
                             onerror="
                                 $(this)
@@ -107,11 +112,13 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                     .parent()
                                     .parent()
                                     .parent()
-                                    .fadeIn();
-
-                                reloadLayout();
+                                    .fadeIn(() => {
+                                        if ($('.message:visible').length == $('.message').length) {
+                                            reloadLayout();
                                 
-                                resetMessageInputs();
+                                            resetMessageInputs();
+                                        }
+                                    });
                             "
                         >
                     </div>`) + `
@@ -441,11 +448,13 @@ $(document).ready(function () {
 
                                 $('.message').each(function () {
                                     if ($(this).find('img').length < 1) {
-                                        $(this).fadeIn();
+                                        $(this).fadeIn(() => {
+                                            if ($('.message:visible').length == $('.message').length) {
+                                                reloadLayout();
+                                            }
+                                        });
                                     }
                                 });
-
-                                reloadLayout();
                             } else {
                                 displayRemovableWarning(
                                     `¡Nada por acá!
