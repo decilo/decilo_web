@@ -4,7 +4,7 @@
         "chillerlan/php-qrcode": "^4.1",
         "adhocore/jwt": "^1.0",
         "mk-j/php_xlsxwriter": "^0.38.0",
-        "cloudinary/cloudinary_php": "^1.18",
-        "gumlet/php-image-resize": "^2.0"
+        "gumlet/php-image-resize": "^2.0",
+        "google/cloud-storage": "^1.23"
     }
 }

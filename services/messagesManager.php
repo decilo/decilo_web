@@ -1,6 +1,7 @@
 <?php
 
 use \Gumlet\ImageResize;
+use Google\Cloud\Storage\StorageClient;
 
 header('Content-Type: application/json');
 
@@ -212,17 +213,25 @@ if ($request == null) {
 
                                     $image->resizeToBestFit(
                                         IMAGE_PROCESSING['CROP_WIDTH'],
-                                        IMAGE_PROCESSING['CROP_HEIGHT'],
+                                        IMAGE_PROCESSING['CROP_HEIGHT']
                                     );
 
-                                    \Cloudinary::config(CLOUDINARY_AUTH);
+                                    $image = $image->getImageAsString(IMAGETYPE_JPEG, IMAGE_PROCESSING['QUALITY']);
 
-                                    $response = \Cloudinary\Uploader::upload(
-                                        'data:image/png;base64,' .
-                                        base64_encode(
-                                            $image->getImageAsString(IMAGETYPE_PNG, 100)
-                                        )
-                                    );
+                                    $filename = sha1($image) . IMAGE_PROCESSING['EXTENSION'];
+
+                                    $storage = new StorageClient([
+                                        'projectId' => GOOGLE_CLOUD_PROJECT_ID,
+                                        'keyFile'   => GOOGLE_CLOUD_KEYFILE
+                                    ]);
+
+                                    $storage
+                                        ->bucket(GOOGLE_CLOUD_BUCKET_NAME)
+                                        ->upload($image, [
+                                                'name'      => $filename,
+                                                'acl'       => []
+                                            ]
+                                        );
 
                                     $statement =
                                         $GLOBALS['database']->prepare(
@@ -237,9 +246,14 @@ if ($request == null) {
                                              )'
                                         );
 
+                                    $url = getParsedString(GOOGLE_CLOUD_PUBLIC_URL, [
+                                        'bucketName'    => GOOGLE_CLOUD_BUCKET_NAME,
+                                        'objectName'    => $filename
+                                    ]);
+
                                     $statement->execute(
                                         [
-                                            'url'       => $response['url'],
+                                            'url'       => $url,
                                             'message'   => $messageId,
                                             'private'   => isset($values['recipient']) ? 1 : 0
                                         ]
@@ -248,7 +262,7 @@ if ($request == null) {
                                     reply(
                                         [
                                             'id'    => (int) $GLOBALS['database']->lastInsertId(),
-                                            'image' => $response['url']
+                                            'image' => $url
                                         ]
                                     );
                                 } catch (Exception $exception) {

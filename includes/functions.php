@@ -344,4 +344,12 @@ function isReportReasonValid($id) {
 
     return $statement->fetch()[0] > 0;
 }
+
+function getParsedString(string $string, Array $replacements) {
+    foreach ($replacements as $key => $value) {
+        $string = str_replace('{' . $key . '}', $value, $string);
+    }
+
+    return $string;
+}
 ?>
