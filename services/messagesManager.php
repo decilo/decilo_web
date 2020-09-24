@@ -114,7 +114,7 @@ if ($request == null) {
 
                     reply($statement->fetchAll());
                 } else if (!isset($values['recipient']) || $values['recipient'] == null) {
-                    reply(getRecentPublicMessages());
+                    reply(getRecentMessages());
                 } else {
                     reply($values, BAD_REQUEST);
                 }
