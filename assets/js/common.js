@@ -243,6 +243,21 @@ $(document).ready(function () {
         }, HEARTBEAT_INTERVAL);
     }
 
+    $(window).on('scroll', () => {
+        if ($('html, body').scrollTop() > document.documentElement.clientHeight) {
+            if (!isGoingTop) {
+                $('#backToTopBtn').fadeIn();
+            }
+        } else {
+            $('#backToTopBtn').fadeOut();
+        }
+
+        // Prevent this error, it doesn't really matter.
+        try {
+            $('.tooltipped').tooltip('close');
+        } catch (exception) {}
+    });
+
     // toast(navigator.userAgent);
 
     // if (navigator.userAgent.includes('Android')) {
@@ -268,18 +283,6 @@ $(document).ready(function () {
             animateRedirect(
                 $(this).attr('href')
             );
-        });
-
-        $(window).on('scroll wheel', () => {
-            if ($('html, body').scrollTop() > document.documentElement.clientHeight) {
-                if (!isGoingTop) {
-                    $('#backToTopBtn').fadeIn();
-                }
-            } else {
-                $('#backToTopBtn').fadeOut();
-            }
-
-            $('.tooltipped').tooltip('close');
         });
 
         $('input[type="text"], textarea').each(function () {
