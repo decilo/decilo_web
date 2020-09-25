@@ -48,12 +48,7 @@ function tryToRemove() {
                         toast('¡Eliminado!');
 
                         if ($('.message:visible').length < 1) {
-                            displayRemovableWarning(
-                                `¡Nada por acá!
-                                <br>
-                                <br>
-                                Pasále el link a tus amigos y empezá a recibir mensajes.`
-                            );
+                            displayRemovableWarning(NO_MESSAGES_HINT);
                         } else {
                             reloadLayout();
                         }
@@ -429,6 +424,8 @@ $(document).ready(function () {
             });
 
             reloadLayout();
+        } else {
+            displayRemovableWarning(NO_MESSAGES_HINT);
         }
     }
 });

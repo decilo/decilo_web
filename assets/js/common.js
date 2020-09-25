@@ -1,3 +1,9 @@
+const NO_MESSAGES_HINT = 
+    `¡Nada por acá!
+     <br>
+     <br>
+     Pasále el link a tus amigos y empezá a recibir mensajes.`;
+
 let loader = () => {
     console.info('loader: no loader was specified.');
 };
@@ -88,26 +94,24 @@ function markInvalid(element) {
 }
 
 function displayRemovableWarning(html) {
-    $('#preloader').fadeOut(() => {
-        $('#recentsContainer')
-            .find('.removableWarning')
-            .remove();
+    $('#recentsContainer')
+        .find('.removableWarning')
+        .remove();
 
-        $('#recentsContainer').prepend(
-            `<div class="removableWarning center">
-                <div class="section"></div>
-                <span style="display: none;" class="showNow thin">
-                    ` + html +`
-                </span>
-                <br>
-                <div class="section"></div>
-             </div>`
-        );
+    $('#recentsContainer').prepend(
+        `<div class="removableWarning center">
+            <div class="section"></div>
+            <span style="display: none;" class="showNow thin">
+                ` + html +`
+            </span>
+            <br>
+            <div class="section"></div>
+            </div>`
+    );
 
-        $('.showNow')
-            .removeClass('showNow')
-            .fadeIn();
-    });
+    $('.showNow')
+        .removeClass('showNow')
+        .fadeIn();
 }
 
 function queueRetry() {
