@@ -428,7 +428,11 @@ function uploadImage($path, $filename) {
             CURLOPT_PUT             => true,
             CURLOPT_INFILE          => $file,
             CURLOPT_INFILESIZE      => filesize($path),
-            CURLOPT_HTTPHEADER      => [ 'Content-Type: ' . finfo_file($finfo, $path) ],
+            CURLOPT_HTTPHEADER      => [ 
+                'Content-Type: ' . finfo_file($finfo, $path),
+                'opc-meta-cache-control: max-age=84600, public',
+                'Cache-Control: max-age=84600, public'
+            ],
             CURLOPT_RETURNTRANSFER  => true,
             CURLOPT_USERPWD         => 
                 ORACLE_OBJECT_STORAGE_AUTH['ACCOUNT']['MAIL_ADDRESS'] .
