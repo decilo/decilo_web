@@ -581,6 +581,8 @@ $(document).ready(function () {
         }
     }
 
+    setupMaterializeImages();
+
     // Officially proposed fix, read https://github.com/jquery/jquery/issues/2871.
     jQuery.event.special.touchstart = {
         setup: function( _, ns, handle ){

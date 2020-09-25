@@ -39,10 +39,11 @@ if (isset($message['recipient'])) {
     <div class="section"></div>
 
     <div class="row">
+        <div class="col m3 hide-on-mobile"></div>
         <?=
             $message['image'] == null
                 ? '' 
-                : '<img class="responsive-img col s12 m6 offset-m3" src="' . $message['image'] . '">'
+                : '<img class="materialboxed responsive-img col s12 m6" src="' . $message['image'] . '">'
         ?>
 
         <div class="col s12"></div>
