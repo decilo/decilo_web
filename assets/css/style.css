@@ -116,3 +116,5 @@ div:focus { outline: none !important; }
 input[type="file"] { display: none; }
 
 .mr-1 { margin-right: 1em; }
+
+.halfway-fab-left-btn { left: 2rem; }

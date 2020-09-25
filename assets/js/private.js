@@ -121,6 +121,15 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                 <div class="card bg-dark-3 card-box">
                     <button
                         type="button"
+                        class="btn-floating halfway-fab mid-card-fab waves-effect bg-dark-1 waves-light halfway-fab-left-btn tooltipped"
+                        data-position="right"
+                        data-tooltip="Ver más"
+                        onclick="animateRedirect(\'view.php?message=` + id + `&private=true\');"
+                    >
+                        <i class="material-icons mid-card-fab-icon"> arrow_forward </i>
+                    </button>
+                    <button
+                        type="button"
                         class="btn-floating halfway-fab mid-card-fab waves-effect waves-light red"
                         onclick="requestRemoval(` + id + `);"
                     >

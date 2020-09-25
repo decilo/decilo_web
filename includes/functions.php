@@ -191,6 +191,19 @@ function getUserByUsername($username) {
     return $statement->fetch();
 }
 
+function getUserById($id) {
+    $statement = 
+        $GLOBALS['database']->prepare(
+            'SELECT *
+             FROM   `d_users`
+             WHERE  `d_users`.`id` = :id'
+        );
+
+    $statement->execute([ 'id' => $id ]);
+
+    return $statement->fetch();
+}
+
 function getUserByMailAddress($mailAddress) {
     $statement = 
         $GLOBALS['database']->prepare(
@@ -319,12 +332,18 @@ function getReportReasons() {
     return $statement->fetchAll();
 }
 
-function getMessage($id) {
+function getMessage($id, $private = false) {
+    $messagesTableSuffix = $private ? 'private' : 'public';
+
     $statement =
         $GLOBALS['database']->prepare(
-            'SELECT *
-             FROM   `d_messages_public`
-             WHERE  `d_messages_public`.`id` = :id'
+            'SELECT *, (
+                SELECT  `url`
+                FROM    `d_images`
+                WHERE   `d_images`.`message` =  `d_messages_' . $messagesTableSuffix . '`.`id`
+             ) AS `image`
+             FROM   `d_messages_' . $messagesTableSuffix . '`
+             WHERE  `d_messages_' . $messagesTableSuffix . '`.`id` = :id'
         );
 
     $statement->execute([ 'id' => $id ]);
@@ -434,5 +453,9 @@ function uploadImage($path, $filename) {
                     'FILENAME'  => $filename
                 ])
             :   null;
+}
+
+function getParsedDatetime($datetime) {
+    return strftime('%d/%m/%Y %H:%M:%S', strtotime($datetime));
 }
 ?>
