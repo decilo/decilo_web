@@ -1,7 +1,6 @@
 <?php
 
 use \Gumlet\ImageResize;
-use Google\Cloud\Storage\StorageClient;
 
 header('Content-Type: application/json');
 
@@ -199,18 +198,13 @@ if ($request == null) {
 
                                     $filename = sha1($image) . IMAGE_PROCESSING['EXTENSION'];
 
-                                    $storage = new StorageClient([
-                                        'projectId' => GOOGLE_CLOUD_PROJECT_ID,
-                                        'keyFile'   => GOOGLE_CLOUD_KEYFILE
-                                    ]);
+                                    $filePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
 
-                                    $storage
-                                        ->bucket(GOOGLE_CLOUD_BUCKET_NAME)
-                                        ->upload($image, [
-                                                'name'      => $filename,
-                                                'acl'       => []
-                                            ]
-                                        );
+                                    file_put_contents($filePath, $image);
+
+                                    $url = uploadImage($filePath, $filename);
+
+                                    unlink($filePath);
 
                                     $statement =
                                         $GLOBALS['database']->prepare(
@@ -224,11 +218,6 @@ if ($request == null) {
                                                 :private
                                              )'
                                         );
-
-                                    $url = getParsedString(GOOGLE_CLOUD_PUBLIC_URL, [
-                                        'bucketName'    => GOOGLE_CLOUD_BUCKET_NAME,
-                                        'objectName'    => $filename
-                                    ]);
 
                                     $statement->execute(
                                         [

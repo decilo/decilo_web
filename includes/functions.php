@@ -386,4 +386,50 @@ function getRecentMessages($recipient = null) {
 
     return $statement->fetchAll();
 }
+
+function uploadImage($path, $filename) {
+    $file = fopen($path, 'r');
+    
+    $curl = curl_init(
+        getParsedString(
+            ORACLE_OBJECT_STORAGE_UPLOAD_URL, [
+                'REGION'        => ORACLE_OBJECT_STORAGE_AUTH['ACCOUNT']['REGION'],
+                'PREAUTH_TOKEN' => ORACLE_OBJECT_STORAGE_AUTH['BUCKET']['PREAUTH_TOKEN'],
+                'NAMESPACE'     => ORACLE_OBJECT_STORAGE_AUTH['BUCKET']['NAMESPACE'],
+                'CONTAINER'     => ORACLE_OBJECT_STORAGE_AUTH['BUCKET']['CONTAINER'],
+                'FILENAME'      => $filename
+            ]
+        )
+    );
+
+    curl_setopt_array($curl,
+        [
+            CURLOPT_PUT             => true,
+            CURLOPT_INFILE          => $file,
+            CURLOPT_INFILESIZE      => filesize($path),
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_USERPWD         => 
+                ORACLE_OBJECT_STORAGE_AUTH['ACCOUNT']['MAIL_ADDRESS'] .
+                ':' .
+                ORACLE_OBJECT_STORAGE_AUTH['ACCOUNT']['AUTH_TOKEN']
+        ]
+    );
+
+    curl_exec($curl);
+
+    $info = curl_getinfo($curl);
+
+    curl_close($curl);
+    fclose($file);
+
+    return
+        $info['http_code'] == 200
+            ?   getParsedString(ORACLE_OBJECT_STORAGE_DOWNLOAD_URL, [
+                    'REGION'    => ORACLE_OBJECT_STORAGE_AUTH['ACCOUNT']['REGION'],
+                    'NAMESPACE' => ORACLE_OBJECT_STORAGE_AUTH['BUCKET']['NAMESPACE'],
+                    'CONTAINER' => ORACLE_OBJECT_STORAGE_AUTH['BUCKET']['CONTAINER'],
+                    'FILENAME'  => $filename
+                ])
+            :   null;
+}
 ?>
