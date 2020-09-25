@@ -21,11 +21,19 @@ if ($message == null) {
     redirect('index.php');
 }
 
-require_once 'views/header.php';
+$meta = [];
 
 if (isset($message['recipient'])) {
     $recipient = getUserById($message['recipient'])['username'];
+
+    $meta['name'] = 'Para @' . $recipient;
+} else {
+    $meta['name'] = 'Anónimo';
 }
+
+$meta['description'] = $message['content'];
+
+require_once 'views/header.php';
 
 ?>
 

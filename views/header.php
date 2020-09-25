@@ -18,7 +18,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 
         <!-- SEO meta -->
         <meta name="application-name" content="<?= SYSTEM_TITLE ?>">
-        <meta name="description" content="Dejá tu mensaje, contá un secreto o compartí lo que pensás.">
+        <meta name="description" content="<?= isset($meta) ? $meta['description'] : 'Dejá tu mensaje, contá un secreto o compartí lo que pensás.' ?>">
         <meta name="keywrods" content="secret, secreto, secretos, contar, contá, compartir, compartí, multimedia, contenido, fotos, imágenes, imagenes, comparti, conta, hablar, charlar, charlá, charla, di, deci, decí">
 
         <meta name="apple-mobile-web-app-title" content="<?= SYSTEM_TITLE ?>">
@@ -33,7 +33,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             ?>
         </script>
 
-        <title> <?= (isset($title) ? $title . ' - ' : '') . SYSTEM_TITLE ?> </title>
+        <title> <?= (isset($meta) ? $meta['name'] . ' - ' : (isset($title) ? $title . ' - ' : '')) . SYSTEM_TITLE ?> </title>
 
         <?php
             $backupCSS = [];
