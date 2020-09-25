@@ -402,11 +402,14 @@ function uploadImage($path, $filename) {
         )
     );
 
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
     curl_setopt_array($curl,
         [
             CURLOPT_PUT             => true,
             CURLOPT_INFILE          => $file,
             CURLOPT_INFILESIZE      => filesize($path),
+            CURLOPT_HTTPHEADER      => [ 'Content-Type: ' . finfo_file($finfo, $path) ],
             CURLOPT_RETURNTRANSFER  => true,
             CURLOPT_USERPWD         => 
                 ORACLE_OBJECT_STORAGE_AUTH['ACCOUNT']['MAIL_ADDRESS'] .
