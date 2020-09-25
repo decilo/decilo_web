@@ -10,6 +10,8 @@ div {
     font-display: swap;
 }
 
+nav { z-index: 999; }
+
 .brand-logo { padding-left: 0.5em !important; }
 
 #fullLoginForm { 

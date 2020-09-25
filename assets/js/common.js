@@ -274,15 +274,21 @@ $(document).ready(function () {
     //     toast('Hey there, it\'s an Android device!');
     //  }
 
-    $('#backToTopBtn').on('click', () => {
-        isGoingTop = true;
+    function goBackToTop() {
+        if (!isGoingTop) {
+            isGoingTop = true;
 
-        $('#backToTopBtn').fadeOut();
+            $('#backToTopBtn').fadeOut();
 
-        $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
-            isGoingTop = false;
-        });
-    });
+            $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
+                isGoingTop = false;
+            });
+        }
+    }
+
+    $('#backToTopBtn').on('click', goBackToTop);
+
+    $('.sidenav').sidenav();
 
     $(window).on('load', function () {
         console.log('common/window: success loading assets.');
@@ -300,8 +306,6 @@ $(document).ready(function () {
                 $(this).characterCounter();
             }
         });
-
-        $('.sidenav').sidenav();
     
         if ($('.tooltipped').length > 0) {
             $('.tooltipped').tooltip();
@@ -582,6 +586,23 @@ $(document).ready(function () {
     }
 
     setupMaterializeImages();
+
+    let nav = $('nav');
+
+    nav.pushpin();
+    $('main').css({ 'padding-top' : nav.height() });
+
+    $('.brand-logo').on('click', () => {
+        if (
+            $(window).scrollTop() >= document.documentElement.clientHeight
+            &&
+            $('.sidenav-trigger').is(':visible')
+        ) {
+            goBackToTop();
+        } else {
+            animateRedirect('index.php');
+        }
+    });
 
     // Officially proposed fix, read https://github.com/jquery/jquery/issues/2871.
     jQuery.event.special.touchstart = {

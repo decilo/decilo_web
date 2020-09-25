@@ -113,7 +113,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         <header>
             <nav class="nav-extended bg-dark-1">
                 <div class="nav-wrapper">
-                    <a href="index.php" class="brand-logo regular custom-link"><?= SYSTEM_TITLE ?></a>
+                    <a class="brand-logo regular hand"><?= SYSTEM_TITLE ?></a>
                     <a href="#" data-target="mobile-nav" class="sidenav-trigger">
                         <i class="material-icons">menu</i>
                     </a>
