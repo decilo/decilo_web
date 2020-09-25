@@ -38,7 +38,21 @@ if ($request == null) {
                                 FROM    `d_images`
                                 WHERE   `d_images`.`message`     = `d_messages_public`.`id`
                                 AND     `d_images`.`private`     = FALSE
-                             ) AS image
+                             ) AS image,
+                             CASE
+                                WHEN CHARACTER_LENGTH(`d_messages_public`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
+                                THEN
+                                    CONCAT(
+                                            SUBSTRING(
+                                                    `d_messages_public`.`content`,
+                                                    1,
+                                                    ' . MESSAGES['MAX_LENGTH'] . '
+                                            ),
+                                            \'…\'
+                                    )
+                                ELSE
+                                    `d_messages_public`.`content`
+                             END AS content
                              FROM       `d_messages_public`
                              WHERE      `id` < :after
                              ORDER BY   `id` DESC
@@ -65,7 +79,21 @@ if ($request == null) {
                                 FROM    `d_images`
                                 WHERE   `d_images`.`message` = `d_messages_private`.`id`
                                 AND     `d_images`.`private` = TRUE
-                             ) AS image
+                             ) AS image,
+                             CASE
+                                WHEN CHARACTER_LENGTH(`d_messages_private`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
+                                THEN
+                                    CONCAT(
+                                        SUBSTRING(
+                                                `d_messages_private`.`content`,
+                                                1,
+                                                ' . MESSAGES['MAX_LENGTH'] . '
+                                        ),
+                                        \'…\'
+                                    )
+                                ELSE
+                                    `d_messages_private`.`content`
+                             END AS content
                              FROM       `d_messages_private`
                              WHERE      TRUE' . (isset($values['after']) ? '
                              AND        `d_messages_private`.`id` < :after' : '') . '
@@ -98,6 +126,20 @@ if ($request == null) {
                                 WHERE   `d_images`.`message`     = `d_messages_private`.`id`
                                 AND     `d_images`.`private`     = TRUE
                              ) AS image
+                             CASE
+                                WHEN CHARACTER_LENGTH(`d_messages_private`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
+                                THEN
+                                    CONCAT(
+                                        SUBSTRING(
+                                                `d_messages_private`.`content`,
+                                                1,
+                                                ' . MESSAGES['MAX_LENGTH'] . '
+                                        ),
+                                        \'…\'
+                                    )
+                                ELSE
+                                    `d_messages_private`.`content`
+                             END AS content
                              FROM       `d_messages_private`
                              JOIN       `d_users`
                                 ON      `d_users`.`id`           = `d_messages_private`.`recipient`
@@ -356,24 +398,6 @@ if ($request == null) {
         }
     } else {
         switch ($request['action']) {
-            case 'getRecent':
-                $statement = $GLOBALS['database']
-                    ->prepare(
-                        'SELECT     *
-                         FROM       `d_messages_public`
-                         ORDER BY   `created` DESC
-                         LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']  
-                );
-
-                if ($statement !== false) {
-                    $statement->execute();
-
-                    reply($statement->fetchAll());
-                } else {
-                    reply(null, NOT_READY);
-                }
-
-                break;
             case 'areYouThere?':
                 if (getUserId() == null) {
                     reply(['message' => 'Yes, but no session is currently active.'], NOT_ALLOWED);

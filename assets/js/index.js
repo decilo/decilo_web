@@ -78,16 +78,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
     });
 
     return `<div class="col s12 m12 l6 message" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
-                <div class="card bg-dark-3 card-box">
-                    <button
-                        type="button"
-                        class="btn-floating halfway-fab mid-card-fab waves-effect bg-dark-1 waves-light halfway-fab-left-btn tooltipped"
-                        data-position="right"
-                        data-tooltip="Ver más"
-                        onclick="animateRedirect(\'view.php?message=` + id + (RECIPIENT == null ? '' : '&private=true') + `\');"
-                    >
-                        <i class="material-icons mid-card-fab-icon"> arrow_forward </i>
-                    </button>` + (LOGGED_IN ? `
+                <div class="card bg-dark-3 card-box">` + (LOGGED_IN ? `
                     <button
                         type="button"
                         class="btn-floating halfway-fab mid-card-fab waves-effect waves-light ` + (reported ? 'grey' : 'red') + ` tooltipped"
@@ -136,7 +127,16 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + auxiliaryContent + `</p>
+                        <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + 
+                            (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
+                        </p>
+                        <div class="message-spacer"></div>
+                        <a
+                            class="custom-link thin small"
+                            href="view.php?message=` + id + (RECIPIENT == null ? '' : '&private=true') + `"
+                        >
+                            Ver más
+                        </a>
                     </div>
                     <div class="card-action center">
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>

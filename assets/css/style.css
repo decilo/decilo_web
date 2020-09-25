@@ -89,7 +89,10 @@ div:focus { outline: none !important; }
     overflow: hidden;
 }
 
-.process-whitespaces { white-space: pre-line; }
+.process-whitespaces {
+    margin-top: 0;
+    white-space: pre-line;
+}
 
 .tap-target-content h5  { margin: 0.093333rem 0 .656rem 0; }
 .tap-target-content p   {
@@ -120,3 +123,5 @@ input[type="file"] { display: none; }
 .mr-1 { margin-right: 1em; }
 
 .halfway-fab-left-btn { left: 2rem; }
+
+.message-spacer { height: 1em; }

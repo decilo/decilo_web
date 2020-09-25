@@ -388,7 +388,21 @@ function getRecentMessages($recipient = null) {
                 FROM    `d_images`
                 WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
                 AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
-             ) AS image
+             ) AS image,
+             CASE
+                WHEN CHARACTER_LENGTH(`d_messages_' . $messagesTableSuffix . '`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
+                THEN
+                    CONCAT(
+                        SUBSTRING(
+                            `d_messages_' . $messagesTableSuffix . '`.`content`,
+                                1,
+                                ' . MESSAGES['MAX_LENGTH'] . '
+                        ),
+                        \'…\'
+                    )
+                ELSE
+                    `d_messages_' . $messagesTableSuffix . '`.`content`
+             END AS content
              FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? '' : '
              JOIN       `d_users`                ON `d_users`.`username` = :recipient') . '
              ORDER BY   `id` DESC
