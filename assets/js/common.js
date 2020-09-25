@@ -164,6 +164,12 @@ function isMailAddressValid(mailAddress) {
             mailAddress.split('@')[1].split('.')[1].length > 0;
 }
 
+function setupMaterializeImages() {
+    if ($('.materialboxed').length > 0) {
+        $('.materialboxed').materialbox();
+    }
+}
+
 $(document).ready(function () {
     let isGoingTop = false;
 

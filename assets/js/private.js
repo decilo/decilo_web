@@ -90,6 +90,8 @@ function reloadLayout(toAppend = null) {
             grid.layout();
 
             $('.tooltipped').tooltip();
+
+            setupMaterializeImages();
         }
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
@@ -285,6 +287,8 @@ $(document).ready(function () {
             }, INDEX['POST_OK_COOLDOWN']);
         });
     });
+
+    setupMaterializeImages();
 
     let idleRunner = null;
     function initializeIdleRunner() {

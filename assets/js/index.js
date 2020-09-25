@@ -34,6 +34,8 @@ function reloadLayout(toAppend = null) {
             grid.layout();
 
             $('.tooltipped').tooltip();
+
+            setupMaterializeImages();
         }
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
@@ -89,6 +91,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
                         <img
+                            class="materialboxed"
                             alt="Imagen adjunta"
                             src="` + image + `"
                             onload="
@@ -202,6 +205,8 @@ function postMessage(messageContent, declaredName, token, image = null) {
 $(document).ready(function () {
     createPostBtn   = $('#createPostBtn');
     imageInput      = $('#imageInput');
+    
+    setupMaterializeImages();
 
     $(window).on('scroll', function () {
         if (
