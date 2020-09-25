@@ -243,7 +243,9 @@ $(document).ready(function () {
 
                     reloadLayout(renderedHTML);
                 } else {
-                    $(window).off('scroll');
+                    isPullingChunks = true;
+
+                    return;
                 }
 
                 isPullingChunks = false;
