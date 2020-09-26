@@ -35,8 +35,6 @@ function reloadLayout(toAppend = null) {
 
             $('.tooltipped').tooltip();
         }
-
-        setupMaterializeImages();
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }
@@ -102,6 +100,8 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                     .fadeIn(() => {
                                         if ($('.message:visible').length == $('.message').length) {
                                             resetMessageInputs();
+
+                                            setupMaterializeImages();
                                         }
                                     });
 
