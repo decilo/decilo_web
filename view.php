@@ -56,10 +56,12 @@ require_once 'views/header.php';
 
         <div class="col s12"></div>
 
-        <p class="lato thin word-wrap col s12 word-wrap process-whitespaces">
+        <p class="lato thin word-wrap col s12 word-wrap process-whitespaces overflow-ellipsis">
             <?= $message['content'] ?>
         </p>
     </div>
+
+    <div class="divider"></div>
 
     <p class="roboto thin small">
         Publicado: <?= getParsedDatetime($message['created']) . (
