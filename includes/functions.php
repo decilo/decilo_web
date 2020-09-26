@@ -166,7 +166,7 @@ function verifyCaptcha($token) {
         [
             'ip'                => $_SERVER['REMOTE_ADDR'],
             'token'             => $token,
-            'remoteTimestamp'   => $response->challenge_ts,
+            'remoteTimestamp'   => strftime('%G-%m-%d %H:%M:%S', strtotime($response->challenge_ts)),
             'success'           => $response->success
         ]
     );
