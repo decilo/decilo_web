@@ -403,8 +403,9 @@ function getRecentMessages($recipient = null) {
                 ELSE
                     `d_messages_' . $messagesTableSuffix . '`.`content`
              END AS content
-             FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? '' : '
-             JOIN       `d_users`                ON `d_users`.`username` = :recipient') . '
+             FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? ''      : '
+             JOIN       `d_users`                ON `d_users`.`username`        = :recipient
+             WHERE      `d_messages_' . $messagesTableSuffix . '`.`recipient`   = `d_users`.`id`') . '
              ORDER BY   `id` DESC
              LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
         );
