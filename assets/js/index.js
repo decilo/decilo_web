@@ -247,7 +247,7 @@ $(document).ready(function () {
                     
                     response.result.forEach((message) => {
                         renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true, message['reported'] == 1
+                            message['id'], message['content'], message['declaredName'], message['created'], true, message['reported'] == 1, message['image']
                         );
                     });
 
