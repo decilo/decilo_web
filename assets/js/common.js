@@ -166,7 +166,42 @@ function isMailAddressValid(mailAddress) {
 
 function setupMaterializeImages() {
     if ($('.materialboxed').length > 0) {
-        $('.materialboxed').materialbox();
+        $('.materialboxed').materialbox({
+            'onOpenStart' : (target) => {
+                let message = $(target)
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .data()
+                                .message;
+
+                                console.log(message);
+
+                $('.message[data-message="' + message + '"]')
+                    .find('img')
+                    .addClass('was-unverified')
+                    .removeClass('unverified-img');
+            },
+            'onCloseEnd'  : (target) => {
+                let message = $(target)
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .data()
+                                .message;
+                                console.log(message);
+
+                let img = $('.message[data-message="' + message + '"]').find('img');
+
+                if (img.hasClass('was-unverified')) {
+                    img
+                        .removeClass('was-unverified')
+                        .addClass('unverified-img');
+                }
+            }
+        });
     }
 }
 

@@ -125,3 +125,6 @@ input[type="file"] { display: none; }
 .halfway-fab-left-btn { left: 2rem; }
 
 .message-spacer { height: 1em; }
+
+.card-image { overflow: hidden; }
+.unverified-img { filter: blur(15px); }
