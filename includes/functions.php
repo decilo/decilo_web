@@ -402,7 +402,32 @@ function getRecentMessages($recipient = null) {
                     )
                 ELSE
                     `d_messages_' . $messagesTableSuffix . '`.`content`
-             END AS content
+             END AS content,
+             CASE
+                WHEN (
+                    SELECT  COUNT(*)
+                    FROM    `d_images`
+                    WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
+                    AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+                ) > 0
+                THEN (
+                    CASE
+                        WHEN (
+                            SELECT  COUNT(*)
+                            FROM    `d_images_analyzed`
+                            WHERE   `d_images_analyzed`.`image` = (
+                                SELECT  `d_images`.`id`
+                                FROM    `d_images`
+                                WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
+                                AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+                            )
+                        ) > 0
+                    THEN true
+                    ELSE false
+                    END
+                )
+                ELSE true
+             END AS verified
              FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? ''      : '
              JOIN       `d_users`                ON `d_users`.`username`        = :recipient
              WHERE      `d_messages_' . $messagesTableSuffix . '`.`recipient`   = `d_users`.`id`') . '

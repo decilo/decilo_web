@@ -62,7 +62,7 @@ function getLastMessageId() {
                 .data('message');
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null) {
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -136,7 +136,9 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                             href="view.php?message=` + id + (RECIPIENT == null ? '' : '&private=true') + `"
                         >
                             Ver más
-                        </a>
+                        </a>` + (verified || image == null ? `` : `
+                        <div class="message-spacer"></div>
+                        <p class="red-text thin small">* Verificación pendiente</p>`) + `
                     </div>
                     <div class="card-action center">
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
@@ -175,7 +177,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
                         .find('.row')
                         .prepend(
                             getRenderedMessage(
-                                response.result.id, messageContent, declaredName, null, false, false, response.result.image
+                                response.result.id, messageContent, declaredName, null, false, false, response.result.image, false
                             )
                         );
 
@@ -247,7 +249,7 @@ $(document).ready(function () {
                     
                     response.result.forEach((message) => {
                         renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true, message['reported'] == 1, message['image']
+                            message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1
                         );
                     });
 
@@ -582,8 +584,9 @@ $(document).ready(function () {
                             message['declaredName'],
                             message['created'],
                             true,
-                            message['reported'] == 1,
-                            message['image']
+                            parseInt(message['reported']) == 1,
+                            message['image'],
+                            parseInt(message['verified']) == 1
                         )
                     );
             });
