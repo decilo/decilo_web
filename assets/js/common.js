@@ -333,6 +333,12 @@ $(document).ready(function () {
             if (loginPassword.val().length > 0) {
                 deferLoginPreloader();
 
+                if (typeof(grecaptcha) == 'undefined') {
+                    toast('No podemos validar tu sesión, parece que hay problemas con tu conexión.');
+
+                    return;
+                }
+
                 grecaptcha.ready(() => {
                     grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
                         run('accountManager', 'tryLogin', {

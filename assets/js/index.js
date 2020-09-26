@@ -334,6 +334,12 @@ $(document).ready(function () {
             }
         }
 
+        if (typeof(grecaptcha) == 'undefined') {
+            toast('No podemos validar tu sesión, parece que hay problemas con tu conexión.');
+
+            return;
+        }
+
         grecaptcha.ready(() => {
             grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
                 if (
