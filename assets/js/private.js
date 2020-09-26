@@ -90,9 +90,9 @@ function reloadLayout(toAppend = null) {
             grid.layout();
 
             $('.tooltipped').tooltip();
-
-            setupMaterializeImages();
         }
+
+        setupMaterializeImages();
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }
