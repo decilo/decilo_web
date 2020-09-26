@@ -43,16 +43,41 @@ if ($request == null) {
                                 WHEN CHARACTER_LENGTH(`d_messages_public`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
                                 THEN
                                     CONCAT(
-                                            SUBSTRING(
-                                                    `d_messages_public`.`content`,
-                                                    1,
-                                                    ' . MESSAGES['MAX_LENGTH'] . '
-                                            ),
-                                            \'…\'
+                                        SUBSTRING(
+                                                `d_messages_public`.`content`,
+                                                1,
+                                                ' . MESSAGES['MAX_LENGTH'] . '
+                                        ),
+                                        \'…\'
                                     )
                                 ELSE
                                     `d_messages_public`.`content`
-                             END AS content
+                             END AS content,
+                             CASE
+                                WHEN (
+                                    SELECT  COUNT(*)
+                                    FROM    `d_images`
+                                    WHERE   `d_images`.`message`     = `d_messages_public`.`id`
+                                    AND     `d_images`.`private`     = FALSE
+                                ) > 0
+                                THEN (
+                                    CASE
+                                        WHEN (
+                                            SELECT  COUNT(*)
+                                            FROM    `d_images_analyzed`
+                                            WHERE   `d_images_analyzed`.`image` = (
+                                                SELECT  `d_images`.`id`
+                                                FROM    `d_images`
+                                                WHERE   `d_images`.`message`     = `d_messages_public`.`id`
+                                                AND     `d_images`.`private`     = FALSE
+                                            )
+                                        ) > 0
+                                    THEN true
+                                    ELSE false
+                                    END
+                                )
+                                ELSE true
+                             END AS verified
                              FROM       `d_messages_public`
                              WHERE      `id` < :after
                              ORDER BY   `id` DESC
