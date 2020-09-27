@@ -502,4 +502,65 @@ function uploadImage($path, $filename) {
 function getParsedDatetime($datetime) {
     return strftime('%d/%m/%Y %H:%M:%S', strtotime($datetime));
 }
+
+function getReportedMessages() {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT
+                d_messages_public.id AS message,
+		        SUBSTR( d_messages_public.content, 1, 512 ) AS content,
+                (
+                    SELECT
+                        REPLACE(GROUP_CONCAT( d_report_reasons.reason ), \',\', \', \')
+                    FROM
+                        d_report_reasons
+                    JOIN d_reports ON d_report_reasons.id = d_reports.reason 
+                    WHERE   d_reports.message = d_messages_public.id 
+                    AND     d_reports.private = false
+                ) AS reasons,
+                (
+                    SELECT  COUNT(*)
+                    FROM    d_reports
+                    WHERE   d_reports.message = d_messages_public.id
+                ) AS reports,
+                false AS private
+             FROM d_messages_public 
+             WHERE (
+                SELECT COUNT(*)
+                FROM d_reports
+                WHERE d_reports.message = d_messages_public.id
+             ) > 0
+
+             UNION
+
+             SELECT
+                d_messages_private.id,
+                d_messages_private.content,
+                (
+                    SELECT
+                        REPLACE(GROUP_CONCAT( d_report_reasons.reason ), \',\', \', \')
+                    FROM
+                        d_report_reasons
+                        JOIN d_reports ON d_report_reasons.id = d_reports.reason 
+                    WHERE   d_reports.message = d_messages_private.id 
+                    AND     d_reports.private = true 
+                ) AS reasons,
+                (
+                    SELECT COUNT(*)
+                    FROM d_reports
+                    WHERE d_reports.message = d_messages_private.id
+                ) AS reports,
+                true AS private
+             FROM d_messages_private 
+             WHERE (
+                SELECT COUNT(*)
+                FROM d_reports
+                WHERE d_reports.message = d_messages_private.id
+             ) > 0'
+        );
+
+    $statement->execute();
+
+    return $statement->fetchAll();
+}
 ?>
