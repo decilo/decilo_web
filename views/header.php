@@ -36,6 +36,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         <title> <?= (isset($meta) ? $meta['name'] . ' - ' : (isset($title) ? $title . ' - ' : '')) . SYSTEM_TITLE ?> </title>
 
         <?php
+            foreach (CRITICAL_ORIGINS as $criticalOrigin) {
+                print '<link rel="preconnect" href="' . $criticalOrigin . '">';
+            }
+
             $backupCSS = [];
             if (isset($css)) {
                 if (is_array($css)) {
