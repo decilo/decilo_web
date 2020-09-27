@@ -69,9 +69,8 @@ $user = getCurrentUser();
                         <li class="thin"> Datos analíticos que obtuvimos de vos. </li>
                         <li class="thin"> Tus publicaciones, comentarios y actividad. </li>
                     </ul>
-                    <button id="requestDataDownloadBtn" type="button" class="bg-dark-1 waves-effect waves-light btn btn-block col s10 offset-s1">
+                    <button id="requestDataDownloadBtn" type="button" class="bg-dark-1 waves-effect waves-light btn btn-block col s10 offset-s1 m8 offset-m2">
                         <span> Generar informe </span>
-                        <i class="material-icons right">cached</i>
                     </button>
                 </div>
             </div>
@@ -86,9 +85,8 @@ $user = getCurrentUser();
                         <li class="thin"> Te desvinculamos físicamente del sistema. </li>
                         <li class="thin"> Eliminamos todas las copias al cabo de un mes. </li>
                     </ul>
-                    <button id="requestAccountRemovalBtn" type="button" class="red waves-effect waves-light btn btn-block col s10 offset-s1">
+                    <button id="requestAccountRemovalBtn" type="button" class="red waves-effect waves-light btn btn-block col s10 offset-s1 m8 offset-m2">
                         <span> Eliminar cuenta </span>
-                        <i class="material-icons right">delete_forever</i>
                     </button>
                 </div>
             </div>
