@@ -34,7 +34,7 @@ if (isset($_GET['to'])) {
                         <span class="helper-text" data-error="Tenés que escribir un mensaje" data-success="Ya podés publicar">Escribí tu mensaje público</span>
                     </div>
 
-                    <div class="input-field col s12 l6">
+                    <div class="input-field col s12 l5">
                         <input id="declaredName" type="text" placeholder="Anónimo" class="validate dark-5">
                         <label for="declaredName"> Tu nombre </label>
                     </div>
@@ -47,6 +47,10 @@ if (isset($_GET['to'])) {
                     <label for="imageInput" class="btn waves-effect waves-light bg-dark-1 fixed-height-btn hand right mr-1" disabled>
                         <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
                     </label>
+
+                    <button id="removeFileBtn" class="btn waves-effect waves-light red fixed-height-btn hand right tooltipped" type="button" data-tooltip="Eliminar archivo" data-position="bottom">
+                        <i class="material-icons"> delete_forever </i>
+                    </button>
                 </div>
             </form>
         </div>

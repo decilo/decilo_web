@@ -53,6 +53,10 @@ function resetMessageInputs() {
         .find('.material-icons')
         .html('add_a_photo');
 
+    $('#removeFileBtn').animate({ 'right' : '-3.4em' });
+
+    $('#imageInput').val(null);
+
     enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
 }
 
@@ -467,6 +471,8 @@ $(document).ready(function () {
                         .find('.material-icons')
                         .html('check');
 
+                    $('#removeFileBtn').animate({ 'right' : '-0.3em' });
+
                     toast('Listo, agregaste ' + files[0].name + '.');
                 } else {
                     resetMessageInputs();
@@ -482,6 +488,20 @@ $(document).ready(function () {
                     .find('.material-icons')
                     .html('add_a_photo');
             }
+        });
+
+        $('#removeFileBtn').on('click', function () {
+            $(this).animate({ 'right' : '-3.4em' });
+
+            $('label[for="imageInput"]')
+                .removeClass('green')
+                .addClass('bg-dark-1');
+
+            $('label[for="imageInput"]')
+                .find('.material-icons')
+                .html('add_a_photo');
+
+            $('#imageInput').val(null);
         });
 
         $('.tap-target').tapTarget({
