@@ -75,11 +75,11 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
         });
     });
 
-    return `<div class="col s12 m12 l6 message" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
-                <div class="card bg-dark-3 card-box">` + (LOGGED_IN ? `
+    return `<div class="col s12 m12 l6 message ` + (id == null ? 'not-posted' : '') + `" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
+                <div class="card bg-dark-3 card-box">` + (LOGGED_IN && id != null ? `
                     <button
                         type="button"
-                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light ` + (reported ? 'grey' : 'red') + ` tooltipped"
+                        class="` + (reported ? 'grey' : 'red') + ` btn-floating halfway-fab mid-card-fab waves-effect waves-light tooltipped"
                         data-position="left"` + (reported ? `
                         data-tooltip="Ya lo reportaste"` : `
                         data-tooltip="Reportar"
@@ -89,7 +89,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
                         <img
-                            class="materialboxed ` + (verified ? '' : 'unverified-img') + `"
+                            class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
                             alt="Imagen adjunta"
                             src="` + image + `"
                             onload="
@@ -127,13 +127,13 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato word-wrap process-whitespaces overflow-ellipsis">` + 
+                        <p class="lato word-wrap process-whitespaces overflow-ellipsis message-content">` + 
                             (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
                         </p>
                         <div class="message-spacer"></div>
                         <a
                             class="custom-link thin small"
-                            href="view.php?message=` + id + (RECIPIENT == null ? '' : '&private=true') + `"
+                            href="` + (id == null ? '#' : `view.php?message=` + id + (RECIPIENT == null ? '' : '&private=true')) + `"
                         >
                             Ver más
                         </a>` + (verified || image == null ? `` : `
@@ -153,7 +153,17 @@ function reportMessage(id) {
     $('#reportMessageModal').modal('open');
 }
 
+function abortPost() {
+    $('.message[data-message="null"]').fadeOut(() => {
+        $('.message[data-message="null"]').remove();
+
+        reloadLayout();
+    });
+}
+
 function postMessage(messageContent, declaredName, token, image = null) {
+    let previousHtml = createPostBtn.html();
+
     run('messagesManager', 'postMessage', {
         'content'       : messageContent,
         'declaredName'  : declaredName,
@@ -162,6 +172,28 @@ function postMessage(messageContent, declaredName, token, image = null) {
         'token'         : token
     }, () => {
         disable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
+        
+        createPostBtn.html('Publicando');
+
+        $('#recentsContainer')
+            .find('.row')
+            .prepend(
+                getRenderedMessage(
+                    null, messageContent, declaredName, null, false, false, image, false
+                )
+            );
+
+        if (image == null) {
+            $('.message')
+                .first()
+                .fadeIn();
+
+            $('#messageInput, #declaredName, #messageInput, #declaredName')
+                .removeClass('valid')
+                .val('');
+
+            reloadLayout();
+        }
     })
     .done(function (response) {
         console.log(response);
@@ -170,18 +202,23 @@ function postMessage(messageContent, declaredName, token, image = null) {
             case SUSPICIOUS_OPERATION:
                 toast('Necesitamos que resuelvas un desafío.');
 
+                abortPost();
+
                 break;
             case OK:
-                callable = () => {
+                if ($('#recentsContainer').find('.removableWarning').length > 0) {
                     $('#recentsContainer')
-                        .find('.row')
-                        .prepend(
+                        .find('.removableWarning')
+                        .fadeOut();
+                }
+
+                $('.message[data-message="null"]').replaceWith(
                             getRenderedMessage(
-                                response.result.id, messageContent, declaredName, null, false, false, response.result.image, false
+                        response.result.id, messageContent, declaredName, null, false, false, image, false
                             )
                         );
 
-                    if (response.result.image == null) {
+                if (image == null) {
                         $('.message')
                             .first()
                             .fadeIn();
@@ -192,24 +229,21 @@ function postMessage(messageContent, declaredName, token, image = null) {
             
                         reloadLayout();
                     }
-                }
 
-                if ($('#recentsContainer').find('.removableWarning').length > 0) {
-                    $('#recentsContainer')
-                        .find('.removableWarning')
-                        .fadeOut(callable);
-                } else {
-                    callable();
-                }
                 break;
             case ERROR:
                 toast('Algo anda mal, probá otra vez.');
 
+                abortPost();
+
                 break;
         }
     })
+    .fail(abortPost)
     .always(() => {
         enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
+
+        createPostBtn.html(previousHtml);
     });
 }
 
