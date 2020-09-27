@@ -176,12 +176,13 @@ function setupMaterializeImages() {
                                 .data()
                                 .message;
 
-                                console.log(message);
+                let img = $('.message[data-message="' + message + '"]').find('img');
 
-                $('.message[data-message="' + message + '"]')
-                    .find('img')
-                    .addClass('was-unverified')
-                    .removeClass('unverified-img');
+                if (img.hasClass('unverified-img')) {
+                    img
+                        .addClass('was-unverified')
+                        .removeClass('unverified-img');
+                }
             },
             'onCloseEnd'  : (target) => {
                 let message = $(target)
@@ -191,7 +192,6 @@ function setupMaterializeImages() {
                                 .parent()
                                 .data()
                                 .message;
-                                console.log(message);
 
                 let img = $('.message[data-message="' + message + '"]').find('img');
 
