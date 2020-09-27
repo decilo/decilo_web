@@ -556,7 +556,9 @@ function getReportedMessages() {
                 SELECT COUNT(*)
                 FROM d_reports
                 WHERE d_reports.message = d_messages_private.id
-             ) > 0'
+             ) > 0
+             
+             ORDER BY reports DESC'
         );
 
     $statement->execute();
