@@ -15,7 +15,7 @@ $reports = getReportedMessages();
 <div class="container dark-5">
     <div class="section"></div>
 
-    <p class="flow-text center"> Procesamiento de datos </p>
+    <p class="flow-text center"> Reportes </p>
 
     <div class="divider"></div>
 
