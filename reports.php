@@ -23,7 +23,7 @@ $reports = getReportedMessages();
         Acá vas a poder administrar los reportes que realizan los usuarios. Si es necesario, eliminá el mensaje directamente desde la base de datos.
     </p>
 
-    <table class="table-responsive">
+    <table class="responsive-table">
         <thead>
             <th> ID </th>  <th> Contenido </th>  <th> Reportes </th>  <th> Razones </th>
         </thead>
