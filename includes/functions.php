@@ -470,8 +470,8 @@ function uploadImage($path, $filename) {
             CURLOPT_INFILESIZE      => filesize($path),
             CURLOPT_HTTPHEADER      => [ 
                 'Content-Type: ' . finfo_file($finfo, $path),
-                'opc-meta-cache-control: max-age=84600, public',
-                'Cache-Control: max-age=84600, public'
+                'opc-meta-cache-control: max-age=31557600, public',
+                'Cache-Control: max-age=31557600, public'
             ],
             CURLOPT_RETURNTRANSFER  => true,
             CURLOPT_USERPWD         => 
