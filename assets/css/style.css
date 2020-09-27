@@ -137,3 +137,14 @@ input[type="file"] { display: none; }
 .add-space { margin-left: 0.3em; }
 
 .not-posted { opacity: 0.5; }
+
+#removeFileBtn {
+    width: 1em;
+    right: -3.4rem;
+    z-index: 0;
+}
+
+#removeFileBtn .material-icons {
+    right: 0.6em;
+    position: relative;
+}
