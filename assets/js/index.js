@@ -241,9 +241,9 @@ function postMessage(messageContent, declaredName, token, image = null) {
     })
     .fail(abortPost)
     .always(() => {
-        enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
-
         createPostBtn.html(previousHtml);
+
+        enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
     });
 }
 
