@@ -508,7 +508,7 @@ function getReportedMessages() {
         $GLOBALS['database']->prepare(
             'SELECT
                 d_messages_public.id AS message,
-		        SUBSTR( d_messages_public.content, 1, 256 ) AS content,
+		        SUBSTR( d_messages_public.content, 1, 48 ) AS content,
                 (
                     SELECT
                         REPLACE(GROUP_CONCAT( d_report_reasons.reason ), \',\', \', \')
