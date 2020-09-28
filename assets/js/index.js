@@ -9,7 +9,7 @@ let isPosting           = false;
 let toReport = null;
 
 function reloadLayout(toAppend = null) {
-    if (typeof(Masonry != 'undefined')) {
+    if (typeof(Masonry) != 'undefined') {
         if (toAppend == null) {
             console.info('reloadLayout: grid initialization started.');
 
@@ -153,6 +153,9 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     <div class="card-action center">
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
                     </div>
+                    <ul class="collection with-header bg-dark-7 border-dark-7 hand">
+                        <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `> Comentarios (0) </li>
+                    </ul>
                 </div>
              </div>`;
 }
@@ -179,7 +182,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
             $('#removeFileBtn').fadeOut();
         });
 
-    let previousHtml = createPostBtn.html();
+        let previousHtml = createPostBtn.html();
 
         let postProgressBar = $('#postProgressBar');
 
@@ -197,85 +200,85 @@ function postMessage(messageContent, declaredName, token, image = null) {
             }
         }, PROGRESSBAR_TRIGGER_INTERVAL);
 
-    run('messagesManager', 'postMessage', {
-        'content'       : messageContent,
-        'declaredName'  : declaredName,
-        'recipient'     : RECIPIENT,
-        'image'         : image,
-        'token'         : token
-    }, () => {
+        run('messagesManager', 'postMessage', {
+            'content'       : messageContent,
+            'declaredName'  : declaredName,
+            'recipient'     : RECIPIENT,
+            'image'         : image,
+            'token'         : token
+        }, () => {
             disable($('#messageInput, #declaredName, label[for="imageInput"]'));
-        
+            
             createPostBtn
                 .removeClass('waves-effect waves-light')
                 .html('Publicando');
 
-        $('#recentsContainer')
-            .find('.row')
-            .prepend(
-                getRenderedMessage(
-                    null, messageContent, declaredName, null, false, false, image, false
-                )
-            );
+            $('#recentsContainer')
+                .find('.row')
+                .prepend(
+                    getRenderedMessage(
+                        null, messageContent, declaredName, null, false, false, image, false
+                    )
+                );
 
-        if (image == null) {
-            $('.message')
-                .first()
-                .fadeIn();
+            if (image == null) {
+                $('.message')
+                    .first()
+                    .fadeIn();
 
-            $('#messageInput, #declaredName, #messageInput, #declaredName')
-                .removeClass('valid')
-                .val('');
+                $('#messageInput, #declaredName, #messageInput, #declaredName')
+                    .removeClass('valid')
+                    .val('');
 
-            reloadLayout();
-        }
-    })
-    .done(function (response) {
-        console.log(response);
+                reloadLayout();
+            }
+        })
+        .done(function (response) {
+            console.log(response);
 
-        switch (response.status) {
-            case SUSPICIOUS_OPERATION:
-                toast('Necesitamos que resuelvas un desafío.');
+            switch (response.status) {
+                case SUSPICIOUS_OPERATION:
+                    toast('Necesitamos que resuelvas un desafío.');
 
-                abortPost();
+                    abortPost();
 
-                break;
-            case OK:
-                if ($('#recentsContainer').find('.removableWarning').length > 0) {
-                    $('#recentsContainer')
-                        .find('.removableWarning')
-                        .fadeOut();
-                }
-
-                $('.message[data-message="null"]').replaceWith(
-                            getRenderedMessage(
-                        response.result.id, messageContent, declaredName, null, false, false, image, false
-                            )
-                        );
-
-                if (image == null) {
-                        $('.message')
-                            .first()
-                            .fadeIn();
-
-                        $('#messageInput, #declaredName, #messageInput, #declaredName')
-                            .removeClass('valid')
-                            .val('');
-            
-                        reloadLayout();
+                    break;
+                case OK:
+                    if ($('#recentsContainer').find('.removableWarning').length > 0) {
+                        $('#recentsContainer')
+                            .find('.removableWarning')
+                            .fadeOut();
                     }
 
-                break;
-            case ERROR:
-                toast('Algo anda mal, probá otra vez.');
+                    $('.message[data-message="null"]').replaceWith(
+                                getRenderedMessage(
+                            response.result.id, messageContent, declaredName, null, false, false, image, false
+                                )
+                            );
 
-                abortPost();
+                    if (image == null) {
+                            $('.message')
+                                .first()
+                                .fadeIn();
 
-                break;
-        }
-    })
-    .fail(abortPost)
-    .always(() => {
+                            $('#messageInput, #declaredName, #messageInput, #declaredName')
+                                .removeClass('valid')
+                                .val('');
+                
+                            reloadLayout();
+                        }
+
+                    break;
+                case ERROR:
+                    toast('Algo anda mal, probá otra vez.');
+
+                    abortPost();
+
+                    break;
+            }
+        })
+        .fail(abortPost)
+        .always(() => {
             createPostBtn
                 .addClass('waves-effect waves-light')
                 .html(previousHtml);

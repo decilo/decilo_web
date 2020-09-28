@@ -64,7 +64,7 @@ function tryToRemove() {
 }
 
 function reloadLayout(toAppend = null) {
-    if (typeof(Masonry != 'undefined')) {
+    if (typeof(Masonry) != 'undefined') {
         if (toAppend == null) {
             console.info('reloadLayout: grid initialization started.');
 
