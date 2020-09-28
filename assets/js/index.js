@@ -54,7 +54,9 @@ function resetMessageInputs() {
         .find('.material-icons')
         .html('add_a_photo');
 
+    $('.tooltipped').tooltip();
     $('.tooltipped').tooltip('close');
+
     $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
         $('#removeFileBtn').fadeOut();
     });
