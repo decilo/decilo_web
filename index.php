@@ -44,6 +44,8 @@ if (isset($_GET['to'])) {
                         <i class="material-icons right"> send </i>
                     </button>
 
+                    <div id="postProgressBar"></div>
+
                     <label for="imageInput" class="btn waves-effect waves-light bg-dark-1 fixed-height-btn hand right mr-1" disabled>
                         <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
                     </label>

@@ -4,6 +4,7 @@ let createPostBtn       = null;
 let imageInput          = null;
 let maxScrollTop        = null;
 let isPullingChunks     = false;
+let isPosting           = false;
 
 let toReport = null;
 
@@ -60,7 +61,7 @@ function resetMessageInputs() {
 
     $('#imageInput').val(null);
 
-    enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
+    enable($('#messageInput, #declaredName, label[for="imageInput"]'));
 }
 
 function getLastMessageId() {
@@ -169,7 +170,30 @@ function abortPost() {
 }
 
 function postMessage(messageContent, declaredName, token, image = null) {
+    if (!isPosting) {
+        isPosting = true;
+
+        $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
+            $('#removeFileBtn').fadeOut();
+        });
+
     let previousHtml = createPostBtn.html();
+
+        let postProgressBar = $('#postProgressBar');
+
+        postProgressBar
+            .width(0)
+            .show();
+
+        let postingAnimation = setInterval(() => {
+            if (postProgressBar.width() < createPostBtn.outerWidth()) {
+                postProgressBar.css({ 'width' : postProgressBar.width() + 1 });
+            } else {
+                clearInterval(postingAnimation);
+
+                postingAnimation = null;
+            }
+        }, PROGRESSBAR_TRIGGER_INTERVAL);
 
     run('messagesManager', 'postMessage', {
         'content'       : messageContent,
@@ -178,9 +202,11 @@ function postMessage(messageContent, declaredName, token, image = null) {
         'image'         : image,
         'token'         : token
     }, () => {
-        disable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
+            disable($('#messageInput, #declaredName, label[for="imageInput"]'));
         
-        createPostBtn.html('Publicando');
+            createPostBtn
+                .removeClass('waves-effect waves-light')
+                .html('Publicando');
 
         $('#recentsContainer')
             .find('.row')
@@ -248,9 +274,32 @@ function postMessage(messageContent, declaredName, token, image = null) {
     })
     .fail(abortPost)
     .always(() => {
-        createPostBtn.html(previousHtml);
+            createPostBtn
+                .addClass('waves-effect waves-light')
+                .html(previousHtml);
 
-        enable($('#messageInput, #declaredName, #createPostBtn, label[for="imageInput"]'));
+            if (postingAnimation == null) {
+                clearInterval(postingAnimation);
+            }
+
+            postProgressBar.animate({ 'width' : createPostBtn.outerWidth() }, () => {
+                setTimeout(() => {
+                    isPosting = false;
+
+                    enable($('#messageInput, #declaredName, label[for="imageInput"]'));
+
+                    postProgressBar.fadeOut();
+                }, MATERIALIZE_TRANSITION_TIME);
+            });
+        });
+    }
+}
+
+function attachProgressBar() {
+    $('#postProgressBar').css({
+        'top'    : createPostBtn.offset()['top'],
+        'left'   : createPostBtn.offset()['left'],
+        'height' : createPostBtn.height()
     });
 }
 
@@ -392,6 +441,8 @@ $(document).ready(function () {
                 ) {
                     var reader  = new FileReader();
 
+                    disable($('#messageInput, #declaredName, label[for="imageInput"]'));
+
                     reader.onloadend = () => {
                         postMessage(messageContent, declaredName, token, reader.result);
                     }
@@ -400,6 +451,8 @@ $(document).ready(function () {
                         $('#imageInput')[0].files[0]
                     );
                 } else {
+                    disable($('#messageInput, #declaredName, label[for="imageInput"]'));
+
                     postMessage(messageContent, declaredName, token);
                 }
             });
@@ -460,6 +513,10 @@ $(document).ready(function () {
         enable(createPostBtn);
 
         resetMessageInputs();
+
+        attachProgressBar();
+
+        $(window).on('resize', attachProgressBar);
 
         $('#imageInput').on('change', function () {
             let files = $(this)[0].files;

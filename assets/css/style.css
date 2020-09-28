@@ -74,9 +74,9 @@ div:focus { outline: none !important; }
 
 .material-tooltip { font-weight: 150 !important; } /* Should match .thin */
 
-.fixed-height-btn { transform: translate(5px, 65%); }
+.fixed-height-btn { transform: none; }
 .fixed-width-btn {
-    width: 100%;
+    width: 100% !important;
     text-align: center !important;
 }
 
@@ -148,4 +148,18 @@ input[type="file"] { display: none; }
 #removeFileBtn .material-icons {
     right: 0.6em;
     position: relative;
+}
+
+#postProgressBar {
+    display: block;
+    background-color: white;
+    opacity: 0.2;
+    position: absolute;
+    z-index: 9999;
+}
+
+@media only screen and (min-width: 601px) {
+    .fixed-height-btn {
+        transform: translate(5px, 65%);
+    }
 }
