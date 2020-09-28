@@ -53,7 +53,10 @@ function resetMessageInputs() {
         .find('.material-icons')
         .html('add_a_photo');
 
-    $('#removeFileBtn').animate({ 'right' : '-3.4em' });
+    $('.tooltipped').tooltip('close');
+    $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
+        $('#removeFileBtn').fadeOut();
+    });
 
     $('#imageInput').val(null);
 
@@ -471,7 +474,9 @@ $(document).ready(function () {
                         .find('.material-icons')
                         .html('check');
 
-                    $('#removeFileBtn').animate({ 'right' : '-0.3em' });
+                    $('#removeFileBtn')
+                        .css({ 'display' : 'block' })
+                        .animate({ 'right' : '-0.3em' });
 
                     toast('Listo, agregaste ' + files[0].name + '.');
                 } else {
@@ -491,7 +496,11 @@ $(document).ready(function () {
         });
 
         $('#removeFileBtn').on('click', function () {
-            $(this).animate({ 'right' : '-3.4em' });
+            $('.tooltipped').tooltip('close');
+
+            $(this).animate({ 'right' : '-3.4em' }, () => {
+                $(this).fadeOut();
+            });
 
             $('label[for="imageInput"]')
                 .removeClass('green')

@@ -141,6 +141,7 @@ input[type="file"] { display: none; }
 #removeFileBtn {
     width: 1em;
     right: -3.4rem;
+    display: none;
     z-index: 0;
 }
 
