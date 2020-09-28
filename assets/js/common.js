@@ -510,6 +510,11 @@ $(document).ready(function () {
     });
 
     $('#loginModal').modal({ 
+        onOpenEnd: () => {
+            $('#loginMailAddress')
+                .focus()
+                .click();
+        },
         onCloseEnd: () => {
             $('#loginModal').css({ bottom : '' });
             $('#loginForm').show();
