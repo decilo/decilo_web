@@ -8,6 +8,8 @@ let isPosting           = false;
 
 let toReport = null;
 
+let fab                 = null;
+
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry) != 'undefined') {
         if (toAppend == null) {
@@ -85,7 +87,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
         });
     });
 
-    return `<div class="col s12 m12 l6 message ` + (id == null ? 'not-posted' : '') + `" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
+    return `<div class="col s12 m6 l3 message ` + (id == null ? 'not-posted' : '') + `" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (LOGGED_IN && id != null ? `
                     <button
                         type="button"
@@ -152,10 +154,11 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>
                     <div class="card-action center">
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
-                    </div>
-                    <ul class="collection with-header bg-dark-7 border-dark-7 hand">
-                        <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `> Comentarios (0) </li>
-                    </ul>
+                    </div>` +
+                    // <ul class="collection with-header bg-dark-7 border-dark-7 hand">
+                    //    <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `> Comentarios (0) </li>
+                    // </ul>
+                    `
                 </div>
              </div>`;
 }
@@ -175,6 +178,8 @@ function abortPost() {
 }
 
 function postMessage(messageContent, declaredName, token, image = null) {
+    let createMessageModal = M.Modal.getInstance($('#createMessageModal'));
+
     if (!isPosting) {
         isPosting = true;
 
@@ -251,22 +256,31 @@ function postMessage(messageContent, declaredName, token, image = null) {
                     }
 
                     $('.message[data-message="null"]').replaceWith(
-                                getRenderedMessage(
+                        getRenderedMessage(
                             response.result.id, messageContent, declaredName, null, false, false, image, false
-                                )
-                            );
+                        )
+                    );
+
+                    isGoingTop = true;
+                    $('html, body').animate({
+                        'scrollTop' : $('.message[data-message="' + response.result.id + '"]').position()['top']
+                    }, SCROLLTOP_DURATION, () => {
+                        isGoingTop = false;
+                    });
 
                     if (image == null) {
-                            $('.message')
-                                .first()
-                                .fadeIn();
+                        $('.message')
+                            .first()
+                            .fadeIn();
 
-                            $('#messageInput, #declaredName, #messageInput, #declaredName')
-                                .removeClass('valid')
-                                .val('');
-                
-                            reloadLayout();
-                        }
+                        $('#messageInput, #declaredName, #messageInput, #declaredName')
+                            .removeClass('valid')
+                            .val('');
+            
+                        reloadLayout();
+                    }
+
+                    createMessageModal.close();
 
                     break;
                 case ERROR:
@@ -294,6 +308,8 @@ function postMessage(messageContent, declaredName, token, image = null) {
                     enable($('#messageInput, #declaredName, label[for="imageInput"]'));
 
                     postProgressBar.fadeOut();
+                    
+                    createMessageModal.options.dismissible = true;
                 }, MATERIALIZE_TRANSITION_TIME);
             });
         });
@@ -302,8 +318,8 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
 function attachProgressBar() {
     $('#postProgressBar').css({
-        'top'    : createPostBtn.offset()['top'],
-        'left'   : createPostBtn.offset()['left'],
+        'top'    : createPostBtn.position()['top'],
+        'left'   : createPostBtn.position()['left'],
         'height' : createPostBtn.height()
     });
 }
@@ -313,6 +329,40 @@ $(document).ready(function () {
     imageInput      = $('#imageInput');
     
     setupMaterializeImages();
+
+    $('#createMessageModal').modal({
+        onOpenEnd: () => {
+            $('#messageInput')
+                .focus()
+                .click();
+        }
+    });
+
+    let fabDOM = $('.fixed-action-btn');
+
+    fabDOM.floatingActionButton({ hoverEnabled: false });
+
+    fab = M.FloatingActionButton.getInstance($('.fixed-action-btn'));
+
+    fabDOM.on('click', () => {
+        if (fab.isOpen) {
+            fabDOM
+                .find('.btn-large')
+                .find('i')
+                .css({ 'transform' : 'rotate(0deg)' });
+        } else {
+            fabDOM
+                .find('.btn-large')
+                .find('i')
+                .css({ 'transform' : 'rotate(90deg)' });
+        }
+    });
+
+    fabDOM
+        .find('#createMessageBtn')
+        .on('click', () => {
+            $('#createMessageModal').modal('open');
+        });
 
     $(window).on('scroll', function () {
         if (
@@ -437,6 +487,12 @@ $(document).ready(function () {
             return;
         }
 
+        disable($('#messageInput, #declaredName, label[for="imageInput"]'));
+
+        M.Modal
+            .getInstance($('#createMessageModal'))
+            .options.dismissible = false;
+
         grecaptcha.ready(() => {
             grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
                 if (
@@ -446,8 +502,6 @@ $(document).ready(function () {
                 ) {
                     var reader  = new FileReader();
 
-                    disable($('#messageInput, #declaredName, label[for="imageInput"]'));
-
                     reader.onloadend = () => {
                         postMessage(messageContent, declaredName, token, reader.result);
                     }
@@ -456,8 +510,6 @@ $(document).ready(function () {
                         $('#imageInput')[0].files[0]
                     );
                 } else {
-                    disable($('#messageInput, #declaredName, label[for="imageInput"]'));
-
                     postMessage(messageContent, declaredName, token);
                 }
             });
@@ -507,8 +559,6 @@ $(document).ready(function () {
 
         initializeIdleRunner();
     }
-
-    $('#messageInput').focus();
 
     console.info('document: success fetching critical assets.');
 

@@ -289,14 +289,6 @@ $(document).ready(function () {
     }
 
     $(window).on('scroll', () => {
-        if ($('html, body').scrollTop() > document.documentElement.clientHeight) {
-            if (!isGoingTop) {
-                $('#backToTopBtn').fadeIn();
-            }
-        } else {
-            $('#backToTopBtn').fadeOut();
-        }
-
         // Prevent this error, it doesn't really matter.
         try {
             $('.tooltipped').tooltip('close');
@@ -313,15 +305,11 @@ $(document).ready(function () {
         if (!isGoingTop) {
             isGoingTop = true;
 
-            $('#backToTopBtn').fadeOut();
-
             $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
                 isGoingTop = false;
             });
         }
     }
-
-    $('#backToTopBtn').on('click', goBackToTop);
 
     $('.sidenav').sidenav();
 
@@ -639,11 +627,7 @@ $(document).ready(function () {
     $('main').css({ 'padding-top' : nav.height() });
 
     $('.brand-logo').on('click', () => {
-        if (
-            $(window).scrollTop() >= document.documentElement.clientHeight
-            &&
-            $('.sidenav-trigger').is(':visible')
-        ) {
+        if ($(window).scrollTop() >= document.documentElement.clientHeight) {
             goBackToTop();
         } else {
             animateRedirect('index.php');

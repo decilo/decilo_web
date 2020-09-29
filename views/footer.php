@@ -1,15 +1,3 @@
-            <div class="fixed-action-btn">
-                <a
-                    id="backToTopBtn"
-                    class="btn-floating btn-large bg-dark-1 waves-light hand no-select tooltipped"
-                    style="display: none;"
-                    data-position="left"
-                    data-tooltip="Volver al principio"
-                >
-                    <i class="material-icons">keyboard_arrow_up</i>
-                </a>
-            </div>
-
             <!-- Login/signup modal -->
             <div id="loginModal" class="modal bottom-sheet">
                 <div class="modal-content bg-dark-3">
