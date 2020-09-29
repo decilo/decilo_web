@@ -335,6 +335,8 @@ $(document).ready(function () {
             $('#messageInput')
                 .focus()
                 .click();
+
+            attachProgressBar();
         }
     });
 
