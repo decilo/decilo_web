@@ -4,6 +4,15 @@ $userId             = getUserId();
 $userName           = getUserName();
 $userMailAddress    = getUserMailAddress();
 
+$isCrawling = false;
+foreach (GOOGLE_CRAWLER_UAS as $userAgent) {
+    if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), strtolower($userAgent)) !== false) {
+        $isCrawling = true;
+        
+        break;
+    }
+}
+
 if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < MIN_ACCESS_LEVEL)) {
     redirect('index.php');
 }
@@ -114,6 +123,54 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
     </head>
 
     <body class="bg-dark-4" <?= isset($_GET['fromLogin']) ? 'style="display: none;"' : '' ?>>
+        <?php
+
+        if ($isCrawling) {
+            $messages =
+                $GLOBALS['database']->prepare(
+                    'SELECT
+                        content, (
+                            SELECT  `url`
+                            FROM    `d_images`
+                            WHERE   `d_images`.`message` =  `d_messages_private`.`id`
+                        ) AS `image`,
+                        declaredName,
+                        CONCAT(\'view.php?message=\', `d_messages_private`.`id`, \'&private=true\') AS url
+                     FROM `d_messages_private`
+
+                     UNION
+
+                     SELECT
+                        content, (
+                            SELECT  `url`
+                            FROM    `d_images`
+                            WHERE   `d_images`.`message` =  `d_messages_public`.`id`
+                        ) AS `image`,
+                        declaredName,
+                        CONCAT(\'view.php?message=\', `d_messages_public`.`id`) AS url
+                     FROM `d_messages_public`'
+                );
+
+            $messages->execute();
+
+            foreach ($messages->fetchAll() as $message) {
+                print 
+                '<div class="message">
+                    <img src="' . $message['image'] . '">
+                    <h1 id="declaredName"> ' . ($message['declaredName'] == null ? 'Anonymous' : $message['declaredName']) . ' </h1>
+                    <p id="content"> ' . substr($message['content'], 0, MESSAGES['MAX_LENGTH']) . '… </p>
+                    <a href="' . $message['url'] . '"> Ver mensaje </a>
+                 </div>';
+            }
+
+            print '</body>
+            </html>';
+
+            exit();
+        }
+
+        ?>
+
         <header>
             <nav class="nav-extended bg-dark-1">
                 <div class="nav-wrapper">
