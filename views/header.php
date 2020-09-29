@@ -156,7 +156,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             foreach ($messages->fetchAll() as $message) {
                 print 
                 '<div class="message">
-                    <img src="' . $message['image'] . '">
+                    <img src="' . $message['image'] . '" style="max-width: 100%; max-height: 100%;">
                     <h1 id="declaredName"> ' . ($message['declaredName'] == null ? 'Anonymous' : $message['declaredName']) . ' </h1>
                     <p id="content"> ' . substr($message['content'], 0, MESSAGES['MAX_LENGTH']) . '… </p>
                     <a href="' . $message['url'] . '"> Ver mensaje </a>
