@@ -375,75 +375,90 @@ function getParsedString(string $string, Array $replacements) {
 function getRecentMessages($recipient = null) {
     $messagesTableSuffix = $recipient == null ? 'public' : 'private';
 
-    $statement = $GLOBALS['database']
-        ->prepare(
-            'SELECT     `d_messages_' . $messagesTableSuffix . '`.*, (
-                SELECT  COUNT(*)
-                FROM    `d_reports`
-                WHERE   `d_reports`.`message`    = `d_messages_' . $messagesTableSuffix . '`.`id`
-                AND     `d_reports`.`reportedBy` = :userId
-                AND     `d_reports`.`private`    = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
-             ) > 0 AS reported, (
-                SELECT  `d_images`.`url`
-                FROM    `d_images`
-                WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
-                AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
-             ) AS image,
-             CASE
-                WHEN CHARACTER_LENGTH(`d_messages_' . $messagesTableSuffix . '`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
-                THEN
-                    CONCAT(
-                        SUBSTRING(
-                            `d_messages_' . $messagesTableSuffix . '`.`content`,
-                                1,
-                                ' . MESSAGES['MAX_LENGTH'] . '
-                        ),
-                        \'…\'
-                    )
-                ELSE
-                    `d_messages_' . $messagesTableSuffix . '`.`content`
-             END AS content,
-             CASE
-                WHEN (
+    if (
+        isset($_SESSION[CACHE['RECENT_MESSAGES']['KEY']])
+        &&
+        time() - $_SESSION[CACHE['RECENT_MESSAGES']['KEY']]['timestamp'] < CACHE['RECENT_MESSAGES']['TTL']
+    ) {
+        $messages = $_SESSION[CACHE['RECENT_MESSAGES']['KEY']]['data'];
+    } else {
+        $statement = $GLOBALS['database']
+            ->prepare(
+                'SELECT     `d_messages_' . $messagesTableSuffix . '`.*, (
                     SELECT  COUNT(*)
+                    FROM    `d_reports`
+                    WHERE   `d_reports`.`message`    = `d_messages_' . $messagesTableSuffix . '`.`id`
+                    AND     `d_reports`.`reportedBy` = :userId
+                    AND     `d_reports`.`private`    = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+                 ) > 0 AS reported, (
+                    SELECT  `d_images`.`url`
                     FROM    `d_images`
                     WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
                     AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
-                ) > 0
-                THEN (
-                    CASE
-                        WHEN (
-                            SELECT  COUNT(*)
-                            FROM    `d_images_analyzed`
-                            WHERE   `d_images_analyzed`.`image` = (
-                                SELECT  `d_images`.`id`
-                                FROM    `d_images`
-                                WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
-                                AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
-                            )
-                        ) > 0
-                    THEN true
-                    ELSE false
-                    END
-                )
-                ELSE true
-             END AS verified
-             FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? ''      : '
-             JOIN       `d_users`                ON `d_users`.`username`        = :recipient
-             WHERE      `d_messages_' . $messagesTableSuffix . '`.`recipient`   = `d_users`.`id`') . '
-             ORDER BY   `id` DESC
-             LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
-        );
+                 ) AS image,
+                 CASE
+                    WHEN CHARACTER_LENGTH(`d_messages_' . $messagesTableSuffix . '`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
+                    THEN
+                        CONCAT(
+                            SUBSTRING(
+                                `d_messages_' . $messagesTableSuffix . '`.`content`,
+                                    1,
+                                    ' . MESSAGES['MAX_LENGTH'] . '
+                            ),
+                            \'…\'
+                        )
+                    ELSE
+                        `d_messages_' . $messagesTableSuffix . '`.`content`
+                 END AS content,
+                 CASE
+                    WHEN (
+                        SELECT  COUNT(*)
+                        FROM    `d_images`
+                        WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
+                        AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+                    ) > 0
+                    THEN (
+                        CASE
+                            WHEN (
+                                SELECT  COUNT(*)
+                                FROM    `d_images_analyzed`
+                                WHERE   `d_images_analyzed`.`image` = (
+                                    SELECT  `d_images`.`id`
+                                    FROM    `d_images`
+                                    WHERE   `d_images`.`message`     = `d_messages_' . $messagesTableSuffix . '`.`id`
+                                    AND     `d_images`.`private`     = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+                                )
+                            ) > 0
+                        THEN true
+                        ELSE false
+                        END
+                    )
+                    ELSE true
+                 END AS verified
+                 FROM       `d_messages_' . $messagesTableSuffix . '`' . ($recipient == null ? ''      : '
+                 JOIN       `d_users`                ON `d_users`.`username`        = :recipient
+                 WHERE      `d_messages_' . $messagesTableSuffix . '`.`recipient`   = `d_users`.`id`') . '
+                 ORDER BY   `id` DESC
+                 LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
+            );
 
-    $params = [ 'userId' => getUserId() ];
+        $params = [ 'userId' => getUserId() ];
 
-    if ($recipient != null) {
-        $params['recipient'] = $recipient;
+        if ($recipient != null) {
+            $params['recipient'] = $recipient;
+        }
+
+        $statement->execute($params);
+
+        $messages = $statement->fetchAll();
+
+        $_SESSION[CACHE['RECENT_MESSAGES']['KEY']] = [
+            'data'      => $messages,
+            'timestamp' => time()
+        ];
     }
 
-    $statement->execute($params);
-
-    return $statement->fetchAll();
+    return $messages;
 }
 
 function uploadImage($path, $filename) {
