@@ -6,9 +6,11 @@ let maxScrollTop        = null;
 let isPullingChunks     = false;
 let isPosting           = false;
 
-let toReport = null;
+let toReport            = null;
 
 let fab                 = null;
+
+let deferredFetcher     = null;
 
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry) != 'undefined') {
@@ -87,7 +89,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
         });
     });
 
-    return `<div class="col s12 m6 l3 message ` + (id == null ? 'not-posted' : '') + `" ` + (display && image == null ? '' : 'style="display: none;"') + ` data-message="` + id + `">
+    return `<div class="col s12 m6 l3 message ` + (id == null ? 'not-posted' : '') + `" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (LOGGED_IN && id != null ? `
                     <button
                         type="button"
@@ -99,41 +101,36 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     >
                         <i class="material-icons mid-card-fab-icon">flag</i>
                     </button>` : ``) + (image == null ? '' : `
-                    <div class="card-image">
+                    <div class="card-image" style="display: none;">
                         <img
                             class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
                             alt="Imagen adjunta"
-                            src="` + image + `"
+                            data-src="` + image + `"
                             onload="
-                                $(this)
-                                    .parent()
-                                    .parent()
-                                    .parent()
-                                    .fadeIn(() => {
-                                        if ($('.message:visible').length == $('.message').length) {
-                                            resetMessageInputs();
-
+                                if ($(this).parent().css('display') == 'none') {
+                                    $(this)
+                                        .parent()
+                                        .fadeIn(() => {
                                             setupMaterializeImages();
-                                        }
-                                    });
+                                        });
+                                } else {
+                                    $(this)
+                                        .parent()
+                                        .parent()
+                                        .fadeIn(() => {
+                                            setupMaterializeImages();
+                                        });
+                                }
 
                                 reloadLayout();
                             "
                             onerror="
                                 $(this)
                                     .parent()
+                                    .parent()
                                     .hide();
 
-                                $(this)
-                                    .parent()
-                                    .parent()
-                                    .parent()
-                                    .fadeIn(() => {
-                                        if ($('.message:visible').length == $('.message').length) {
-                                            resetMessageInputs();
-                                        }
-                                    });
-                                    reloadLayout();
+                                reloadLayout();
                             "
                         >
                     </div>`) + `
@@ -335,6 +332,8 @@ $(document).ready(function () {
             $('#messageInput')
                 .focus()
                 .click();
+
+            attachProgressBar();
         }
     });
 
@@ -364,24 +363,10 @@ $(document).ready(function () {
             $('#createMessageModal').modal('open');
         });
 
-    $(window).on('scroll', function () {
-        if (
-            $('.message').length > 0
-            &&
-            (
-                $(window).scrollTop() > (
-                    $('.message').last().offset()['top']
-                    -
-                    (
-                        (SCROLLTOP_THRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
-                    )
-                )
-                ||
-                $(window).scrollTop() == document.documentElement.scrollHeight - document.documentElement.clientHeight
-            )
-            &&
-            !isPullingChunks
-        ) {
+    function tryToPullChunks() {
+        if (isPullingChunks) {
+            console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
+        } else {
             run('messagesManager', 'getRecent', {
                 after:      getLastMessageId(),
                 recipient:  RECIPIENT
@@ -403,11 +388,26 @@ $(document).ready(function () {
                         .append(renderedHTML);
 
                     reloadLayout(renderedHTML);
+
+                    if (
+                        $('.message').last().position()['top'] > document.documentElement.clientHeight
+                        &&
+                        deferredFetcher != null
+                    ) {
+                        clearInterval(deferredFetcher);
+
+                        deferredFetcher = null;
+                    }
+
+                    console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
                 } else {
                     isPullingChunks = true;
 
+                    console.info('tryToPullChunks: nothing to pull, shutting down...');
+
                     return;
                 }
+
 
                 isPullingChunks = false;
             })
@@ -417,6 +417,36 @@ $(document).ready(function () {
                 console.error(error);
             });
         }
+    }
+
+    $(window).on('scroll', function () {
+        if (
+            $('.message').length > 0
+            &&
+            (
+                $(window).scrollTop() > (
+                    $('.message').last().offset()['top']
+                    -
+                    (
+                        (SCROLLTOP_THRESHOLD * (document.documentElement.scrollHeight - document.documentElement.clientHeight)) / 100
+                    )
+                )
+                ||
+                $(window).scrollTop() == document.documentElement.scrollHeight - document.documentElement.clientHeight
+            )
+        ) {
+            tryToPullChunks();
+        }
+
+        $('.message').each(function () {
+            if (isElementInViewport(this)) {
+                img = $(this).find('img');
+
+                if (img.length > 0 && typeof(img.attr('src')) == 'undefined') {
+                    img.attr('src', img.data()['src']);
+                }
+            }
+        });
     });
 
     $('#messageInput, #declaredName').on('keyup change', function (event) {
@@ -535,11 +565,7 @@ $(document).ready(function () {
 
                 toast('Recibí mensajes, reportá y mucho más.');
             } else {
-                if ($(window).scrollTop() > 0) {
-                    $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
-                        $('.tap-target[data-target="loginBtn"]').tapTarget('open');
-                    });
-                }
+                $('.tap-target[data-target="loginBtn"]').tapTarget('open');
             }
         }, IDLE_TIMEOUT);
     }
@@ -764,6 +790,20 @@ $(document).ready(function () {
                             parseInt(message['verified']) == 1
                         )
                     );
+            });
+
+            if ($('.message').last().position()['top'] < document.documentElement.clientHeight) {
+                deferredFetcher = setInterval(tryToPullChunks, 1000);
+            }
+
+            $('.message').each(function () {
+                if (isElementInViewport(this)) {
+                    img = $(this).find('img');
+
+                    if (img.length > 0 && typeof(img.attr('src')) == 'undefined') {
+                        img.attr('src', img.data()['src']);
+                    }
+                }
             });
 
             reloadLayout();

@@ -432,7 +432,7 @@ function getRecentMessages($recipient = null) {
              JOIN       `d_users`                ON `d_users`.`username`        = :recipient
              WHERE      `d_messages_' . $messagesTableSuffix . '`.`recipient`   = `d_users`.`id`') . '
              ORDER BY   `id` DESC
-             LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
+             LIMIT      ' . INDEX['QUICKLOAD_MESSAGES_LIMIT']
         );
 
     $params = [ 'userId' => getUserId() ];

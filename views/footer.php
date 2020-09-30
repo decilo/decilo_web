@@ -46,6 +46,9 @@
         <!-- jQuery -->
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" onload="console.info('jQuery: loaded successfully.');"></script>
 
+        <!-- jQuery Visible -->
+        <script src="https://cdn.jsdelivr.net/npm/element-in-view@0.1.0/dist/element-in-view.min.js"></script>
+
         <!-- MaterializeCSS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
 
