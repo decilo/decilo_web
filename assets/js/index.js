@@ -12,6 +12,8 @@ let fab                 = null;
 
 let deferredFetcher     = null;
 
+const LOADS_RECAPTCHA   = true;
+
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry) != 'undefined') {
         if (toAppend == null) {
@@ -354,6 +356,23 @@ $(document).ready(function () {
                 .find('.btn-large')
                 .find('i')
                 .css({ 'transform' : 'rotate(90deg)' });
+        }
+
+        if (typeof(grecaptcha) == 'undefined') {
+            // Google reCaptcha v3
+            script          = document.createElement('script');
+            script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
+            script.onload   = () => {
+                console.log('reCaptcha v3: successfully loaded.');
+
+                loader();
+            };
+
+            script.onerror  = () => {
+                toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+            }
+        
+            document.getElementsByTagName('head')[0].appendChild(script);
         }
     });
 

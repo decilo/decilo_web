@@ -568,23 +568,25 @@ $(document).ready(function () {
     async function pushLoader() {
         var script = null;
 
-        // Google reCaptcha v3
-        script          = document.createElement('script');
-        script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
-        script.onload   = () => {
-            console.log('reCaptcha v3: successfully loaded.');
+        if (typeof(LOADS_RECAPTCHA) == 'undefined' || !LOADS_RECAPTCHA) {
+            // Google reCaptcha v3
+            script          = document.createElement('script');
+            script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
+            script.onload   = () => {
+                console.log('reCaptcha v3: successfully loaded.');
 
-            loader();
-        };
+                loader();
+            };
 
-        script.onerror  = () => {
-            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+            script.onerror  = () => {
+                toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+            }
+
+            script.setAttribute('defer', true);
+            script.setAttribute('async', true);
+        
+            document.getElementsByTagName('head')[0].appendChild(script);
         }
-
-        script.setAttribute('defer', true);
-        script.setAttribute('async', true);
-    
-        document.getElementsByTagName('head')[0].appendChild(script);
 
 
         // Global site tag (gtag.js) - Google Analytics
