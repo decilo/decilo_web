@@ -565,11 +565,7 @@ $(document).ready(function () {
 
                 toast('Recibí mensajes, reportá y mucho más.');
             } else {
-                if ($(window).scrollTop() > 0) {
-                    $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
-                        $('.tap-target[data-target="loginBtn"]').tapTarget('open');
-                    });
-                }
+                $('.tap-target[data-target="loginBtn"]').tapTarget('open');
             }
         }, IDLE_TIMEOUT);
     }
