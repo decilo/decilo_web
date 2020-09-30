@@ -586,6 +586,8 @@ $(document).ready(function () {
             script.setAttribute('async', true);
         
             document.getElementsByTagName('head')[0].appendChild(script);
+        } else {
+            loader();
         }
 
 
