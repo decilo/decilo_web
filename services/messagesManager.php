@@ -238,8 +238,6 @@ if ($request == null) {
                             );
                         }
 
-                        unset($_SESSION[CACHE['RECENT_MESSAGES']['KEY']]);
-
                         if ($values['image'] == null) {
                             reply(
                                 [
