@@ -211,7 +211,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 <li>
                     <div class="user-view">
                         <div class="background">
-                            <img alt="Fondo de pantalla aleatorio" src="services/getRandomImage.php" style="filter: blur(1px);">
+                            <img class="wallpaper" alt="Fondo de pantalla aleatorio" src="<?= getRandomWallpaper() ?>" style="filter: blur(1px);">
                         </div>
                         <a href="profile.php" class="custom-link">
                             <span class="white-text name">

@@ -178,3 +178,5 @@ input[type="file"] { display: none; }
 .fixed-action-btn .btn-large i { transition: transform 0.3s ease-in-out; }
 
 #recentsContainer { overflow: hidden; }
+
+.background .wallpaper { width: 100%; }

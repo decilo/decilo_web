@@ -565,4 +565,25 @@ function getReportedMessages() {
 
     return $statement->fetchAll();
 }
+
+function getRandomWallpaper() {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT
+                d_wallpapers.id, d_wallpapers.url
+             FROM
+                d_wallpapers,
+                (
+                    SELECT      id
+                    FROM        d_wallpapers
+                    ORDER BY    RAND()
+                    LIMIT       1
+                ) AS randomizer
+             WHERE d_wallpapers.id = randomizer.id'
+        );
+    
+    $statement->execute();
+
+    return $statement->fetch()['url'];
+}
 ?>
