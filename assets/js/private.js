@@ -110,7 +110,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
             .split(' ')
             .forEach((item) => {    
                 if (item.indexOf('://') > -1) {
-                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '">http' + item + '</a>');
+                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '" rel="noreferrer">http' + item + '</a>');
                 }
         });
     });
