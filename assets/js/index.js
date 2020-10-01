@@ -16,7 +16,7 @@ const LOADS_RECAPTCHA   = true;
 
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry) != 'undefined') {
-        if (toAppend == null) {
+        if (toAppend == null || grid == null) {
             console.info('reloadLayout: grid initialization started.');
 
             grid = new Masonry(
@@ -794,22 +794,26 @@ $(document).ready(function () {
 
     function loadPreloadedRecents() {
         if (RECENTS.length > 0) {
+            let renderedHTML = '';
+
             RECENTS.forEach((message) => {
-                $('#recentsContainer')
-                    .find('.row')
-                    .append(
-                        getRenderedMessage(
-                            message['id'],
-                            message['content'],
-                            message['declaredName'],
-                            message['created'],
-                            true,
-                            parseInt(message['reported']) == 1,
-                            message['image'],
-                            parseInt(message['verified']) == 1
-                        )
-                    );
+                renderedHTML += getRenderedMessage(
+                    message['id'],
+                    message['content'],
+                    message['declaredName'],
+                    message['created'],
+                    true,
+                    parseInt(message['reported']) == 1,
+                    message['image'],
+                    parseInt(message['verified']) == 1
+                );
             });
+            
+            $('#recentsContainer')
+                .find('.row')
+                .append(renderedHTML);
+
+            reloadLayout(renderedHTML);
 
             if ($('.message').last().position()['top'] < document.documentElement.clientHeight) {
                 deferredFetcher = setInterval(tryToPullChunks, 1000);
