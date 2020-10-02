@@ -102,10 +102,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         if (isset($css)) {
             if (is_array($css)) {
                 foreach ($css as $href) {
-                    print '<link rel="stylesheet" href="' . $href . '">';
+                    print '<link rel="preload" as="style" href="' . $href . '">';
                 }
             } else {
-                print '<link rel="stylesheet" href="assets/css/' . $css . '">';
+                print '<link rel="preload" as="style" href="assets/css/' . $css . '">';
             }
         }
 
@@ -118,7 +118,8 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         </noscript>
 
         <style>
-            <?php require_once 'includes/theme.php'; ?>
+            <?php require_once 'includes/theme.php';        ?>
+            <?php require_once 'assets/css/critical.css';   ?>
         </style>
     </head>
 
