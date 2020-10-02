@@ -10,6 +10,8 @@ let loader = () => {
 
 let deferredPreloader = null;
 
+let viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
+
 function run(url, action, values, before = function () {}, overridesFailure = false) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
@@ -165,9 +167,15 @@ function isMailAddressValid(mailAddress) {
 }
 
 function isElementInViewport(element) {
-    return elementInView(element, {
-        threshold: VIEWPORT_VISIBLE_THRESHOLD / 100
-    });
+    element        = $(element);
+
+    elementTop     = element.offset().top;
+    elementBottom  = elementTop + element.outerHeight();
+
+    viewportTop    = $(window).scrollTop();
+    viewportBottom = viewportTop + $(window).height();
+
+    return elementBottom > (viewportTop - viewportThreshold) && (elementTop - viewportThreshold) < viewportBottom;
 }
 
 function setupMaterializeImages() {
@@ -642,6 +650,10 @@ $(document).ready(function () {
         } else {
             animateRedirect('index.php');
         }
+    });
+
+    $(window).on('resize', () => {
+        viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
     });
 
     // Officially proposed fix, read https://github.com/jquery/jquery/issues/2871.
