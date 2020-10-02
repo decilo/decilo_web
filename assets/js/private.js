@@ -177,7 +177,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
 $(document).ready(function () {
     createPostBtn = $('#createPostBtn');
 
-    $(window).on('scroll', function () {
+    document.addEventListener('scroll', () => {
         if (
             $('.message').length > 0
             &&
@@ -225,7 +225,7 @@ $(document).ready(function () {
                 console.error(error);
             });
         }
-    });
+    }, { passive: true });
 
     $('#messageInput, #declaredName').on('keyup change', function (event) {
         if (event.ctrlKey && event.key == 'Enter') {

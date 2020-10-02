@@ -382,7 +382,7 @@ $(document).ready(function () {
             $('#createMessageModal').modal('open');
         });
 
-    function tryToPullChunks() {
+    async function tryToPullChunks() {
         if (isPullingChunks) {
             console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
         } else {
@@ -438,7 +438,7 @@ $(document).ready(function () {
         }
     }
 
-    $(window).on('scroll', function () {
+    document.addEventListener('scroll', () => {
         if (
             $('.message').length > 0
             &&
@@ -466,7 +466,7 @@ $(document).ready(function () {
                 }
             }
         });
-    });
+    }, { passive: true });
 
     $('#messageInput, #declaredName').on('keyup change', function (event) {
         if (event.ctrlKey && event.key == 'Enter') {
