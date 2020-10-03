@@ -62,7 +62,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 
             $css = [
                 // Import MaterializeCSS
-                'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
+                'https://rawcdn.githack.com/decilo/materialize/v1-dev/dist/css/materialize.min.css',
 
                 // Custom styles.
                 'assets/css/style.css'
