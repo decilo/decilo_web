@@ -46,8 +46,8 @@
         <!-- jQuery -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"> onload="console.info('jQuery: loaded successfully.');"></script>
 
-        <!-- MaterializeCSS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
+        <!-- MaterializeCSS - custom build -->
+        <script src="https://rawcdn.githack.com/decilo/materialize/6d9e393733600ebac9276195ef923b24348abf8c/dist/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
 
         <!-- Masonry -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js" integrity="sha512-JRlcvSZAXT8+5SQQAvklXGJuxXTouyq8oIMaYERZQasB8SBDHZaUbeASsJWpk0UUrf89DP3/aefPPrlMR1h1yQ==" crossorigin="anonymous" onload="console.info('Masonry: loaded successfully.');" defer async></script>
