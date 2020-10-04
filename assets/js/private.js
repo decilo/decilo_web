@@ -168,7 +168,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         </a>
                     </div>
                     <div class="card-action center">
-                        <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
+                        <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
                     </div>
                     <ul class="collection with-header bg-dark-7 border-dark-7 hand">
                         <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, true);"`) + `>
