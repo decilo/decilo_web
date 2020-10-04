@@ -461,6 +461,17 @@ function loadRecaptcha(defer = false, async = false) {
 
 $(document).ready(function () {
     let isGoingTop = false;
+    
+    // Initialize Day.js
+    dayjs.extend(dayjs_plugin_localizedFormat);
+
+    dayjs.locale(
+        (window.navigator.userLanguage || window.navigator.language).split('-')[0]
+    );
+
+    if (typeof(dayjs.locale()) == 'undefined') {
+        dayjs.locale('en'); // Fallback to English.
+    }
 
     // Grab preloaded CSS.
     $('link[as="style"]').each(function () {

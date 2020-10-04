@@ -55,7 +55,13 @@
         </script>
 
         <!-- jQuery -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"> onload="console.info('jQuery: loaded successfully.');"></script>
+        <script src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" onload="console.info('jQuery: loaded successfully.');"></script>
+
+        <!-- Day.js -->
+        <script src="https://unpkg.com/dayjs@1.8.35/dayjs.min.js" onload="console.info('Day.js: loaded successfully.');"></script>
+        <script src="https://unpkg.com/dayjs@1.8.35/plugin/localizedFormat.js" onload="console.info('Day.js/localizedFormat: loaded successfully.');"></script>
+        <script src="https://unpkg.com/dayjs@1.8.35/locale/es.js" onload="console.info('Day.js/localizedFormat/es: loaded successfully.');"></script>
+        <script src="https://unpkg.com/dayjs@1.8.35/locale/en.js" onload="console.info('Day.js/localizedFormat/en: loaded successfully.');"></script>
 
         <!-- MaterializeCSS - custom build -->
         <script src="https://rawcdn.githack.com/decilo/materialize/v1-dev/dist/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
@@ -64,7 +70,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js" integrity="sha512-JRlcvSZAXT8+5SQQAvklXGJuxXTouyq8oIMaYERZQasB8SBDHZaUbeASsJWpk0UUrf89DP3/aefPPrlMR1h1yQ==" crossorigin="anonymous" onload="console.info('Masonry: loaded successfully.');" defer async></script>
 
         <!-- imagesloaded -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous" onload="console.info('imagesLoaded: loaded successfully.');"></script>
+        <script src="https://unpkg.com/imagesloaded@4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous" onload="console.info('imagesLoaded: loaded successfully.');"></script>
         
         <!-- Common script -->
         <script src="assets/js/common.js"></script>

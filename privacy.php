@@ -14,7 +14,7 @@ require_once 'views/header.php';
 
     <div class="divider"></div>
 
-    <p class="lato thin">
+    <p class="lato regular">
         Los datos que ingresás tanto en el portal principal como en el área de mensajes privados se almacenan en texto plano.<br>
         <br>
         Por otro lado, la información sensible que nos das, como tu contraseña, aspectos de tu vida identificables que almacenás en tu perfil como la información sobre tu aspecto físico, tus intereses y tu actividad en el sitio que compartís con nosotros, se guardan con la última versión del mecanismo de encriptación más fuerte soportado por el sistema. <br>
@@ -26,7 +26,7 @@ require_once 'views/header.php';
 
     <div class="divider"></div>
 
-    <p class="lato thin">
+    <p class="lato regular">
         Parte de la información de la que hablamos anteriormente la usamos para poder completar varias tareas técnicas requeridas por motivos de seguridad y estabilidad del sistema. <br>
         <br>
         Por ejemplo, usamos la tecnología de Google reCaptcha v3 para proteger el sitio: tu IP y un identificador único temporal son emparejados entre tu dispositivo y el servidor para tratar de identificarte como un usuario legítimo. Si no lo logramos, es posible que un desafío rápido aparezca. <br>
@@ -42,7 +42,7 @@ require_once 'views/header.php';
 
     <div class="divider"></div>
 
-    <p class="lato thin">
+    <p class="lato regular">
         Nos comprometemos a ser transparentes y manipular tus datos de manera segura. Vas a poder descargar una versión en tiempo real de lo que sabemos internamente sobre vos cuando quieras y todas las veces que quieras. <br>
         <br>
         Tené en cuenta que el volúmen de esta información puede fluctuar entre descarga y descarga, puesto que tu IP podría cambiar y dejar de estar vinculada a un conjunto de datos específico. <br>
@@ -54,7 +54,7 @@ require_once 'views/header.php';
 
     <div class="divider"></div>
 
-    <p class="lato thin">
+    <p class="lato regular">
         Si querés, podés eliminar tu cuenta y todos los datos relacionados de manera física y permanente con ella. <br>
         <br>
         Para hacerlo, tocá "Eliminar cuenta" en "Mi cuenta". Te vamos a pedir que confirmes la operación a través de un correo electrónico. <br>

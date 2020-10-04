@@ -21,20 +21,20 @@ require_once 'views/header.php';
             <?php
             if (getCurrentUser()['username'] == null) {
                 print '
-                <p class="col s12 thin center" style="margin-top: 1.5em;">
+                <p class="col s12 regular center" style="margin-top: 1.5em;">
                     Falta un paso para que puedas empezar a recibir mensajes. <br>
                     <br>                    
                     Visitá tu perfil y <a href="profile.php" class="custom-link">configurá tu nombre de usuario</a>.
                 </p>';
             } else {
                 print '
-                <p class="col s12 thin center" style="margin-top: 1.5em;">
+                <p class="col s12 regular center" style="margin-top: 1.5em;">
                     Empezá a recibir mensajes, compartí una captura de tu código QR.
                 </p>
                 <div class="col s12 m8 offset-m2 l6 offset-l3">
                     <img src="' . getUserQR() . '">
                 </div>
-                <p class="col s12 thin center">
+                <p class="col s12 regular center">
                     También podés <span id="shareBtnHint" style="display: none;"> tocar el botón de abajo o </span> copiar y pegar tu link.
                 </p>
                 <input id="shareableLink" type="text" class="dark-5 center col s10 offset-s1 m10 offset-m1 offset-l3 l6" value="' . getUserLink() . '" readonly>

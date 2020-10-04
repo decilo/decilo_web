@@ -64,8 +64,17 @@ function tryToRemove() {
 }
 
 function reloadLayout(toAppend = null) {
+    function setupInstance() {
+        if (toAppend != null) {
+            grid.appended($(toAppend));
+        }
+
+        grid.reloadItems();
+        grid.layout();
+    }
+
     if (typeof(Masonry) != 'undefined') {
-        if (toAppend == null) {
+        if (toAppend == null || grid == null) {
             console.info('reloadLayout: grid initialization started.');
 
             grid = new Masonry(
@@ -82,15 +91,21 @@ function reloadLayout(toAppend = null) {
         } else {
             console.info('reloadLayout: reloading newly added items.');
 
-            if (toAppend != null) {
-                grid.appended($(toAppend));
-            }
-
-            grid.reloadItems();
-            grid.layout();
+            setupInstance();
 
             $('.tooltipped').tooltip();
         }
+
+        $('#recentsContainer')
+            .find('img')
+            .imagesLoaded()
+            .progress((instance) => {
+                if (instance.progressedCount == instance.images.length) {
+                    setupMaterializeImages();
+
+                    setupInstance();
+                }
+            });
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }
@@ -128,17 +143,6 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <img
                             alt="Imagen adjunta"
                             src="` + image + `"
-                            onload="
-                                $(this)
-                                    .parent()
-                                    .parent()
-                                    .parent()
-                                    .fadeIn(() => {
-                                        setupMaterializeImages();
-                                    });
-
-                                reloadLayout();
-                            "
                             onerror="
                                 $(this)
                                     .parent()
@@ -156,7 +160,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato word-wrap process-whitespaces overflow-ellipsis message-content">` + 
+                        <p class="lato regular word-wrap process-whitespaces overflow-ellipsis message-content">` + 
                             (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
                         </p>
                         <div class="message-spacer"></div>
@@ -360,69 +364,6 @@ $(document).ready(function () {
         $('#requestRemovalModal').modal();
     };
 
-    // Day.js loader
-    let timeParsers = [
-        'https://unpkg.com/dayjs@1.8.21/dayjs.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/plugin/localizedFormat.min.js'
-    ];
-
-    let loaded = 0;
-
-    let postScript = null;
-
-    timeParsers.forEach((target) => {
-        postScript          = document.createElement('script');
-        postScript.src      = target;
-        postScript.onload   = () => {
-            loaded++;
-
-            if (loaded == timeParsers.length) {
-                loaded = 0;
-
-                timeParsers = [
-                    'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/es.min.js',
-                    'https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.35/locale/en.min.js'
-                ];
-
-                timeParsers.forEach((target) => {
-                    loaded++;
-
-                    if (loaded == timeParsers.length) {
-                        postScript          = document.createElement('script');
-                        postScript.src      = target;
-                        postScript.onload   = () => {
-                            dayjs.extend(dayjs_plugin_localizedFormat);
-                        
-                            dayjs.locale(
-                                (window.navigator.userLanguage || window.navigator.language).split('-')[0]
-                            );
-                    
-                            if (typeof(dayjs.locale()) == 'undefined') {
-                                dayjs.locale('en'); // Fallback to English.
-                            }
-    
-                            loadPreloadedRecents();
-                        }
-
-                        postScript.setAttribute('defer', true);
-                        postScript.setAttribute('async', true);
-        
-                        document.getElementsByTagName('body')[0].appendChild(postScript);
-                    }
-                });
-            }
-        }
-
-        postScript.onerror = () => {
-            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
-        }
-
-        postScript.setAttribute('defer', true);
-        postScript.setAttribute('async', true);
-
-        document.getElementsByTagName('body')[0].appendChild(postScript);
-    });
-
     function loadPreloadedRecents() {
         if (RECENTS.length > 0) {
             RECENTS.forEach((message) => {
@@ -446,4 +387,6 @@ $(document).ready(function () {
             displayRemovableWarning(NO_MESSAGES_HINT);
         }
     }
+
+    loadPreloadedRecents();
 });
