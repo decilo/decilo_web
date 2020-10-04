@@ -118,12 +118,11 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         </noscript>
 
         <style>
-            <?php require_once 'includes/theme.php';        ?>
-            <?php require_once 'assets/css/critical.css';   ?>
+            <?php require_once 'includes/theme.php'; ?>
         </style>
     </head>
 
-    <body class="bg-dark-4" <?= isset($_GET['fromLogin']) ? 'style="display: none;"' : '' ?>>
+    <body class="bg-dark-4" style="display: none; background-color: #<?= THEME[3] ?>;">
         <?php
 
         if ($isCrawling) {
@@ -212,7 +211,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 <li>
                     <div class="user-view">
                         <div class="background">
-                            <img class="wallpaper" alt="Fondo de pantalla aleatorio" src="<?= getRandomWallpaper() ?>" style="filter: blur(1px);">
+                            <img class="wallpaper" alt="Fondo de pantalla aleatorio" data-src="<?= getRandomWallpaper() ?>" style="filter: blur(1px);">
                         </div>
                         <a href="profile.php" class="custom-link">
                             <span class="white-text name">

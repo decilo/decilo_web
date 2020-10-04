@@ -357,6 +357,10 @@ $(document).ready(function () {
         if ($('textarea').length > 0) {
             M.textareaAutoResize($('textarea'));
         }
+
+        wallpaper = $('.wallpaper');
+        
+        wallpaper.attr('src', wallpaper.attr('data-src'));
     });
 
     $('#continueLoginBtn, #tryAccountRecoveryBtn').on('click', function (event) {
