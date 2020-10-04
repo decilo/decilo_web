@@ -295,6 +295,12 @@ function openCommentsModal(message, private) {
         }
     });
 
+    $('#commentInput, #commentDeclaredName').on('change keyup', (event) => {
+        if (event.ctrlKey && event.key == 'Enter') {
+            $('#sendCommentBtn').click();
+        }
+    });
+
     $('#sendCommentBtn').on('click', () => {
         content         = $('#commentInput').val();
         declaredName    = $('#commentDeclaredName').val();
@@ -306,6 +312,8 @@ function openCommentsModal(message, private) {
                 declaredName:   declaredName,
                 message:        message,
                 private:        private
+            }, () => {
+                disable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
             })
             .done((response) => {
                 console.info(response);
@@ -366,9 +374,16 @@ function openCommentsModal(message, private) {
                     );
 
                     console.info('postComment: finally, I did it, we did it, what we all waited for so long is finally here, we\'re done!');
+
+                    $('#commentInput').removeClass('invalid valid');
+
+                    toast('¡Listo! Publicaste tu comentario.');
                 } else {
                     toast('Algo anda mal, probá de nuevo.');
                 }
+            })
+            .always(() => {
+                enable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
             });
 
             $('#commentInput')
