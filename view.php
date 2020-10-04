@@ -56,7 +56,7 @@ require_once 'views/header.php';
 
         <div class="col s12"></div>
 
-        <p class="lato thin word-wrap col s12 word-wrap process-whitespaces overflow-ellipsis">
+        <p class="lato regular word-wrap col s12 word-wrap process-whitespaces overflow-ellipsis">
             <?= $message['content'] ?>
         </p>
     </div>
