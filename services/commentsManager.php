@@ -78,7 +78,7 @@ if ($request == null) {
                         'content'       => $values['content'],
                         'declaredName'  => $values['declaredName'],
                         'message'       => $values['message'],
-                        'private'       => $values['private']
+                        'private'       => $values['private'] ? 1 : 0
                     ]);
 
                     reply(
