@@ -340,4 +340,4 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 ?>
             </ul>
         </header>
-        <main style="visibility: hidden;">
+        <main>

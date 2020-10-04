@@ -473,34 +473,6 @@ $(document).ready(function () {
         $('body').fadeIn();
     }
 
-    if ($('main').css('visibility') == 'hidden') {
-        /* This is a workaround to prevent the tooltip 
-         * from getting stuck at the top-left corner of 
-         * the main element.
-         * 
-         * Trust me, there was no way around. 
-         */
-
-        $('main')
-            .css({ 
-                'display' : 'none', 
-                'visibility' : 'visible'
-            })
-            .fadeIn();
-    }
-
-    $('a').each(function () {
-        if ($(this).hasClass('hard-switch')) {
-            $(this).on('click', function (event) {
-                event.preventDefault();
-
-                animateRedirect(
-                    $(this).attr('href')
-                );
-            });
-        }
-    });
-
     $('.logOutBtn').on('click', function (event) {
         event.preventDefault();
 
@@ -517,37 +489,14 @@ $(document).ready(function () {
         }
     });
 
-    if (!window.location.href.includes('login') && HEARTBEAT_INTERVAL > -1) {
-        let heartbeat = setInterval(function () {
-            run('accountManager', 'areYouThere?', undefined, function () {}, true)
-            .done(function (response) {
-                console.log(response);
-
-                switch (response.status) {
-                    case NOT_ALLOWED:
-                        toast('Por favor volvé a iniciar sesión.');
-
-                        clearInterval(heartbeat);
-
-                        animateRedirect('login.php', true, MATERIALIZE_TRANSITION_TIME * 9);
-
-                        break;
-                }
-            })
-            .fail(function (error) {
-                console.error(error);
-
-                toast('Estamos teniendo problemas para conectarnos, por favor esperá un rato.');
-            });
-        }, HEARTBEAT_INTERVAL);
-    }
-
-    $(window).on('scroll', () => {
+    document.addEventListener('scroll', () => {
         // Prevent this error, it doesn't really matter.
         try {
-            $('.tooltipped').tooltip('close');
+            if ($('.tooltipped').length > 0) {
+                $('.tooltipped').tooltip('close');
+            }
         } catch (exception) {}
-    });
+    }, { passive: true });
 
     // toast(navigator.userAgent);
 
@@ -892,11 +841,4 @@ $(document).ready(function () {
     $(window).on('resize', () => {
         viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
     });
-
-    // Officially proposed fix, read https://github.com/jquery/jquery/issues/2871.
-    jQuery.event.special.touchstart = {
-        setup: function( _, ns, handle ){
-            this.addEventListener('touchstart, wheel, scroll', handle, { passive: true });
-        }
-    };
 });

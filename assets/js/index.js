@@ -101,7 +101,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     >
                         <i class="material-icons mid-card-fab-icon">flag</i>
                     </button>` : ``) + (image == null ? '' : `
-                    <div class="card-image" style="display: none;">
+                    <div class="card-image">
                         <img
                             class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
                             alt="Imagen adjunta"
