@@ -69,15 +69,6 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             ];
 
             $css = array_merge($css, $backupCSS);
-
-            $fonts = [
-                // Import Google Icon Font
-                'https://fonts.googleapis.com/icon?family=Material+Icons&display=swap'
-            ];
-
-            foreach ($fonts as $font) {
-                print '<link rel="stylesheet" href="' . $font . '">';
-            }
         ?>
 
         <!--
@@ -205,6 +196,15 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.woff') format('woff'), /* Modern Browsers */
                     url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
                     url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
+            }
+
+            /* material-icons */
+            @font-face {
+                font-family: 'Material Icons';
+                font-style: normal;
+                font-weight: 400;
+                font-display: swap;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/material-icons.woff2') format('woff2');
             }
         </style>
     </head>
