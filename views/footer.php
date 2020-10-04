@@ -36,6 +36,17 @@
                 </div>
             </div>
 
+            <!-- Comments modal -->
+            <div id="commentsModal" class="modal modal-fixed-footer bg-dark-4 dark-5">
+                <div class="modal-content">
+                    <p class="flow-text">
+                        Comentarios
+                    </p>
+
+                    <div id="commentsMessageWrapper"></div>
+                </div>
+            </div>
+
         </main>
         <footer></footer>
 

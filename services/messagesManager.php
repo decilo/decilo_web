@@ -53,6 +53,12 @@ if ($request == null) {
                                 ELSE
                                     `d_messages_public`.`content`
                              END AS content,
+                             (
+                                SELECT  COUNT(*)
+                                FROM    `d_comments`
+                                WHERE   `d_comments`.`message` = `d_messages_public`.`id`
+                                AND     `d_comments`.`private` = false
+                             ) AS comments,
                              CASE
                                 WHEN (
                                     SELECT  COUNT(*)
@@ -118,7 +124,13 @@ if ($request == null) {
                                     )
                                 ELSE
                                     `d_messages_private`.`content`
-                             END AS content
+                             END AS content,
+                             (
+                                SELECT  COUNT(*)
+                                FROM    `d_comments`
+                                WHERE   `d_comments`.`message` = `d_messages_private`.`id`
+                                AND     `d_comments`.`private` = true
+                             ) AS comments
                              FROM       `d_messages_private`
                              WHERE      TRUE' . (isset($values['after']) ? '
                              AND        `d_messages_private`.`id` < :after' : '') . '
@@ -164,7 +176,13 @@ if ($request == null) {
                                     )
                                 ELSE
                                     `d_messages_private`.`content`
-                             END AS content
+                             END AS content,
+                             (
+                                SELECT  COUNT(*)
+                                FROM    `d_comments`
+                                WHERE   `d_comments`.`message` = `d_messages_private`.`id`
+                                AND     `d_comments`.`private` = true
+                             ) AS comments
                              FROM       `d_messages_private`
                              JOIN       `d_users`
                                 ON      `d_users`.`id`           = `d_messages_private`.`recipient`

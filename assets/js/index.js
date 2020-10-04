@@ -12,8 +12,6 @@ let fab                 = null;
 
 let deferredFetcher     = null;
 
-const LOADS_RECAPTCHA   = true;
-
 function reloadLayout(toAppend = null) {
     if (typeof(Masonry) != 'undefined') {
         if (toAppend == null || grid == null) {
@@ -78,7 +76,7 @@ function getLastMessageId() {
                 .data('message');
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true) {
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -153,11 +151,12 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>
                     <div class="card-action center">
                         <span class="lato thin small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
-                    </div>` +
-                    // <ul class="collection with-header bg-dark-7 border-dark-7 hand">
-                    //    <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `> Comentarios (0) </li>
-                    // </ul>
-                    `
+                    </div>
+                    <ul class="collection with-header bg-dark-7 border-dark-7 hand">
+                        <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `>
+                            Comentarios (<span class="commentCount">` + comments + `</span>)
+                        </li>
+                    </ul>
                 </div>
              </div>`;
 }
@@ -358,22 +357,7 @@ $(document).ready(function () {
                 .css({ 'transform' : 'rotate(90deg)' });
         }
 
-        if (typeof(grecaptcha) == 'undefined') {
-            // Google reCaptcha v3
-            script          = document.createElement('script');
-            script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
-            script.onload   = () => {
-                console.log('reCaptcha v3: successfully loaded.');
-
-                loader();
-            };
-
-            script.onerror  = () => {
-                toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
-            }
-        
-            document.getElementsByTagName('head')[0].appendChild(script);
-        }
+        loadRecaptcha();
     });
 
     fabDOM
@@ -398,7 +382,7 @@ $(document).ready(function () {
                     
                     response.result.forEach((message) => {
                         renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1
+                            message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments']
                         );
                     });
 
@@ -805,7 +789,8 @@ $(document).ready(function () {
                     true,
                     parseInt(message['reported']) == 1,
                     message['image'],
-                    parseInt(message['verified']) == 1
+                    parseInt(message['verified']) == 1,
+                    message['comments']
                 );
             });
             

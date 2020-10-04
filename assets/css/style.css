@@ -117,7 +117,7 @@ div:focus { outline: none !important; }
 
 .soft-link { color: rgb(59, 225, 255); }
 
-.mid-card-fab       { bottom: 2.45rem   !important; }
+.mid-card-fab       { bottom: 6.10rem   !important; }
 .mid-card-fab-icon  { font-size: 1.4rem !important; }
 
 .preloader-bottom-small {
@@ -144,6 +144,7 @@ input[type="file"] { display: none; }
 .no-avatar { padding-left: 20px !important; }
 
 #commentsMessageWrapper * * img { top: 25%; }
+#commentsModal .modal-content { height: 100%; }
 
 .add-space { margin-left: 0.3em; }
 

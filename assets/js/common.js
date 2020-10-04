@@ -219,6 +219,231 @@ function setupMaterializeImages() {
     }
 }
 
+function getRenderedComment(id = null, declaredName = null, content) {
+    return  `<li data-comment="` + (id == null ? 'null' : id) + `">
+                <div class="collapsible-header bg-dark-7 border-dark-8">
+                    ` + (declaredName == null ? 'Anónimo' : declaredName) + ` • <span class="thin add-space"> ` + dayjs().format('L LT') +` </span>
+                </div>
+                <div class="collapsible-body bg-dark-7 border-dark-8">
+                    <span class="thin word-wrap process-whitespaces overflow-ellipsis">` + content + `</span>
+                </div>
+             </li>`;
+}
+
+function openCommentsModal(message, private) {
+    loadRecaptcha();
+
+    $('#commentsModal').modal('open');
+
+    let card = $('.message[data-message="' + message + '"]');
+    let image = card.find('img');
+
+    $('#commentsMessageWrapper').html(
+        `<ul class="collection border-dark-8">
+            <li class="collection-item avatar ` + (image.length > 0 ? '' : 'no-avatar') + ` bg-dark-7">` + (image.length > 0 ? `
+                <img
+                    src="` + image.prop('src') + `"
+                    alt="` + image.prop('alt') + `"
+                    class="circle"
+                >` : '') + `
+                <div class="collection-spacer"></div>
+                <span class="title"> ` + card.find('.card-title').text() +` </span>
+                <div class="collection-spacer"></div>
+                <div class="collection-spacer"></div>
+                <p class="thin word-wrap process-whitespaces">` + 
+                    card.find('.card-content').find('p[class*="message-content"]').text().trim() + `
+                </p>
+                <div class="collection-spacer"></div>
+            </li>
+         </ul>
+
+         <div class="divider"></div>
+         <div class="collection-spacer"></div>
+         <div class="collection-spacer"></div>
+
+         <div class="row">
+            <div class="input-field col s12">
+                <textarea id="commentInput" class="materialize-textarea dark-5" data-length="65535"></textarea>
+                <label for="commentInput"> Dejá tu comentario </label>
+                <span class="helper-text" data-error="Tenés que escribir un comentario" data-success="Ya podés publicarlo">Escribí tu comentario</span>
+            </div>
+
+            <div class="input-field col s12 m9">
+                <input id="commentDeclaredName" type="text" placeholder="Anónimo" class="validate dark-5">
+                <label for="commentDeclaredName" class="active"> Tu nombre </label>
+            </div>
+
+            <div class="col s6 offset-s6 m3">
+                <button id="sendCommentBtn" type="button" class="btn waves-effect waves-light col right btn-block bg-dark-1 dark-5 fixed-width-btn fixed-height-btn">
+                    Enviar
+                </button>
+            </div>
+         </div>
+
+         <ul id="commentsCollapsible" class="collapsible border-dark-8" style="display: none;"> </ul>`
+    );
+
+    $('#commentInput').on('change keyup keydown', function () {
+        if ($(this).val().length > 0) {
+            $(this)
+                .removeClass('invalid')
+                .addClass('valid');
+        } else {
+            $(this)
+                .addClass('invalid')
+                .removeClass('valid');
+        }
+    });
+
+    $('#sendCommentBtn').on('click', () => {
+        content         = $('#commentInput').val();
+        declaredName    = $('#commentDeclaredName').val();
+        declaredName    = declaredName.length > 0 ? declaredName : null;
+
+        if (content.length > 0) {
+            run('commentsManager', 'postComment', {
+                content:        content,
+                declaredName:   declaredName,
+                message:        message,
+                private:        private
+            })
+            .done((response) => {
+                console.info(response);
+
+                if (response.status == OK) {
+                    console.info('postComment: alright, we got a response!');
+
+                    $('#commentInput, #commentDeclaredName')
+                        .val('')
+                        .change();
+
+                    console.info('postComment: now, we\'ll clean up those inputs.');
+
+                    commentsCollapsible = $('#commentsCollapsible');
+
+                    instance = M.Collapsible.getInstance($('#commentsCollapsible'));
+
+                    for (let index = 0; index < commentsCollapsible.find('li').length; index++) {
+                        instance.close(index);
+                    }
+
+                    console.info('postComment: ok, we have re-initialized the collapsible and closed its items.');
+
+                    commentsCollapsible
+                        .find('.active')
+                        .removeClass('active');
+
+                    commentsCollapsible.prepend(
+                        getRenderedComment(response.result.id, declaredName, content)
+                    );
+
+                    console.info('postComment: cool, we got the DOM changed.');
+                    
+                    // Reset the container and the instance because of reasons.
+                    commentsCollapsible.collapsible({ accordion: false });
+                    commentsCollapsible = $('#commentsCollapsible');
+
+                    instance = M.Collapsible.getInstance($('#commentsCollapsible'));
+
+                    instance.open(0);
+                    
+                    console.info('postComment: so we\'ve just re-initialized the instance back again, this is getting frustrating.');
+
+                    firstComment = commentsCollapsible.find('li').first();
+
+                    $('#commentsModal')
+                        .find('.modal-content')
+                        .animate({
+                            scrollTop:
+                                firstComment.offset()['top']
+                                -
+                                firstComment.find('.collapsible-header').height()
+                        });
+
+                    commentCount = $('.message[data-message=' + message + ']').find('.commentCount');
+                    commentCount.html(
+                        parseInt(commentCount.html()) + 1
+                    );
+
+                    console.info('postComment: finally, I did it, we did it, what we all waited for so long is finally here, we\'re done!');
+                } else {
+                    toast('Algo anda mal, probá de nuevo.');
+                }
+            });
+
+            $('#commentInput')
+                .removeClass('invalid')
+                .addClass('valid');
+        } else {
+            $('#commentInput')
+                .addClass('invalid')
+                .removeClass('valid');
+        }
+    });
+
+    commentsCollapsible = $('#commentsCollapsible');
+    commentsCollapsible.collapsible({ accordion: false });
+
+    run('commentsManager', 'getComments', {
+        message: message,
+        private: private
+    })
+    .done((response) => {
+        console.info(response);
+
+        commentsCollapsible = $('#commentsCollapsible');
+
+        switch (response.status) {
+            case OK:
+                let renderedHTML = '';
+
+                response.result.forEach((comment) => {
+                    renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content']);
+                });
+
+                commentsCollapsible.append(renderedHTML);
+                commentsCollapsible.slideDown();
+
+                commentsCollapsible.collapsible({ accordion: false });
+        
+                if (commentsCollapsible.find('li').length > 0) {
+                    M.Collapsible
+                        .getInstance($('#commentsCollapsible'))
+                        .open(0);
+                }
+
+                break;
+        }
+    });
+}
+
+function loadRecaptcha(defer = false, async = false) {
+    if (typeof(grecaptcha) == 'undefined') {
+        // Google reCaptcha v3
+        script          = document.createElement('script');
+        script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
+        script.onload   = () => {
+            console.log('reCaptcha v3: successfully loaded.');
+
+            loader();
+        };
+
+        if (defer) {
+            script.defer = true;
+        }
+
+        if (async) {
+            script.async = true;
+        }
+
+        script.onerror  = () => {
+            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+        }
+    
+        document.getElementsByTagName('head')[0].appendChild(script);
+    }
+}
+
 $(document).ready(function () {
     let isGoingTop = false;
 
@@ -350,6 +575,10 @@ $(document).ready(function () {
             $('.tooltip-content').addClass('thin');
         }
     
+        if ($('.collapsible').length > 0) {    
+            $('.collapsible').collapsible();
+        }
+    
         $('.scrollspy').scrollSpy();
 
         M.updateTextFields();
@@ -365,6 +594,8 @@ $(document).ready(function () {
 
     $('#continueLoginBtn, #tryAccountRecoveryBtn').on('click', function (event) {
         loginPassword = $('#loginPassword');
+
+        loadRecaptcha();
 
         if (
             event.target.id == 'continueLoginBtn'
@@ -515,6 +746,14 @@ $(document).ready(function () {
         }
     });
 
+    $('#commentsModal').modal({
+        onOpenEnd: () => {
+            $('#commentsModal')
+                .find('.modal-content')
+                .scrollTop(0);
+        }
+    });
+
     $('#loginModal').modal({ 
         onOpenEnd: () => {
             $('#loginMailAddress')
@@ -580,28 +819,7 @@ $(document).ready(function () {
     async function pushLoader() {
         var script = null;
 
-        if (typeof(LOADS_RECAPTCHA) == 'undefined' || !LOADS_RECAPTCHA) {
-            // Google reCaptcha v3
-            script          = document.createElement('script');
-            script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
-            script.onload   = () => {
-                console.log('reCaptcha v3: successfully loaded.');
-
-                loader();
-            };
-
-            script.onerror  = () => {
-                toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
-            }
-
-            script.setAttribute('defer', true);
-            script.setAttribute('async', true);
-        
-            document.getElementsByTagName('head')[0].appendChild(script);
-        } else {
-            loader();
-        }
-
+        loader();
 
         // Global site tag (gtag.js) - Google Analytics
         script          = document.createElement('script');

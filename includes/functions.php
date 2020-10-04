@@ -431,6 +431,12 @@ function getRecentMessages($recipient = null) {
                 ELSE
                     `d_messages_' . $messagesTableSuffix . '`.`content`
              END AS content,
+             (
+                SELECT  COUNT(*)
+                FROM    `d_comments`
+                WHERE   `d_comments`.`message` = `d_messages_' . $messagesTableSuffix . '`.`id`
+                AND     `d_comments`.`private` = ' . ($recipient == null ? 'FALSE' : 'TRUE') . '
+             ) AS comments,
              CASE
                 WHEN (
                     SELECT  COUNT(*)
