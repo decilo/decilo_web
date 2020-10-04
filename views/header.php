@@ -20,7 +20,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="background-color: #<?= THEME[3] ?>;">
     <head>
         <!-- Let browser know website is optimized for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
