@@ -71,9 +71,6 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             $css = array_merge($css, $backupCSS);
 
             $fonts = [
-                // Import Roboto font
-                'https://fonts.googleapis.com/css2?family=Lato:wght@150;300;500&family=Roboto:wght@150;300;500&display=swap',
-
                 // Import Google Icon Font
                 'https://fonts.googleapis.com/icon?family=Material+Icons&display=swap'
             ];
@@ -119,6 +116,90 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 
         <style>
             <?php require_once 'includes/theme.php'; ?>
+
+            /* lato-100 - latin */
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 100;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.eot'); /* IE9 Compat Modes */
+                src: local('Lato Hairline'), local('Lato-Hairline'),
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.woff2') format('woff2'), /* Super Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.woff') format('woff'), /* Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.ttf') format('truetype'), /* Safari, Android, iOS */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.svg#Lato') format('svg'); /* Legacy iOS */
+            }
+
+            /* lato-300 - latin */
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 300;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.eot'); /* IE9 Compat Modes */
+                src: local('Lato Light'), local('Lato-Light'),
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.woff') format('woff'), /* Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.svg#Lato') format('svg'); /* Legacy iOS */
+            }
+
+            /* lato-regular - latin */
+            @font-face {
+                font-family: 'Lato';
+                font-style: normal;
+                font-weight: 400;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.eot'); /* IE9 Compat Modes */
+                src: local('Lato Regular'), local('Lato-Regular'),
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.woff') format('woff'), /* Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.svg#Lato') format('svg'); /* Legacy iOS */
+            }
+
+            /* roboto-100 - latin */
+            @font-face {
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 100;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.eot'); /* IE9 Compat Modes */
+                src: local('Roboto Thin'), local('Roboto-Thin'),
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.woff2') format('woff2'), /* Super Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.woff') format('woff'), /* Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.ttf') format('truetype'), /* Safari, Android, iOS */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.svg#Roboto') format('svg'); /* Legacy iOS */
+            }
+
+            /* roboto-300 - latin */
+            @font-face {
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 300;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.eot'); /* IE9 Compat Modes */
+                src: local('Roboto Light'), local('Roboto-Light'),
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.woff') format('woff'), /* Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.svg#Roboto') format('svg'); /* Legacy iOS */
+            }
+
+            /* roboto-regular - latin */
+            @font-face {
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 400;
+                src: url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.eot'); /* IE9 Compat Modes */
+                src: local('Roboto'), local('Roboto-Regular'),
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.woff') format('woff'), /* Modern Browsers */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+                    url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
+            }
         </style>
     </head>
 
