@@ -122,6 +122,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Lato';
                 font-style: normal;
                 font-weight: 100;
+                font-display: swap;
                 src: url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.eot'); /* IE9 Compat Modes */
                 src: local('Lato Hairline'), local('Lato-Hairline'),
                     url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-100.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -136,6 +137,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Lato';
                 font-style: normal;
                 font-weight: 300;
+                font-display: swap;
                 src: url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.eot'); /* IE9 Compat Modes */
                 src: local('Lato Light'), local('Lato-Light'),
                     url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -150,6 +152,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Lato';
                 font-style: normal;
                 font-weight: 400;
+                font-display: swap;
                 src: url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.eot'); /* IE9 Compat Modes */
                 src: local('Lato Regular'), local('Lato-Regular'),
                     url('<?= ORACLE_FONTS_CDN_URL ?>/lato-v17-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -164,6 +167,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Roboto';
                 font-style: normal;
                 font-weight: 100;
+                font-display: swap;
                 src: url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.eot'); /* IE9 Compat Modes */
                 src: local('Roboto Thin'), local('Roboto-Thin'),
                     url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-100.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -178,6 +182,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Roboto';
                 font-style: normal;
                 font-weight: 300;
+                font-display: swap;
                 src: url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.eot'); /* IE9 Compat Modes */
                 src: local('Roboto Light'), local('Roboto-Light'),
                     url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -192,6 +197,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Roboto';
                 font-style: normal;
                 font-weight: 400;
+                font-display: swap;
                 src: url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.eot'); /* IE9 Compat Modes */
                 src: local('Roboto'), local('Roboto-Regular'),
                     url('<?= ORACLE_FONTS_CDN_URL ?>/roboto-v20-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
