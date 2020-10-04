@@ -32,7 +32,7 @@ require_once 'views/header.php';
                     Empezá a recibir mensajes, compartí una captura de tu código QR.
                 </p>
                 <div class="col s12 m8 offset-m2 l6 offset-l3">
-                    ' . getUserQR() . '
+                    <img src="' . getUserQR() . '">
                 </div>
                 <p class="col s12 thin center">
                     También podés <span id="shareBtnHint" style="display: none;"> tocar el botón de abajo o </span> copiar y pegar tu link.

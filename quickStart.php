@@ -43,6 +43,8 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                 setUserId($match['id']);
                 setUserName($match['username']);
 
+                getUserQR();
+
                 if (isset($_GET['changeTo'])) {
                     if (filter_var($_GET['changeTo'], FILTER_VALIDATE_EMAIL)) {
                         $statement =

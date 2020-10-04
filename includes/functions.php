@@ -29,6 +29,49 @@ function getUserMailAddress() {
     return isset($_SESSION[USER_MAIL_ADDRESS_STORE]) ? $_SESSION[USER_MAIL_ADDRESS_STORE] : null;
 }
 
+function setUserQR($url) {
+    $_SESSION[USER_QR_STORE] = $url;
+}
+
+function getUserQR() {
+    if (!isset($_SESSION[USER_QR_STORE]) || $_SESSION[USER_QR_STORE] == null) {
+        $options = new QROptions();
+
+        $options->outputType = QRCode::OUTPUT_MARKUP_SVG;
+        $options->eccLevel = QRCode::ECC_H;
+        $options->markupDark = '#' . THEME[0];
+        $options->markupLight = '#' . THEME[3];
+
+        $qrcode = new QRCode($options);
+
+        $image = $qrcode->render(getUserLink());
+
+        $filename = sha1($image) . '.svg';
+
+        $filePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
+
+        file_put_contents($filePath, $image);
+
+        $url = uploadImage($filePath, $filename);
+
+        setUserQR($url);
+
+        $statement =
+            $GLOBALS['database']->prepare(
+                'UPDATE `d_users`
+                    SET `qr` = :qr
+                 WHERE `id` = :id'
+            );
+
+        $statement->execute([
+            'qr' => $url,
+            'id' => getUserId()
+        ]);
+    }
+    
+    return $_SESSION[USER_QR_STORE];
+}
+
 function setAllowance($level) {
     $_SESSION[ALLOWANCE_LEVEL_STORE] = $level;
 }
@@ -116,21 +159,6 @@ function getRecipientUsername($username) {
 
 function getUserLink() {
     return SYSTEM_HOSTNAME . '/?to=' . getCurrentUser()['username'];
-}
-
-function getUserQR() {
-    $options = new QROptions();
-
-    $options->outputType = QRCode::OUTPUT_MARKUP_SVG;
-    $options->eccLevel = QRCode::ECC_H;
-    $options->markupDark = '#' . THEME[0];
-    $options->markupLight = '#' . THEME[3];
-    
-    // invoke a fresh QRCode instance
-    $qrcode = new QRCode($options);
-    
-    // and dump the output
-    return $qrcode->render(getUserLink());
 }
 
 function verifyCaptcha($token) {
@@ -461,15 +489,18 @@ function uploadImage($path, $filename) {
         )
     );
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($mime, $path);
+    $mime = strpos($mime, 'svg') !== false ? 'image/svg+xml' : $mime;
 
     curl_setopt_array($curl,
         [
             CURLOPT_PUT             => true,
             CURLOPT_INFILE          => $file,
             CURLOPT_INFILESIZE      => filesize($path),
+            CURLOPT_HEADER          => true,
             CURLOPT_HTTPHEADER      => [ 
-                'Content-Type: ' . finfo_file($finfo, $path),
+                'Content-Type: ' . $mime,
                 'opc-meta-cache-control: max-age=31557600, public',
                 'Cache-Control: max-age=31557600, public'
             ],
