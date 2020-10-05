@@ -383,8 +383,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 font-family: 'Material Icons';
                 font-style: normal;
                 font-weight: 400;
-                font-display: swap;
-                src: url('<?= ORACLE_FONTS_CDN_URL ?>/material-icons.woff2') format('woff2');
+                src: url(https://fonts.gstatic.com/s/materialicons/v55/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
             }
         </style>
     </head>
