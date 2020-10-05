@@ -474,11 +474,9 @@ $(document).ready(function () {
     }
 
     // Grab preloaded CSS.
-    $('link[as="style"]').each(function () {
-        $(this)
-            .prop('rel', 'stylesheet')
-            .removeAttr('as');
-    });
+    $('link[as="style"]')
+        .prop('rel', 'stylesheet')
+        .removeAttr('as');
 
     if (!$('body').is(':visible')) {
         $('body').fadeIn();
