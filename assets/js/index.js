@@ -133,7 +133,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato word-wrap process-whitespaces overflow-ellipsis message-content">` + 
+                        <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content">` + 
                             (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
                         </p>
                         <div class="message-spacer"></div>

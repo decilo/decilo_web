@@ -37,7 +37,7 @@ require_once 'views/header.php';
                 <p class="col s12 regular center">
                     También podés <span id="shareBtnHint" style="display: none;"> tocar el botón de abajo o </span> copiar y pegar tu link.
                 </p>
-                <input id="shareableLink" type="text" class="dark-5 center col s10 offset-s1 m10 offset-m1 offset-l3 l6" value="' . getUserLink() . '" readonly>
+                <input id="shareableLink" type="text" class="dark-5 center col s10 offset-s1 m10 offset-m1 offset-l3 l6 thin" value="' . getUserLink() . '" readonly>
                 <div class="col s12 center">
                     <button
                         id="shareProfileBtn"

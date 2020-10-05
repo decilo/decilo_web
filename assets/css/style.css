@@ -93,9 +93,9 @@ div:focus { outline: none !important; }
 .lato   { font-family: 'Lato'  , sans-serif !important; }
 .roboto { font-family: 'Roboto', sans-serif !important; }
 
-.thin       { font-weight: 150 !important; }
-.regular    { font-weight: 300 !important; }
-.medium     { font-weight: 400 !important; }
+.thin       { font-weight: 300 !important; }
+.regular    { font-weight: 400 !important; }
+.medium     { font-weight: 700 !important; }
 
 .small      { font-size: small !important; }
 
