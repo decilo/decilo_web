@@ -114,7 +114,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         data-tooltip="Reportar"
                         onclick="reportMessage(` + id + `);"`) + `
                     >
-                        <i class="material-icons mid-card-fab-icon">flag</i>
+                        <i class="material-icons mid-card-fab-icon" style="display: none;">flag</i>
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
                         <img

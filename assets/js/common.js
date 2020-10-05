@@ -852,4 +852,10 @@ $(document).ready(function () {
     $(window).on('resize', () => {
         viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
     });
+
+    $('.material-icons').hide();
+
+    document.fonts.onloadingdone = () => {
+        $('.material-icons').fadeIn();
+    };
 });
