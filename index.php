@@ -41,7 +41,7 @@ if (isset($_GET['to'])) {
             <p>
                 <label>
                     <input name="reportReason" type="radio" value="' . $reportReason['id'] . '" />
-                    <span class="' . ($reportReason['score'] < 0 ? 'red-text' : 'thin') . '"> ' . $reportReason['reason'] . ' </span>
+                    <span class="' . ($reportReason['score'] < 0 ? 'red-text medium' : 'regular') . '"> ' . $reportReason['reason'] . ' </span>
                 </label>
             </p>';
         }

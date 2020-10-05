@@ -19,7 +19,7 @@ $reports = getReportedMessages();
 
     <div class="divider"></div>
 
-    <p class="lato thin center">
+    <p class="lato regular center">
         Acá vas a poder administrar los reportes que realizan los usuarios. Si es necesario, eliminá el mensaje directamente desde la base de datos.
     </p>
 
@@ -27,7 +27,7 @@ $reports = getReportedMessages();
         <thead>
             <th> ID </th>  <th> Contenido </th>  <th> Reportes </th>  <th> Razones </th>
         </thead>
-        <tbody class="lato thin">
+        <tbody class="lato regular">
             <?php
 
             if (count($reports) > 0) {
