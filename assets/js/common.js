@@ -794,17 +794,12 @@ $(document).ready(function () {
 
         loader();
 
-        // Global site tag (gtag.js) - Google Analytics
+        // Global Tag Manager (gtag.js)
         script          = document.createElement('script');
         script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
         script.onload   = setupGoogleAnalytics;
 
-        script.onerror  = () => {
-            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
-        }
-
         script.defer    = true;
-        script.async    = true;
 
         document.getElementsByTagName('body')[0].appendChild(script);
     }
