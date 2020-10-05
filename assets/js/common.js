@@ -525,46 +525,6 @@ $(document).ready(function () {
 
     $('.sidenav').sidenav();
 
-    $(window).on('load', function () {
-        console.log('common/window: success loading assets.');
-
-        $('.custom-link').on('click', function (event) {
-            event.preventDefault();
-
-            animateRedirect(
-                $(this).attr('href')
-            );
-        });
-
-        $('input[type="text"], textarea').each(function () {
-            if (typeof($(this).attr('data-length')) != 'undefined') {
-                $(this).characterCounter();
-            }
-        });
-    
-        if ($('.tooltipped').length > 0) {
-            $('.tooltipped').tooltip();
-
-            $('.tooltip-content').addClass('thin');
-        }
-    
-        if ($('.collapsible').length > 0) {    
-            $('.collapsible').collapsible();
-        }
-    
-        $('.scrollspy').scrollSpy();
-
-        M.updateTextFields();
-
-        if ($('textarea').length > 0) {
-            M.textareaAutoResize($('textarea'));
-        }
-
-        wallpaper = $('.wallpaper');
-        
-        wallpaper.attr('src', wallpaper.attr('data-src'));
-    });
-
     $('#continueLoginBtn, #tryAccountRecoveryBtn').on('click', function (event) {
         loginPassword = $('#loginPassword');
 
@@ -790,9 +750,46 @@ $(document).ready(function () {
     });
 
     async function pushLoader() {
-        var script = null;
+        console.log('common/window: success loading assets.');
+
+        $('.custom-link').on('click', function (event) {
+            event.preventDefault();
+
+            animateRedirect(
+                $(this).attr('href')
+            );
+        });
+
+        $('input[type="text"], textarea').each(function () {
+            if (typeof($(this).attr('data-length')) != 'undefined') {
+                $(this).characterCounter();
+            }
+        });
+    
+        if ($('.tooltipped').length > 0) {
+            $('.tooltipped').tooltip();
+
+            $('.tooltip-content').addClass('thin');
+        }
+    
+        if ($('.collapsible').length > 0) {    
+            $('.collapsible').collapsible();
+        }
+    
+        $('.scrollspy').scrollSpy();
+
+        M.updateTextFields();
+
+        if ($('textarea').length > 0) {
+            M.textareaAutoResize($('textarea'));
+        }
+
+        wallpaper = $('.wallpaper');
+        wallpaper.attr('src', wallpaper.attr('data-src'));
 
         loader();
+
+        var script = null;
 
         // Global Tag Manager (gtag.js)
         script          = document.createElement('script');
