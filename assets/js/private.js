@@ -106,6 +106,8 @@ function reloadLayout(toAppend = null) {
                     setupInstance();
                 }
             });
+
+        $('.material-icons').fadeIn();
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }

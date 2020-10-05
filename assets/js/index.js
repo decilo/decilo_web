@@ -55,6 +55,8 @@ function reloadLayout(toAppend = null) {
                     setupInstance();
                 }
             });
+
+        $('.material-icons').fadeIn();
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }
@@ -272,8 +274,6 @@ function postMessage(messageContent, declaredName, token, image = null) {
                     reloadLayout();
 
                     createMessageModal.close();
-
-                    $('.material-icons').fadeIn();
 
                     break;
                 case ERROR:
