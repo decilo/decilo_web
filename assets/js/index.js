@@ -120,7 +120,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <img
                             class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
                             alt="Imagen adjunta"
-                            data-src="` + image + `"
+                            src="` + image + `"
                             onerror="
                                 $(this)
                                     .parent()
@@ -221,17 +221,15 @@ function postMessage(messageContent, declaredName, token, image = null) {
                     )
                 );
 
-            if (image == null) {
-                $('.message')
-                    .first()
-                    .fadeIn();
+            $('.message')
+                .first()
+                .fadeIn();
 
-                $('#messageInput, #declaredName, #messageInput, #declaredName')
-                    .removeClass('valid')
-                    .val('');
+            $('#messageInput, #declaredName, #messageInput, #declaredName')
+                .removeClass('valid')
+                .val('');
 
-                reloadLayout();
-            }
+            reloadLayout()
         })
         .done(function (response) {
             console.log(response);
@@ -263,19 +261,19 @@ function postMessage(messageContent, declaredName, token, image = null) {
                         isGoingTop = false;
                     });
 
-                    if (image == null) {
-                        $('.message')
-                            .first()
-                            .fadeIn();
+                    $('.message')
+                        .first()
+                        .fadeIn();
 
-                        $('#messageInput, #declaredName, #messageInput, #declaredName')
-                            .removeClass('valid')
-                            .val('');
-            
-                        reloadLayout();
-                    }
+                    $('#messageInput, #declaredName, #messageInput, #declaredName')
+                        .removeClass('valid')
+                        .val('');
+        
+                    reloadLayout();
 
                     createMessageModal.close();
+
+                    $('.material-icons').fadeIn();
 
                     break;
                 case ERROR:
@@ -606,9 +604,7 @@ $(document).ready(function () {
                 if (files[0].type.includes('image')) {
                     $('label[for="imageInput"]')
                         .removeClass('bg-dark-1')
-                        .addClass('green');
-
-                    $('label[for="imageInput"]')
+                        .addClass('green')
                         .find('.material-icons')
                         .html('check');
 
