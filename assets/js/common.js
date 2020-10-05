@@ -803,8 +803,8 @@ $(document).ready(function () {
             toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
         }
 
-        script.setAttribute('defer', true);
-        script.setAttribute('async', true);
+        script.defer    = true;
+        script.async    = true;
 
         document.getElementsByTagName('body')[0].appendChild(script);
     }
