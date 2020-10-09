@@ -99,7 +99,7 @@ if (isset($_GET['to'])) {
 </div>
 
 <div class="fixed-action-btn">
-    <button type="button" class="btn-floating btn-large bg-dark-1 no-select">
+    <button id="fabToggleBtn" type="button" class="btn-floating btn-large bg-dark-1 no-select tooltipped" data-tooltip="Publicá algo" data-position="left">
         <i class="large material-icons"> add </i>
     </button>
     <ul>

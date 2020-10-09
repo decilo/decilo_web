@@ -445,6 +445,8 @@ $(document).ready(function () {
                 }
             }
         });
+
+        $('#fabToggleBtn').tooltip('close');
     }, { passive: true });
 
     $('#messageInput, #declaredName').on('keyup change', function (event) {
@@ -705,6 +707,16 @@ $(document).ready(function () {
             }
         });
     };
+
+    if (localStorage.getItem('hasTriedFAB') == null) {
+        $('#fabToggleBtn')
+            .addClass('pulse')
+            .on('click', function () {
+                localStorage.setItem('hasTriedFAB', true);
+
+                $(this).removeClass('pulse');
+            });
+    }
 
     function loadPreloadedRecents() {
         if (RECENTS.length > 0) {
