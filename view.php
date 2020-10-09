@@ -6,7 +6,7 @@ require_once 'includes/functions.php';
 require_once 'includes/main.php';
 
 if (!isset($_GET['message'])) {
-    redirect('index.php');
+    redirect(SYSTEM_HOSTNAME);
 }
 
 $message = null;
@@ -18,7 +18,7 @@ if (isset($_GET['private'])) {
 }
 
 if ($message == null) {
-    redirect('index.php');
+    redirect(SYSTEM_HOSTNAME);
 }
 
 $meta = [];

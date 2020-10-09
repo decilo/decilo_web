@@ -17,7 +17,7 @@ require_once 'views/header.php';
         <br>
         Al cabo de unos segundos, todos tus datos van a ser permanentemente eliminados del servidor de producción. Luego de aproximadamente un mes, también borramos las copias de seguridad. <br>
         <br>
-        Acordáte de que siempre vas a poder seguir usando la versión pública de la página <a href="index.php" class="lato thin">tocando acá</a>.
+        Acordáte de que siempre vas a poder seguir usando la versión pública de la página <a href="<?= SYSTEM_HOSTNAME ?>" class="lato thin">tocando acá</a>.
     </p>
 </div>
 

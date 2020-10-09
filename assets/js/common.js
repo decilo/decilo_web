@@ -726,7 +726,7 @@ $(document).ready(function () {
         })
         .done((response) => {
             if (response.status == OK) {
-                animateRedirect('index.php');
+                animateRedirect(SYSTEM_HOSTNAME);
             }
         });
     });
@@ -835,7 +835,7 @@ $(document).ready(function () {
         if ($(window).scrollTop() >= document.documentElement.clientHeight) {
             goBackToTop();
         } else {
-            animateRedirect('index.php');
+            animateRedirect(SYSTEM_HOSTNAME);
         }
     });
 

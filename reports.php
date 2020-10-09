@@ -36,7 +36,7 @@ $reports = getReportedMessages();
                     <tr>
                         <td>
                             <a
-                                href="view.php?message=' . $report['message'] . ($report['private'] ? '&private=true' : '') . '"
+                                href="view/' . $report['message'] . ($report['private'] ? '&private=true' : '') . '"
                                 class="overflow-ellipsis"
                             >' .
                                 $report['message'] . '

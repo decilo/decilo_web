@@ -141,7 +141,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <div class="message-spacer"></div>
                         <a
                             class="custom-link regular small"
-                            href="` + (id == null ? '#' : `view.php?message=` + id + (RECIPIENT == null ? '' : '&private=true')) + `"
+                            href="` + (id == null ? '#' : `view/` + (RECIPIENT == null ? '' : 'private/') + id) + `"
                         >
                             Ver más
                         </a>` + (verified || image == null ? `` : `

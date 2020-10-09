@@ -65,7 +65,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
 
                         redirect('profile.php?e=' . QUICKSTART['MAIL_CHANGE_OK']);
                     } else {
-                        redirect('index.php?e=' . QUICKSTART['INVALID_MAIL_ADDRESS']);
+                        redirect(SYSTEM_HOSTNAME . '?e=' . QUICKSTART['INVALID_MAIL_ADDRESS']);
                     }
                 } else if (isset($_GET['removeAccount'])) {
                     if (session_status() == PHP_SESSION_ACTIVE) {
@@ -108,12 +108,12 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
 
                 redirect('private.php');
             } else {
-                redirect('index.php?e=' . QUICKSTART['INVALID_MAIL_ADDRESS']);
+                redirect(SYSTEM_HOSTNAME . '?e=' . QUICKSTART['INVALID_MAIL_ADDRESS']);
             }
         } else {
-            redirect('index.php?e=' . EXPIRED_TOKEN);
+            redirect(SYSTEM_HOSTNAME . '?e=' . EXPIRED_TOKEN);
         }
     } else {
-        redirect('index.php?e=' . EXPIRED_TOKEN);
+        redirect(SYSTEM_HOSTNAME . '?e=' . EXPIRED_TOKEN);
     }
 }

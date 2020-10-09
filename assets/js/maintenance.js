@@ -45,7 +45,7 @@ $(document).ready(function () {
                         .done(function (response) {
                             console.log(response);
 
-                            animateRedirect('index.php');
+                            animateRedirect(SYSTEM_HOSTNAME);
                         })
                         .fail(function () {
                             $('#remainingTime').html(5);

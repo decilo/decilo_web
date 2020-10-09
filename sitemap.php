@@ -12,6 +12,7 @@ header('Content-Type: application/xml');
 require_once 'includes/settings.php';
 require_once 'includes/database.php';
 require_once 'includes/functions.php';
+require_once 'includes/main.php';
 
 function escapeXML($string) {
     return str_replace('&', '&#38;', $string);
@@ -20,7 +21,7 @@ function escapeXML($string) {
 function getXML($loc, $priority) {
     return 
     '<url>
-        <loc>'      . SYSTEM_HOSTNAME . '/' . escapeXML($loc)  . '</loc>
+        <loc>'      . SYSTEM_HOSTNAME . escapeXML($loc)  . '</loc>
         <lastmod>'  . strftime('%Y-%m-%d')          . '</lastmod>
         <priority>' . $priority                     . '</priority>
      </url>';
@@ -35,13 +36,13 @@ foreach ($defaults as $default) {
 $messages =
     $GLOBALS['database']->prepare(
         'SELECT
-            CONCAT(\'view.php?message=\', `d_messages_private`.`id`, \'&private=true\') AS url
+            CONCAT(\'view/\', `d_messages_private`.`id`, \'&private=true\') AS url
          FROM `d_messages_private`
 
          UNION
 
          SELECT
-            CONCAT(\'view.php?message=\', `d_messages_public`.`id`) AS url
+            CONCAT(\'view/\', `d_messages_public`.`id`) AS url
          FROM `d_messages_public`'
     );
 

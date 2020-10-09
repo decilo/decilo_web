@@ -14,7 +14,7 @@ foreach (GOOGLE_CRAWLER_UAS as $userAgent) {
 }
 
 if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < MIN_ACCESS_LEVEL)) {
-    redirect('index.php');
+    redirect(SYSTEM_HOSTNAME);
 }
 
 ?>
@@ -43,6 +43,8 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         </script>
 
         <title> <?= (isset($meta) ? $meta['name'] . ' - ' : (isset($title) ? $title . ' - ' : '')) . SYSTEM_TITLE ?> </title>
+
+        <base href="<?= SYSTEM_HOSTNAME ?>">
 
         <?php
             foreach (CRITICAL_ORIGINS as $criticalOrigin) {
@@ -402,7 +404,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             WHERE   `d_images`.`message` =  `d_messages_private`.`id`
                         ) AS `image`,
                         declaredName,
-                        CONCAT(\'view.php?message=\', `d_messages_private`.`id`, \'&private=true\') AS url
+                        CONCAT(\'view/private/\', `d_messages_private`.`id`) AS url
                      FROM `d_messages_private`
 
                      UNION
@@ -414,7 +416,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             WHERE   `d_images`.`message` =  `d_messages_public`.`id`
                         ) AS `image`,
                         declaredName,
-                        CONCAT(\'view.php?message=\', `d_messages_public`.`id`) AS url
+                        CONCAT(\'view/\', `d_messages_public`.`id`) AS url
                      FROM `d_messages_public`'
                 );
 
@@ -426,7 +428,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     <img src="' . $message['image'] . '" style="max-width: 100%; max-height: 100%;">
                     <h1 id="declaredName"> ' . ($message['declaredName'] == null ? 'Anonymous' : $message['declaredName']) . ' </h1>
                     <p id="content"> ' . substr($message['content'], 0, MESSAGES['MAX_LENGTH']) . '… </p>
-                    <a href="' . $message['url'] . '"> Ver mensaje </a>
+                    <a href="' . SYSTEM_HOSTNAME . $message['url'] . '"> Ver mensaje </a>
                  </div>';
             }
 
