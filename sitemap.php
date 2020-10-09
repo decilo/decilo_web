@@ -36,7 +36,7 @@ foreach ($defaults as $default) {
 $messages =
     $GLOBALS['database']->prepare(
         'SELECT
-            CONCAT(\'view/\', `d_messages_private`.`id`, \'&private=true\') AS url
+            CONCAT(\'view/private/\', `d_messages_private`.`id`) AS url
          FROM `d_messages_private`
 
          UNION
