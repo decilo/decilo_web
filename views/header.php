@@ -449,7 +449,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     </a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
                         <li>
-                            <a href="privacy.php" class="lato center"> Privacidad </a>
+                            <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center"> Privacidad </a>
                         </li>
                         <?= $userId == null ? '
                         <li>
@@ -463,10 +463,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             </div>
                         </li>' : '
                         <li>
-                            <a href="private.php" class="lato center custom-link"> Mis mensajes </a>
+                            <a href="' . SYSTEM_HOSTNAME . 'private" class="lato center custom-link"> Mis mensajes </a>
                         </li>
                         <li>
-                            <a href="profile.php" class="lato center custom-link"> Mi cuenta </a>
+                            <a href="' . SYSTEM_HOSTNAME . 'profile" class="lato center custom-link"> Mi cuenta </a>
                         </li>
                         <li>
                             <a id="logoutBtn" class="lato"> Salir </a>
@@ -504,17 +504,17 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
 
                 <li>
-                    <a href="privacy.php" class="dark-5 hand custom-link"> Privacidad </a>
+                    <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="dark-5 hand custom-link"> Privacidad </a>
                 </li>
                 <?= $userId == null ? '
                 <li>
                     <a id="loginBtnMobile" class="dark-5 hand"> Iniciá sesión </a>
                 </li>' : '
                 <li>
-                    <a href="private.php" class="dark-5 custom-link"> Mis mensajes </a>
+                    <a href="' . SYSTEM_HOSTNAME . 'private" class="dark-5 custom-link"> Mis mensajes </a>
                 </li>
                 <li>
-                    <a href="profile.php" class="dark-5 custom-link"> Mi cuenta </a>
+                    <a href="' . SYSTEM_HOSTNAME . 'profile" class="dark-5 custom-link"> Mi cuenta </a>
                 </li>
                 <li>
                     <a id="logoutBtnMobile" class="dark-5 hand"> Salir </a>
