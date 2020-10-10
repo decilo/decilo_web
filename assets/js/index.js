@@ -761,4 +761,6 @@ $(document).ready(function () {
     }
 
     loadPreloadedRecents();
+
+    $('.tooltipped').tooltip();
 });
