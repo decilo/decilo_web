@@ -224,11 +224,13 @@ $(document).ready(function () {
                         .append(renderedHTML);
 
                     reloadLayout(renderedHTML);
+
+                    isPullingChunks = false;
                 } else {
                     $(window).off('scroll');
-                }
 
-                isPullingChunks = false;
+                    isPullingChunks = true;
+                }
             })
             .fail(function (error) {
                 isPullingChunks = false;
