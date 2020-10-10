@@ -158,7 +158,7 @@ function getRecipientUsername($username) {
 }
 
 function getUserLink() {
-    return SYSTEM_HOSTNAME . '?to=' . getCurrentUser()['username'];
+    return SYSTEM_HOSTNAME . 'to/' . getCurrentUser()['username'];
 }
 
 function verifyCaptcha($token) {
