@@ -459,6 +459,10 @@ function loadRecaptcha(defer = false, async = false) {
     }
 }
 
+function displayIcons() {
+    $('.material-icons').animate({ opacity: 1 });
+}
+
 $(document).ready(function () {
     let isGoingTop = false;
     
@@ -845,7 +849,7 @@ $(document).ready(function () {
 
     document.fonts.onloadingdone = () => {
         if (document.fonts.check('0px Material Icons')) {
-            $('.material-icons').animate({ opacity: 1 });
+            displayIcons();
         }
     };
 });

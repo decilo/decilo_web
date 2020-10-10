@@ -225,6 +225,8 @@ $(document).ready(function () {
 
                     reloadLayout(renderedHTML);
 
+                    displayIcons();
+
                     isPullingChunks = false;
                 } else {
                     $(window).off('scroll');
