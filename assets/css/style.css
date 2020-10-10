@@ -12,6 +12,7 @@
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
+    opacity: 0;
 }
 
 html,

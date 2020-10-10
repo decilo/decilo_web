@@ -843,9 +843,9 @@ $(document).ready(function () {
         viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
     });
 
-    $('.material-icons').hide();
-
     document.fonts.onloadingdone = () => {
-        $('.material-icons').fadeIn();
+        if (document.fonts.check('0px Material Icons')) {
+            $('.material-icons').animate({ opacity: 1 });
+        }
     };
 });
