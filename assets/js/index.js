@@ -593,8 +593,6 @@ $(document).ready(function () {
 
         enable(createPostBtn);
 
-        resetMessageInputs();
-
         attachProgressBar();
 
         $(window).on('resize', attachProgressBar);
@@ -706,6 +704,11 @@ $(document).ready(function () {
                 toast('Para enviar tu reporte, seleccioná una opción.');
             }
         });
+
+        fabToggleBtn = $('#fabToggleBtn');
+        if (fabToggleBtn.hasClass('pulse')) {
+            fabToggleBtn.tooltip('open');
+        }
     };
 
     if (localStorage.getItem('hasTriedFAB') == null) {

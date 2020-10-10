@@ -85,7 +85,7 @@ if (isset($_GET['to'])) {
 
                     <div id="postProgressBar"></div>
 
-                    <label for="imageInput" class="btn waves-effect waves-light bg-dark-1 fixed-height-btn hand right mr-1" disabled>
+                    <label for="imageInput" class="btn waves-effect waves-light bg-dark-1 fixed-height-btn hand right mr-1">
                         <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
                     </label>
 
