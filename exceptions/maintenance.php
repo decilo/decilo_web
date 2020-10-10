@@ -1,8 +1,10 @@
 <?php 
 
-$title = 'Página principal';
+$title = 'Mantenimiento';
 $css = 'maintenance.css'; $js = 'maintenance.js';
 $maintenance = true;
+
+chdir('..');
 
 require_once 'includes/main.php'; 
 require_once 'views/header.php';
@@ -12,7 +14,7 @@ require_once 'views/header.php';
 <div id="notReadyWrapper" class="valign-wrapper" style="display: none;">
   <div class="row">
     <div class="col s12 center">
-        <i class="material-icons large dark-2">error</i>
+        <i class="material-icons large dark-1">error</i>
     </div>
 
     <div class="col s12">

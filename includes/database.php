@@ -10,7 +10,7 @@ try {
         DATABASE['password']
     );
 } catch (PDOException $exception) {
-    header('location: maintenance.php');
+    header('location: ' . SHARED_VALUES['SYSTEM_HOSTNAME'] . 'exceptions/maintenance');
 }
 
 ?>
