@@ -185,7 +185,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
             </div>`;
 }
 
-$(document).ready(function () {
+$(document).ready(() => {
     createPostBtn = $('#createPostBtn');
 
     document.addEventListener('scroll', () => {
@@ -207,7 +207,7 @@ $(document).ready(function () {
             !isPullingChunks
         ) {
             run('messagesManager', 'getRecent', { private: true, after: getLastMessageId() }, () => { isPullingChunks = true; })
-            .done(function (response) {
+            .done((response) => {
                 console.log(response);
 
                 if (response.result.length > 0) {
@@ -234,7 +234,7 @@ $(document).ready(function () {
                     isPullingChunks = true;
                 }
             })
-            .fail(function (error) {
+            .fail((error) => {
                 isPullingChunks = false;
 
                 console.error(error);
@@ -254,7 +254,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#createPostBtn').on('click', function () {
+    $('#createPostBtn').on('click',  () => {
         let messageInput    = $('#messageInput');
         let declaredName    = $('#declaredName').val();
             declaredName    = declaredName.length > 0 ? declaredName : null;
@@ -275,7 +275,7 @@ $(document).ready(function () {
         }, () => {
             disable($('#createPostBtn'));
         })
-        .done(function (response) {
+        .done((response) => {
             console.log(response);
 
             switch (response.status) {
@@ -340,7 +340,7 @@ $(document).ready(function () {
     if (!hasSeenFeatures()) {
         console.info('FeatureDiscovery will fire in ' + (IDLE_TIMEOUT / 1000) + ' seconds, since we don\'t know if this is a new user.');
 
-        $(window).on('scroll click keyup keydown keypress change wheel', function () {
+        $(window).on('scroll click keyup keydown keypress change wheel', () => {
             if (!hasSeenFeatures()) {
                 initializeIdleRunner();
             }

@@ -1,6 +1,6 @@
 let notReadyWrapper = null;
 
-$(document).ready(function () {
+$(document).ready(() => {
     notReadyWrapper = $('#notReadyWrapper');
 
     notReadyWrapper
@@ -28,7 +28,7 @@ $(document).ready(function () {
 
     isRetrying = false;
 
-    setInterval(function () {
+    setInterval(() => {
         if (!isRetrying) {
             remainingTime = parseInt($('#remainingTime').html());
 
@@ -42,15 +42,15 @@ $(document).ready(function () {
                         isRetrying = true;
                         
                         run('accountManager', 'areYouThere?', undefined, () => {}, true)
-                        .done(function (response) {
+                        .done((response) => {
                             console.log(response);
 
                             animateRedirect(SYSTEM_HOSTNAME);
                         })
-                        .fail(function () {
+                        .fail(() => {
                             $('#remainingTime').html(5);
                         })
-                        .always(function () {
+                        .always(() => {
                             $('#retryingHint').fadeOut(() => {
                                 $('#retryCountdown').fadeIn(() => {
                                     isRetrying = false;
