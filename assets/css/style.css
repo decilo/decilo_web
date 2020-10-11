@@ -132,7 +132,7 @@ div:focus { outline: none !important; }
 
 .pl-05 { padding-left: 0.5em; }
 
-.soft-link { color: rgb(59, 225, 255); }
+.soft-link { color: #039be5; }
 
 .mid-card-fab       { bottom: 6.10rem   !important; }
 .mid-card-fab-icon  { font-size: 1.4rem !important; }
@@ -198,3 +198,11 @@ input[type="file"] { display: none; }
 #recentsContainer { overflow: hidden; }
 
 .background .wallpaper { width: 100%; }
+
+.fab-left {
+    opacity: 0.5;
+    position: fixed;
+    left: 23px;
+    bottom: 23px;
+    display: none;
+}

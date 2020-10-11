@@ -47,6 +47,10 @@
                 </div>
             </div>
 
+            <button id="noInternetBtn" type="button" class="btn-floating btn-large red no-select fab-left">
+                <i class="large material-icons" style="opacity: 1;"> signal_wifi_off </i>
+            </button>
+
         </main>
         <footer></footer>
 

@@ -341,24 +341,25 @@ $(document).ready(function () {
 
     fabDOM.on('click', () => {
         if (fab.isOpen) {
-            fabDOM
-                .find('.btn-large')
+            $('#fabToggleBtn')
                 .find('i')
                 .css({ 'transform' : 'rotate(0deg)' });
         } else {
-            fabDOM
-                .find('.btn-large')
+            $('#fabToggleBtn')
                 .find('i')
-                .css({ 'transform' : 'rotate(90deg)' });
+                .css({ 'transform' : 'rotate(90deg)' })
+                .on('click', loadRecaptcha);
         }
-
-        loadRecaptcha();
     });
 
     fabDOM
         .find('#createMessageBtn')
         .on('click', () => {
-            $('#createMessageModal').modal('open');
+            if (isOnline) {
+                $('#createMessageModal').modal('open');
+            } else {
+                toast(NO_INTERNET_HINT);
+            }
         });
 
     async function tryToPullChunks() {
@@ -717,9 +718,15 @@ $(document).ready(function () {
         $('#fabToggleBtn')
             .addClass('pulse')
             .on('click', function () {
-                localStorage.setItem('hasTriedFAB', true);
+                if (
+                    $(this).hasClass('pulse')
+                    &&
+                    localStorage.getItem('hasTriedFAB') == null
+                ) {
+                    localStorage.setItem('hasTriedFAB', true);
 
-                $(this).removeClass('pulse');
+                    $(this).removeClass('pulse');
+                }
             });
     }
 

@@ -28,11 +28,13 @@ RewriteRule ^exceptions/not_found$ /exceptions/handle.php?e=404.php [L]
 RewriteRule ^exceptions/bad_request$ /exceptions/handle.php?e=400.php [L]
 RewriteRule ^exceptions/forbidden$ /exceptions/handle.php?e=403.php [L]
 RewriteRule ^exceptions/im_a_teapot$ /exceptions/handle.php?e=418.php [L]
+RewriteRule ^exceptions/failed_dependency$ /exceptions/handle.php?e=424.php [L]
 RewriteRule ^exceptions/internal_server_error$ /exceptions/handle.php?e=500.php [L]
 RewriteRule ^exceptions/service_unavailable$ /exceptions/handle.php?e=503.php [L]
 
 ErrorDocument 404 /exceptions/not_found
 ErrorDocument 400 /exceptions/bad_request
 ErrorDocument 403 /exceptions/forbidden
+ErrorDocument 424 /exceptions/failed_dependency
 ErrorDocument 500 /exceptions/internal_server_error
 ErrorDocument 503 /exceptions/maintenance

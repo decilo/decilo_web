@@ -4,6 +4,9 @@ const NO_MESSAGES_HINT =
      <br>
      Pasále el link a tus amigos y empezá a recibir mensajes.`;
 
+const NO_INTERNET_HINT = 'No tenés conexión a internet.';
+const BACK_ONLINE_HINT = 'Ya tenés internet.';
+
 let loader = () => {
     console.info('loader: no loader was specified.');
 };
@@ -11,6 +14,9 @@ let loader = () => {
 let deferredPreloader = null;
 
 let viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
+
+let isOnline = navigator.onLine;
+let heartbeatLooper = null;
 
 function run(url, action, values, before = function () {}, overridesFailure = false) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
@@ -30,11 +36,34 @@ function run(url, action, values, before = function () {}, overridesFailure = fa
             )
         }
     )
-    .fail(function (error) {
+    .done((response, status, xhr) => {
+        if (!overridesFailure && !xhr.getResponseHeader('content-type').includes('json')) {
+            console.error(response);
+
+            if ($('.toast').length < 1) {
+                if (isOnline) {
+                    toast('Algo salió mal, por favor probá otra vez.');
+                } else {
+                    toast(NO_INTERNET_HINT);
+                }
+            }
+        }
+    })
+    .fail((error) => {
         if (!overridesFailure) {
             console.error(error);
 
-            toast('Algo salió mal, por favor probá otra vez.');
+            if ($('.toast').length < 1) {
+                if (isOnline && error.status != 0) {
+                    toast('Algo salió mal, por favor probá otra vez.');
+                } else {
+                    isOnline = false;
+
+                    $('#noInternetBtn').fadeIn();
+
+                    toast(NO_INTERNET_HINT);
+                }
+            }
         }
     });
 }
@@ -307,84 +336,90 @@ function openCommentsModal(message, private) {
         declaredName    = declaredName.length > 0 ? declaredName : null;
 
         if (content.length > 0) {
-            run('commentsManager', 'postComment', {
-                content:        content,
-                declaredName:   declaredName,
-                message:        message,
-                private:        private
-            }, () => {
-                disable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
-            })
-            .done((response) => {
-                console.info(response);
+            if (isOnline) {
+                run('commentsManager', 'postComment', {
+                    content:        content,
+                    declaredName:   declaredName,
+                    message:        message,
+                    private:        private
+                }, () => {
+                    disable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
+                })
+                .done((response) => {
+                    console.info(response);
 
-                if (response.status == OK) {
-                    console.info('postComment: alright, we got a response!');
+                    if (response.status == OK) {
+                        console.info('postComment: alright, we got a response!');
 
-                    $('#commentInput, #commentDeclaredName')
-                        .val('')
-                        .change();
+                        $('#commentInput, #commentDeclaredName')
+                            .val('')
+                            .change();
 
-                    console.info('postComment: now, we\'ll clean up those inputs.');
+                        console.info('postComment: now, we\'ll clean up those inputs.');
 
-                    commentsCollapsible = $('#commentsCollapsible');
+                        commentsCollapsible = $('#commentsCollapsible');
 
-                    instance = M.Collapsible.getInstance($('#commentsCollapsible'));
+                        instance = M.Collapsible.getInstance($('#commentsCollapsible'));
 
-                    for (let index = 0; index < commentsCollapsible.find('li').length; index++) {
-                        instance.close(index);
+                        for (let index = 0; index < commentsCollapsible.find('li').length; index++) {
+                            instance.close(index);
+                        }
+
+                        console.info('postComment: ok, we have re-initialized the collapsible and closed its items.');
+
+                        commentsCollapsible
+                            .find('.active')
+                            .removeClass('active');
+
+                        commentsCollapsible.prepend(
+                            getRenderedComment(response.result.id, declaredName, content)
+                        );
+
+                        console.info('postComment: cool, we got the DOM changed.');
+                        
+                        // Reset the container and the instance because of reasons.
+                        commentsCollapsible.collapsible({ accordion: false });
+                        commentsCollapsible = $('#commentsCollapsible');
+
+                        instance = M.Collapsible.getInstance($('#commentsCollapsible'));
+
+                        instance.open(0);
+                        
+                        console.info('postComment: so we\'ve just re-initialized the instance back again, this is getting frustrating.');
+
+                        firstComment = commentsCollapsible.find('li').first();
+
+                        $('#commentsModal')
+                            .find('.modal-content')
+                            .animate({
+                                scrollTop:
+                                    firstComment.offset()['top']
+                                    -
+                                    firstComment.find('.collapsible-header').height()
+                            });
+
+                        commentCount = $('.message[data-message=' + message + ']').find('.commentCount');
+                        commentCount.html(
+                            parseInt(commentCount.html()) + 1
+                        );
+
+                        console.info('postComment: finally, I did it, we did it, what we all waited for so long is finally here, we\'re done!');
+
+                        $('#commentInput').removeClass('invalid valid');
+
+                        toast('¡Listo! Publicaste tu comentario.');
+                    } else {
+                        toast('Algo anda mal, probá de nuevo.');
                     }
-
-                    console.info('postComment: ok, we have re-initialized the collapsible and closed its items.');
-
-                    commentsCollapsible
-                        .find('.active')
-                        .removeClass('active');
-
-                    commentsCollapsible.prepend(
-                        getRenderedComment(response.result.id, declaredName, content)
-                    );
-
-                    console.info('postComment: cool, we got the DOM changed.');
-                    
-                    // Reset the container and the instance because of reasons.
-                    commentsCollapsible.collapsible({ accordion: false });
-                    commentsCollapsible = $('#commentsCollapsible');
-
-                    instance = M.Collapsible.getInstance($('#commentsCollapsible'));
-
-                    instance.open(0);
-                    
-                    console.info('postComment: so we\'ve just re-initialized the instance back again, this is getting frustrating.');
-
-                    firstComment = commentsCollapsible.find('li').first();
-
-                    $('#commentsModal')
-                        .find('.modal-content')
-                        .animate({
-                            scrollTop:
-                                firstComment.offset()['top']
-                                -
-                                firstComment.find('.collapsible-header').height()
-                        });
-
-                    commentCount = $('.message[data-message=' + message + ']').find('.commentCount');
-                    commentCount.html(
-                        parseInt(commentCount.html()) + 1
-                    );
-
-                    console.info('postComment: finally, I did it, we did it, what we all waited for so long is finally here, we\'re done!');
-
-                    $('#commentInput').removeClass('invalid valid');
-
-                    toast('¡Listo! Publicaste tu comentario.');
-                } else {
-                    toast('Algo anda mal, probá de nuevo.');
+                })
+                .always(() => {
+                    enable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
+                });
+            } else {
+                if ($('.toast').length < 1) {
+                    toast(NO_INTERNET_HINT);
                 }
-            })
-            .always(() => {
-                enable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
-            });
+            }
 
             $('#commentInput')
                 .removeClass('invalid')
@@ -399,41 +434,47 @@ function openCommentsModal(message, private) {
     commentsCollapsible = $('#commentsCollapsible');
     commentsCollapsible.collapsible({ accordion: false });
 
-    run('commentsManager', 'getComments', {
-        message: message,
-        private: private
-    })
-    .done((response) => {
-        console.info(response);
+    if (isOnline) {
+        run('commentsManager', 'getComments', {
+            message: message,
+            private: private
+        })
+        .done((response) => {
+            console.info(response);
 
-        commentsCollapsible = $('#commentsCollapsible');
+            commentsCollapsible = $('#commentsCollapsible');
 
-        switch (response.status) {
-            case OK:
-                let renderedHTML = '';
+            switch (response.status) {
+                case OK:
+                    let renderedHTML = '';
 
-                response.result.forEach((comment) => {
-                    renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content']);
-                });
+                    response.result.forEach((comment) => {
+                        renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content']);
+                    });
 
-                commentsCollapsible.append(renderedHTML);
-                commentsCollapsible.slideDown();
+                    commentsCollapsible.append(renderedHTML);
+                    commentsCollapsible.slideDown();
 
-                commentsCollapsible.collapsible({ accordion: false });
-        
-                if (commentsCollapsible.find('li').length > 0) {
-                    M.Collapsible
-                        .getInstance($('#commentsCollapsible'))
-                        .open(0);
-                }
+                    commentsCollapsible.collapsible({ accordion: false });
+            
+                    if (commentsCollapsible.find('li').length > 0) {
+                        M.Collapsible
+                            .getInstance($('#commentsCollapsible'))
+                            .open(0);
+                    }
 
-                break;
+                    break;
+            }
+        });
+    } else {
+        if ($('.toast').length < 1) {
+            toast(NO_INTERNET_HINT);
         }
-    });
+    }
 }
 
 function loadRecaptcha(defer = false, async = false) {
-    if (typeof(grecaptcha) == 'undefined') {
+    if (isOnline && typeof(grecaptcha) == 'undefined') {
         // Google reCaptcha v3
         script          = document.createElement('script');
         script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
@@ -463,6 +504,69 @@ function displayIcons() {
     $('.material-icons').animate({ opacity: 1 });
 }
 
+function checkIfOnline(onSuccess = () => {}, onError = () => {
+    console.warn('onlineTest: we\'re offline, setting the dedicated flag.');
+
+    isOnline = false;
+
+    $('#noInternetBtn').fadeIn();
+
+    toast(NO_INTERNET_HINT);
+}) {
+    fetch(new Request('/?onlineTest', { headers: { 'x-online-test': true } }))
+    .then(() => {
+        console.log('onlineTest: we\'re online, updating caches.');
+
+        caches.delete('response-store');
+        caches.open('response-store').then((cache) => {
+            urls = [
+                '/',
+                '/privacy',
+                '/profile',
+                '/private',
+                '/exceptions/not_found',
+                '/exceptions/bad_request',
+                '/exceptions/forbidden',
+                '/exceptions/failed_dependency',
+                '/exceptions/internal_server_error',
+                '/exceptions/maintenance'
+            ];
+
+            return cache.addAll(urls)
+        });
+
+        $('#noInternetBtn').fadeOut();
+
+        onSuccess();
+    })
+    .catch(() => {
+        if (heartbeatLooper == null) {
+            heartbeatLooper = setInterval(() => {
+                if (!isOnline) {
+                    checkIfOnline(() => {
+                        isOnline = true;
+
+                        if ($('.toast').length < 1) {
+                            toast(BACK_ONLINE_HINT);
+
+                            clearInterval(heartbeatLooper);
+
+                            heartbeatLooper = null;
+                        }
+                
+                        // This is ugly, I know, but I'm not rewriting that core part.
+                        document.dispatchEvent(new Event('scroll'));
+                    }, () => {});
+                }
+            }, FAILURE_RETRY_INTERVAL);
+        }
+
+        $('#noInternetBtn').fadeIn();
+
+        onError();
+    });
+}
+
 $(document).ready(function () {
     let isGoingTop = false;
     
@@ -485,12 +589,6 @@ $(document).ready(function () {
     if (!$('body').is(':visible')) {
         $('body').fadeIn();
     }
-
-    $('.logOutBtn').on('click', function (event) {
-        event.preventDefault();
-
-        animateRedirect($(this).attr('href'), true);
-    });
 
     $('[class^="btn-"]').each(function () {
         if ($(this).hasClass('pulse')) {
@@ -527,7 +625,18 @@ $(document).ready(function () {
         }
     }
 
-    $('.sidenav').sidenav();
+    $('.sidenav').sidenav({
+        onOpenStart: () => {
+            $('.tooltipped').tooltip('close');
+        },
+        onCloseEnd: () => {
+            fabToggleBtn = $('#fabToggleBtn');
+
+            if (fabToggleBtn.length > 0 && fabToggleBtn.hasClass('pulse')) {
+                fabToggleBtn.tooltip('open');
+            }
+        }
+    });
 
     $('#continueLoginBtn, #tryAccountRecoveryBtn').on('click', function (event) {
         loginPassword = $('#loginPassword');
@@ -725,14 +834,18 @@ $(document).ready(function () {
     });
 
     $('#logoutBtn, #logoutBtnMobile').on('click', () => {
-        run('accountManager', 'tryLogout', undefined, () => {
-            $('.sidenav').sidenav('close');
-        })
-        .done((response) => {
-            if (response.status == OK) {
-                animateRedirect(SYSTEM_HOSTNAME);
-            }
-        });
+        $('.sidenav').sidenav('close');
+
+        if (isOnline) {
+            run('accountManager', 'tryLogout', undefined)
+            .done((response) => {
+                if (response.status == OK) {
+                    animateRedirect(SYSTEM_HOSTNAME);
+                }
+            });
+        } else {
+            toast(NO_INTERNET_HINT);
+        }
     });
 
     $('#loginMailAddress').on('keyup change', function () {
@@ -803,6 +916,24 @@ $(document).ready(function () {
         script.defer    = true;
 
         document.getElementsByTagName('body')[0].appendChild(script);
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .getRegistrations()
+                .then((registrations) => {
+                    navigator.serviceWorker
+                        .register(SYSTEM_HOSTNAME + 'serviceWorker.js')
+                        .then(() => {
+                            if (registrations.length > 0) {
+                                console.info('serviceWorker: the registered worker is up to date.');
+                            } else {
+                                console.info('serviceWorker: registration succeded.');
+                            }
+
+                            checkIfOnline();
+                        });
+                });
+        }
     }
     
     if (document.readyState != 'complete') {
@@ -852,4 +983,27 @@ $(document).ready(function () {
             displayIcons();
         }
     };
+
+    window.addEventListener('online', () => {
+        checkIfOnline(() => {
+            isOnline = true;
+
+            if ($('.toast').length < 1) {
+                toast(BACK_ONLINE_HINT);
+            }
+    
+            // This is ugly, I know, but I'm not rewriting that core part.
+            document.dispatchEvent(new Event('scroll'));
+        });
+    });
+
+    window.addEventListener('offline', () => {
+        checkIfOnline(() => {}, () => {
+            isOnline = false;
+
+            if ($('.toast').length < 1) {
+                toast(NO_INTERNET_HINT);
+            }
+        });
+    });
 });

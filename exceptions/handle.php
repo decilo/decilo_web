@@ -43,6 +43,17 @@ if (isset($_GET['e'])) {
       $info  = '<span class="roboto thin dark-5">Un problema interno del servidor previene que puedas usar esta página, esperá un rato y <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">probá otra vez</a>.</span>';
 
       break;
+    case 424:
+      $title = 'No tenés internet';
+      $icon  = 'signal_wifi_off';
+      $info  =
+        '<span class="roboto thin dark-5">No tenés una copia almacenada de esta página. <br>
+         <br>
+         Cuando te conectes, podés <span class="hand soft-link" onclick="window.location.reload();">probar otra vez</span>. <br>
+         <br>
+         Si querés, por ahora, <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">volvé a la página anterior</a>.</span>';
+
+      break;
     default:
       exit();
   }
