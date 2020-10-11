@@ -8,7 +8,8 @@ const URLS = [
     '/exceptions/forbidden',
     '/exceptions/failed_dependency',
     '/exceptions/internal_server_error',
-    '/exceptions/maintenance'
+    '/exceptions/maintenance',
+    '/assets/css/maintenance.css'
 ];
 
 self.addEventListener('install', (event) => {
@@ -36,7 +37,7 @@ self.addEventListener('fetch', (event) => {
                 if (
                     URLS.indexOf(
                         event.request.url.substr(
-                            event.request.url.indexOf('/', 7)
+                            event.request.url.indexOf('/', 8)
                         )
                     ) > -1
                 ) {
