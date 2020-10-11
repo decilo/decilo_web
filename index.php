@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.js';
+$title = 'Página principal'; $js = 'index.min.js';
 
 require_once 'includes/main.php'; 
 require_once 'views/header.php';

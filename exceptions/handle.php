@@ -1,6 +1,6 @@
 <?php 
 
-$css = 'maintenance.css';
+$css = 'maintenance.min.css';
 $maintenance = true;
 
 chdir('..');
@@ -40,7 +40,7 @@ if (isset($_GET['e'])) {
     case 500:
       $title = 'Algo anda muy mal';
       $icon  = 'cloud_off';
-      $info  = '<span class="roboto thin dark-5">Un problema interno del servidor previene que puedas usar esta página, esperá un rato y <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">probá otra vez</a>.</span>';
+      $info  = '<span class="roboto thin dark-5">Un problema interno del servidor previene que puedas usar esta página, esperá un rato y <span class="hand soft-link" onclick="window.history.back();">probá otra vez</span>.</span>';
 
       break;
     case 424:

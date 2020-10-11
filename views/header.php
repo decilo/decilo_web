@@ -67,7 +67,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 'https://rawcdn.githack.com/decilo/materialize/v1-dev/dist/css/materialize.min.css',
 
                 // Custom styles.
-                'assets/css/style.css'
+                'assets/css/style.min.css'
             ];
 
             $css = array_merge($css, $backupCSS);

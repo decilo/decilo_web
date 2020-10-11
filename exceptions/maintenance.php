@@ -1,7 +1,7 @@
 <?php 
 
 $title = 'Mantenimiento';
-$css = 'maintenance.css'; $js = 'maintenance.js';
+$css = 'maintenance.min.css'; $js = 'maintenance.min.js';
 $maintenance = true;
 
 chdir('..');
