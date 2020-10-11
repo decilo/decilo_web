@@ -226,6 +226,8 @@ function setupMaterializeImages() {
                         .addClass('was-unverified')
                         .removeClass('unverified-img');
                 }
+
+                $('.tooltipped').tooltip('close');
             },
             'onCloseEnd'  : (target) => {
                 let message = $(target)
@@ -242,6 +244,10 @@ function setupMaterializeImages() {
                     img
                         .removeClass('was-unverified')
                         .addClass('unverified-img');
+                }
+
+                if (fabToggleBtn.length > 0 && fabToggleBtn.hasClass('pulse')) {
+                    fabToggleBtn.tooltip('open');
                 }
             }
         });
@@ -800,7 +806,10 @@ $(document).ready(function () {
         }
     });
 
-    $('#loginModal').modal({ 
+    $('#loginModal').modal({
+        onOpenStart: () => {
+            $('.tooltipped').tooltip('close');
+        },
         onOpenEnd: () => {
             $('#loginMailAddress')
                 .focus()
@@ -822,6 +831,12 @@ $(document).ready(function () {
 
             $('#tryAccountRecoveryBtn').hide();
             $('#continueLoginBtn').html('Continuar');
+
+            fabToggleBtn = $('#fabToggleBtn');
+
+            if (fabToggleBtn.length > 0 && fabToggleBtn.hasClass('pulse')) {
+                fabToggleBtn.tooltip('open');
+            }
 
             allowDeferredPreloader = true;
         }
