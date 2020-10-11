@@ -1,6 +1,6 @@
 #!/bin/sh
 
-find $GIT_WORK_TREE -name '*.min.*' -exec rm -Rfv \;;
+find $GIT_WORK_TREE -name '*.min.*' -exec rm -Rfv {} \;;
 
 php $(git rev-parse --show-toplevel)/util/minifyAssets.php;
 
