@@ -535,7 +535,8 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
                 '/exceptions/forbidden',
                 '/exceptions/failed_dependency',
                 '/exceptions/internal_server_error',
-                '/exceptions/maintenance'
+                '/exceptions/maintenance',
+                '/assets/css/maintenance.min.css'
             ];
 
             return cache.addAll(urls)

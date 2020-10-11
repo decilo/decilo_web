@@ -9,7 +9,7 @@ const URLS = [
     '/exceptions/failed_dependency',
     '/exceptions/internal_server_error',
     '/exceptions/maintenance',
-    '/assets/css/maintenance.css'
+    '/assets/css/maintenance.min.css'
 ];
 
 self.addEventListener('install', (event) => {
