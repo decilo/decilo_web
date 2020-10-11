@@ -18,7 +18,7 @@ let viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
 let isOnline = navigator.onLine;
 let heartbeatLooper = null;
 
-function run(url, action, values, before = function () {}, overridesFailure = false) {
+function run(url, action, values, before = () => {}, overridesFailure = false) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
     return $.ajax(
@@ -77,7 +77,7 @@ function toast(html) {
 }
 
 function redirect(url, timeout = null) {
-    setTimeout(function () {
+    setTimeout(() => {
         if (url == window.location.href) {
             window.location.reload();
         } else {
@@ -87,7 +87,7 @@ function redirect(url, timeout = null) {
 }
 
 function animateRedirect(url, fullBody = false, timeout = null) {
-    setTimeout(function () {
+    setTimeout(() => {
         redirCall = () => {
             $(fullBody ? 'body' : 'main').fadeOut(MATERIALIZE_TRANSITION_TIME, () => {
                 redirect(url, 0);
@@ -573,7 +573,7 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
     });
 }
 
-$(document).ready(function () {
+$(document).ready(() => {
     let isGoingTop = false;
     
     // Initialize Day.js
@@ -644,7 +644,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#continueLoginBtn, #tryAccountRecoveryBtn').on('click', function (event) {
+    $('#continueLoginBtn, #tryAccountRecoveryBtn').on('click', (event) => {
         loginPassword = $('#loginPassword');
 
         loadRecaptcha();

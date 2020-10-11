@@ -233,7 +233,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
             reloadLayout()
         })
-        .done(function (response) {
+        .done((response) => {
             console.log(response);
 
             switch (response.status) {
@@ -317,7 +317,7 @@ function attachProgressBar() {
     });
 }
 
-$(document).ready(function () {
+$(document).ready(() => {
     createPostBtn   = $('#createPostBtn');
     imageInput      = $('#imageInput');
     
@@ -370,7 +370,7 @@ $(document).ready(function () {
                 after:      getLastMessageId(),
                 recipient:  RECIPIENT
             }, () => { isPullingChunks = true; })
-            .done(function (response) {
+            .done((response) => {
                 console.log(response);
 
                 if (response.result.length > 0) {
@@ -412,7 +412,7 @@ $(document).ready(function () {
 
                 isPullingChunks = false;
             })
-            .fail(function (error) {
+            .fail((error) => {
                 isPullingChunks = false;
 
                 console.error(error);
@@ -484,7 +484,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#createPostBtn').on('click', function () {
+    $('#createPostBtn').on('click', () => {
         let messageInput    = $('#messageInput');
         let declaredName    = $('#declaredName').val();
             declaredName    = declaredName.length > 0 ? declaredName : null;
