@@ -721,6 +721,8 @@ $(document).ready(() => {
                 }, () => {
                     console.info('accountManager/trySendLoginMail: account creation/recovery started.');
 
+                    $('.tooltipped').tooltip('close');
+
                     disable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
                 })
                 .done((response) => {
