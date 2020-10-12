@@ -42,7 +42,7 @@ $user = getCurrentUser();
             <span class="helper-text"></span>
         </div>
 
-        <button id="profileUpdateTryBtn" type="button" class="bg-dark-1 waves-effect waves-light btn btn-block col s4 offset-s4 m4 offset-m4">
+        <button id="profileUpdateTryBtn" type="button" class="bg-light-1 bg-dark-1 waves-effect waves-light btn btn-block col s4 offset-s4 m4 offset-m4">
             Guardar
         </button>
     </div>
@@ -69,7 +69,7 @@ $user = getCurrentUser();
                         <li class="thin"> Datos analíticos que obtuvimos de vos. </li>
                         <li class="thin"> Tus publicaciones, comentarios y actividad. </li>
                     </ul>
-                    <button id="requestDataDownloadBtn" type="button" class="bg-dark-1 waves-effect waves-light btn btn-block col s10 offset-s1 m8 offset-m2">
+                    <button id="requestDataDownloadBtn" type="button" class="bg-light-1 bg-dark-1 waves-effect waves-light btn btn-block col s10 offset-s1 m8 offset-m2">
                         <span> Generar informe </span>
                     </button>
                 </div>

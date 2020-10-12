@@ -39,8 +39,8 @@ function getUserQR() {
 
         $options->outputType = QRCode::OUTPUT_MARKUP_SVG;
         $options->eccLevel = QRCode::ECC_H;
-        $options->markupDark = '#' . THEME[0];
-        $options->markupLight = '#' . THEME[3];
+        $options->markupDark = '#' . THEME['LIGHT'][0];
+        $options->markupLight = 'transparent';
 
         $qrcode = new QRCode($options);
 

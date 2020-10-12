@@ -78,14 +78,14 @@ if (isset($_GET['to'])) {
                         <label for="declaredName"> Tu nombre </label>
                     </div>
 
-                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m5 l3 right mr-1 btn-block bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
+                    <button id="createPostBtn" class="btn waves-effect waves-light col s5 m5 l3 right mr-1 btn-block bg-light-1 bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
                         Publicar
                         <i class="material-icons right"> send </i>
                     </button>
 
                     <div id="postProgressBar"></div>
 
-                    <label for="imageInput" class="btn waves-effect waves-light bg-dark-1 fixed-height-btn hand right mr-1">
+                    <label for="imageInput" class="btn waves-effect waves-light bg-light-1 bg-dark-1 fixed-height-btn hand right mr-1">
                         <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
                     </label>
 
@@ -99,12 +99,12 @@ if (isset($_GET['to'])) {
 </div>
 
 <div class="fixed-action-btn">
-    <button id="fabToggleBtn" type="button" class="btn-floating btn-large bg-dark-1 no-select tooltipped" data-tooltip="Publicá algo" data-position="left">
+    <button id="fabToggleBtn" type="button" class="btn-floating btn-large bg-light-1 bg-dark-1 no-select tooltipped" data-tooltip="Publicá algo" data-position="left">
         <i class="large material-icons"> add </i>
     </button>
     <ul>
         <li>
-            <button id="createMessageBtn" type="button" class="btn-floating bg-dark-2">
+            <button id="createMessageBtn" type="button" class="btn-floating bg-light-2 bg-dark-2 no-select">
                 <i class="material-icons small"> message </i>
             </button>
         </li>

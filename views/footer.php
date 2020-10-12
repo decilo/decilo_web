@@ -17,7 +17,7 @@
                         <div id="loginStatus" class="col s12 dark-5 center" style="display: none;"></div>
                     </div>
                 </div>
-                <div class="modal-footer bg-dark-4">
+                <div class="modal-footer bg-light-5 bg-dark-4">
                     <div id="loginPreloader" class="preloader-wrapper small active preloader-bottom-small left" style="display: none;">
                         <div class="spinner-layer border-dark-5">
                             <div class="circle-clipper left">

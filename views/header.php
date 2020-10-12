@@ -20,7 +20,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 ?>
 
 <!DOCTYPE html>
-<html lang="es" style="background-color: #<?= THEME[3] ?>;">
+<html lang="es">
     <head>
         <!-- Let browser know website is optimized for mobile -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -391,7 +391,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         </style>
     </head>
 
-    <body class="bg-dark-4" style="display: none; background-color: #<?= THEME[3] ?>;">
+    <body class="bg-light-5 bg-dark-4" style="display: none;">
         <?php
 
         if ($isCrawling) {
@@ -441,7 +441,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         ?>
 
         <header>
-            <nav class="nav-extended bg-dark-1">
+            <nav class="nav-extended bg-light-1 bg-dark-1">
                 <div class="nav-wrapper">
                     <a class="brand-logo thin hand no-select"><?= SYSTEM_TITLE ?></a>
                     <a href="#" data-target="mobile-nav" class="sidenav-trigger">

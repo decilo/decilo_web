@@ -161,8 +161,8 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         >
                     </div>`) + `
                     <div class="card-content white-text">
-                        <span class="card-title roboto">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato thin regular word-wrap process-whitespaces overflow-ellipsis message-content">` + 
+                        <span class="card-title roboto light-3">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
+                        <p class="lato thin regular word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
                             (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
                         </p>
                         <div class="message-spacer"></div>
@@ -177,7 +177,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
                     </div>
                     <ul class="collection with-header bg-dark-7 border-dark-7 hand">
-                        <li class="collection-header bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, true);"`) + `>
+                        <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, true);"`) + `>
                             Comentarios (<span class="commentCount">` + comments + `</span>)
                         </li>
                     </ul>
