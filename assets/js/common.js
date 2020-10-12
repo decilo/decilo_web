@@ -254,8 +254,8 @@ function setupMaterializeImages() {
     }
 }
 
-function getRenderedComment(id = null, declaredName = null, content) {
-    return  `<li data-comment="` + (id == null ? 'null' : id) + `">
+function getRenderedComment(id = null, declaredName = null, content, active = false) {
+    return  `<li data-comment="` + (id == null ? 'null' : id) + `" ` + (active ? 'class="active"' : '') + `>
                 <div class="collapsible-header bg-dark-7 border-dark-8">
                     ` + (declaredName == null ? 'Anónimo' : declaredName) + ` • <span class="thin add-space"> ` + dayjs().format('L LT') +` </span>
                 </div>
@@ -903,10 +903,6 @@ $(document).ready(() => {
             $('.tooltipped').tooltip();
 
             $('.tooltip-content').addClass('thin');
-        }
-    
-        if ($('.collapsible').length > 0) {    
-            $('.collapsible').collapsible();
         }
     
         $('.scrollspy').scrollSpy();

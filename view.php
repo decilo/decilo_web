@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Ver';
+$title = 'Ver'; $js = 'view.min.js';
 
 require_once 'includes/functions.php';
 require_once 'includes/main.php';
@@ -63,6 +63,29 @@ require_once 'views/header.php';
 
     <div class="divider"></div>
 
+    <div class="section"></div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <textarea id="commentInput" class="materialize-textarea dark-5" data-length="65535"></textarea>
+            <label for="commentInput"> Dejá tu comentario </label>
+            <span class="helper-text" data-error="Tenés que escribir un comentario" data-success="Ya podés publicarlo">Escribí tu comentario</span>
+        </div>
+
+        <div class="input-field col s12 m9">
+            <input id="commentDeclaredName" type="text" placeholder="Anónimo" class="validate dark-5">
+            <label for="commentDeclaredName" class="active"> Tu nombre </label>
+        </div>
+
+        <div class="col s6 offset-s6 m3">
+            <button id="sendCommentBtn" type="button" class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn">
+                Enviar
+            </button>
+        </div>
+    </div>
+
+    <ul id="commentsCollapsible" class="collapsible border-dark-8"> </ul>
+
     <p class="roboto thin small">
         Publicado: <?= getParsedDatetime($message['created']) . (
             isset($recipient) && $recipient != null
@@ -72,5 +95,10 @@ require_once 'views/header.php';
         ?>
     </p>
 </div>
+
+<script>
+    const MESSAGE = <?= json_encode($_GET['message'])               ?>;
+    const PRIVATE = <?= json_encode(isset($message['recipient']))   ?>;
+</script>
 
 <?php require_once 'views/footer.php'; ?>
