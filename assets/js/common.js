@@ -1018,4 +1018,28 @@ $(document).ready(() => {
             }
         });
     });
+
+    if (
+        !window.matchMedia('(prefers-color-scheme: light)').matches
+        &&
+        !window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+        $('style').each(function () {
+            $(this).text(
+                $(this).text().replace('screen /*--x-light*/', '(prefers-color-scheme: light)')
+            );
+
+            $(this).text(
+                $(this).text().replace('(prefers-color-scheme: dark)', 'screen /*--x-dark*/')
+            );
+
+            $(this).text(
+                $(this).text().replace('/*--x-light*/', 'prefers-color-scheme: dark')
+            );
+
+            $(this).text(
+                $(this).text().replace('prefers-color-scheme: light', '/*--x-dark*/')
+            );
+        });
+    }
 });

@@ -42,6 +42,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
 
                 setUserId($match['id']);
                 setUserName($match['username']);
+                setUserTheme($match['theme']);
 
                 getUserQR();
 

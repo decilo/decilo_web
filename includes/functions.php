@@ -72,6 +72,14 @@ function getUserQR() {
     return $_SESSION[USER_QR_STORE];
 }
 
+function setUserTheme($mailAddress) {
+    $_SESSION[USER_THEME_STORE] = $mailAddress;
+}
+
+function getUserTheme() {
+    return isset($_SESSION[USER_THEME_STORE]) ? $_SESSION[USER_THEME_STORE] : null;
+}
+
 function setAllowance($level) {
     $_SESSION[ALLOWANCE_LEVEL_STORE] = $level;
 }

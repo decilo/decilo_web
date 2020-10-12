@@ -42,6 +42,22 @@ $user = getCurrentUser();
             <span class="helper-text"></span>
         </div>
 
+        <div class="input-field col s12">
+            <select id="themeSelect">
+                <?php
+                    $themes = [];
+                    $themes[THEMES['AUTO']]  = 'Automático';
+                    $themes[THEMES['LIGHT']] = 'Claro';
+                    $themes[THEMES['DARK']]  = 'Oscuro';
+
+                    foreach ($themes as $identifier => $theme) {
+                        print '<option value="' . $identifier .'" ' . (!is_null($user['theme']) && $user['theme'] == $identifier ? 'selected' : '') . '> ' . $theme . ' </option>';
+                    }
+                ?>
+            </select>
+            <label>Tema</label>
+        </div>
+
         <button id="profileUpdateTryBtn" type="button" class="bg-light-1 bg-dark-1 waves-effect waves-light btn btn-block col s4 offset-s4 m4 offset-m4">
             Guardar
         </button>

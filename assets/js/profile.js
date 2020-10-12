@@ -42,11 +42,13 @@ $(document).ready(() => {
         ) {
             let username            = $('#username').val();
             let mailAddress         = $('#mailAddress').val();
+            let theme               = parseInt($('#themeSelect').val());
 
             run('accountManager', 'profileUpdateTry', {
                 username:       username,
                 mailAddress:    mailAddress,
-                password:       password
+                password:       password,
+                theme:          theme == -1 || isNaN(theme) ? null : theme
             }, () => {
                 disable($('#profileUpdateTryBtn'));
 
@@ -185,6 +187,82 @@ $(document).ready(() => {
     $('#password, #passwordVerifier').on('keyup change', validatePassword);
 
     $('#mailAddress').on('keyup change', validateMailAddress);
+
+    $('select').formSelect();
+
+    $('.select-dropdown')
+        .addClass('light-4 dark-5')
+        .find('span')
+        .addClass('light-4 dark-5');
+
+    $('#themeSelect').on('change', function () {
+        value = parseInt($(this).val());
+
+        if (isNaN(value)) {
+            value = null;
+        }
+
+        switch (value) {
+            case THEMES['LIGHT']:
+                $('style').each(function () {
+                    $(this).text(
+                        $(this).text().replace('screen /*--x-dark*/', '(prefers-color-scheme: dark)')
+                    );
+
+                    $(this).text(
+                        $(this).text().replace('(prefers-color-scheme: light)', 'screen /*--x-light*/')
+                    );
+
+                    $(this).text(
+                        $(this).text().replace('/*--x-dark*/', 'prefers-color-scheme: light')
+                    );
+
+                    $(this).text(
+                        $(this).text().replace('prefers-color-scheme: dark', '/*--x-light*/')
+                    );
+                });
+
+                break;
+            case THEMES['DARK']:
+                $('style').each(function () {
+                    $(this).text(
+                        $(this).text().replace('screen /*--x-light*/', '(prefers-color-scheme: light)')
+                    );
+
+                    $(this).text(
+                        $(this).text().replace('/*--x-light*/', 'prefers-color-scheme: dark')
+                    );
+
+                    $(this).text(
+                        $(this).text().replace('prefers-color-scheme: light', '/*--x-dark*/')
+                    );
+
+                    $(this).text(
+                        $(this).text().replace('(prefers-color-scheme: dark)', 'screen /*--x-dark*/')
+                    );
+                });
+
+                break;
+            default:
+                $('style').each(function () {
+                    $(this).text(
+                        $(this).text().replace('screen /*--x-light*/', '(prefers-color-scheme: light)')
+                    );
+                    $(this).text(
+                        $(this).text().replace('screen /*--x-dark*/', '(prefers-color-scheme: dark)')
+                    );
+                    
+                    $(this).text(
+                        $(this).text().replace('/*--x-dark*/', 'prefers-color-scheme: light')
+                    );
+                    $(this).text(
+                        $(this).text().replace('/*--x-light*/', 'prefers-color-scheme: dark')
+                    );
+                });
+
+                break;
+        }
+    });
 
     validateUsername();
     validateMailAddress();

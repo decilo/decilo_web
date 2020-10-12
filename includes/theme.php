@@ -1,9 +1,36 @@
 <?php
 
+$theme = getUserTheme();
+
 foreach (THEME as $mode => $colors) {
     $mode = strtolower($mode);
 
-    print '@media (prefers-color-scheme: ' . $mode . ') {';
+    print '@media ';
+
+    if (is_null($theme)) {
+        print '(prefers-color-scheme: ' . $mode . ')';
+    } else {
+        switch ($theme) {
+            case THEMES['LIGHT']:
+                if ($mode == 'light') {
+                    print 'screen /*--x-light*/';
+                } else {
+                    print '(/*--x-light*/)';
+                }
+
+                break;
+            case THEMES['DARK']:
+                if ($mode == 'dark') {
+                    print 'screen /*--x-dark*/';
+                } else {
+                    print '(/*--x-dark*/)';
+                }
+
+                break;
+        }
+    }
+
+    print '{';
 
     foreach (['' => 'color', 'bg' => 'background-color', 'border' => 'border-color'] as $prefix => $property) {
         if (strlen($prefix) > 0) {
@@ -12,6 +39,12 @@ foreach (THEME as $mode => $colors) {
 
         foreach ($colors as $index => $color) {
             print '.' . $prefix . $mode . '-' . ($index + 1) . ' { ' . $property . ': #' . $color . ' !important; }';
+        }
+
+        $hex = str_split($colors[2], 2); $rgba = [];
+
+        foreach ($hex as $pair) {
+            $rgba[] = hexdec($pair);
         }
 
         // Rules taken from: https://stackoverflow.com/a/44417646.
@@ -57,7 +90,23 @@ foreach (THEME as $mode => $colors) {
                 background-color: #' . $colors[5] . ';
             }
             
-            .card-box { box-shadow: 1px 1px #' . $colors[9] . '; }';
+            .card-box { box-shadow: 1px 1px #' . $colors[9] . '; }
+            
+            .select-dropdown.dropdown-content li.selected {
+                background-color: #' . $colors[11] . ';
+            }
+            
+            .select-dropdown.dropdown-content li:hover {
+                background-color: #' . $colors[11] . ';
+            }
+
+            body.keyboard-focused .select-dropdown.dropdown-content li:focus {
+                background-color: #' . $colors[10] . ';
+            }
+            
+            .dropdown-content {
+                background-color: #' . $colors[10] . ';
+            }';
     }
 
     print '}';

@@ -164,6 +164,7 @@ if ($request == null) {
                                 setUserId($match['id']);
                                 setUserName($match['username']);
                                 setUserMailAddress($match['mailAddress']);
+                                setUserTheme($match['theme']);
                                 setAllowance($match['allowance']);
 
                                 reply([
@@ -343,17 +344,17 @@ if ($request == null) {
                             $GLOBALS['database']->prepare(
                                 'UPDATE `d_users`
                                  SET
-                                    `d_users`.`username` = :username ' . (empty($values['password']) ? '' : ',
-                                    `d_users`.`password` = :password ') .
+                                    `d_users`.`username` = :username,
+                                    `d_users`.`theme`    = :theme     ' . (empty($values['password']) ? '' : ',
+                                    `d_users`.`password` = :password  ') .
                                 'WHERE  `d_users`.`id`   = :id'
                             );
 
-                        $statement->bindParam('username', $values['username']);
-
-                        $hashedPassword = password_hash($values['password'], PASSWORD_ARGON2ID);
+                        $statement->bindParam('username',   $values['username']);
+                        $statement->bindParam('theme',      $values['theme']);
 
                         if (!empty($values['password'])) {
-                            $statement->bindParam('password', $hashedPassword);
+                            $statement->bindParam('password', password_hash($values['password'], PASSWORD_ARGON2ID));
                         }
 
                         $statement->bindParam('id', $user['id']);
@@ -362,6 +363,7 @@ if ($request == null) {
 
                         setUserName($values['username']);
                         setUserMailAddress($values['mailAddress']);
+                        setUserTheme($values['theme']);
 
                         reply($result, OK);
                     } else {
