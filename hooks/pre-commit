@@ -2,7 +2,7 @@
 
 TOP=$(git rev-parse --show-toplevel);
 
-find $TOP -name '*.min.*' -exec rm -Rfv {} \;;
+find $TOP -name '*.min.*' -exec git rm -rf {} \;;
 
 php $TOP/util/minifyAssets.php;
 
