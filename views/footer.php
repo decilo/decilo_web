@@ -68,7 +68,7 @@
         <script src="https://unpkg.com/dayjs@1.8.35/locale/en.js" onload="console.info('Day.js/localizedFormat/en: loaded successfully.');"></script>
 
         <!-- MaterializeCSS - custom build -->
-        <script src="https://rawcdn.githack.com/decilo/materialize/v1-dev/dist/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
 
         <!-- Masonry -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js" integrity="sha512-JRlcvSZAXT8+5SQQAvklXGJuxXTouyq8oIMaYERZQasB8SBDHZaUbeASsJWpk0UUrf89DP3/aefPPrlMR1h1yQ==" crossorigin="anonymous" onload="console.info('Masonry: loaded successfully.');" defer async></script>
