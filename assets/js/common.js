@@ -539,7 +539,7 @@ function loadRecaptcha(defer = false, async = false) {
 }
 
 function displayIcons() {
-    $('.material-icons').animate({ opacity: 1 });
+    $('.material-icons').fadeIn();
 }
 
 function checkIfOnline(onSuccess = () => {}, onError = () => {

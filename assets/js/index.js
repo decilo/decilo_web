@@ -56,7 +56,9 @@ function reloadLayout(toAppend = null) {
                 }
             });
 
-        $('.material-icons').fadeIn();
+        if (document.fonts.check('0px Material Icons')) {
+            displayIcons();
+        }
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }
