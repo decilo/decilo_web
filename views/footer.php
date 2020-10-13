@@ -58,6 +58,9 @@
             const EXCEPTION = <?= json_encode(isset($_GET['e']) ? $_GET['e'] : null); ?>
         </script>
 
+        <!-- Default passive events -->
+        <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
+
         <!-- jQuery -->
         <script src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" onload="console.info('jQuery: loaded successfully.');"></script>
 
