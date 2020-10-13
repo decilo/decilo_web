@@ -391,7 +391,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         </style>
     </head>
 
-    <body class="bg-light-5 bg-dark-4" style="display: none;">
+    <body class="bg-light-5 bg-dark-4" style="opacity: 0;">
         <?php
 
         if ($isCrawling) {

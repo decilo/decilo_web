@@ -18,6 +18,34 @@ let viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
 let isOnline = navigator.onLine;
 let heartbeatLooper = null;
 
+jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1) {
+    $(this).css({ display: '', opacity: opacity });
+
+    setTimeout(callback, MATERIALIZE_TRANSITION_TIME);
+}
+
+jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
+    element = $(this);
+
+    element.css({ opacity: opacity });
+
+    setTimeout(() => {
+        if (element.css('display') != 'none') {
+            element.data('data-display', element.css('display'));
+
+            console.log(element, element.data());
+        }
+
+        element.css({ display: 'none' });
+
+        callback();
+    }, MATERIALIZE_TRANSITION_TIME);
+}
+
+function displayNoInternetFAB() {
+    $('#noInternetBtn').fadeIn(() => {}, 0.5);
+}
+
 function run(url, action, values, before = () => {}, overridesFailure = false) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
@@ -59,7 +87,7 @@ function run(url, action, values, before = () => {}, overridesFailure = false) {
                 } else {
                     isOnline = false;
 
-                    $('#noInternetBtn').fadeIn();
+                    displayNoInternetFAB();
 
                     toast(NO_INTERNET_HINT);
                 }
@@ -89,7 +117,7 @@ function redirect(url, timeout = null) {
 function animateRedirect(url, fullBody = false, timeout = null) {
     setTimeout(() => {
         redirCall = () => {
-            $(fullBody ? 'body' : 'main').fadeOut(MATERIALIZE_TRANSITION_TIME, () => {
+            $(fullBody ? 'body' : 'main').fadeOut(() => {
                 redirect(url, 0);
             });
         };
@@ -519,7 +547,7 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
 
     isOnline = false;
 
-    $('#noInternetBtn').fadeIn();
+    displayNoInternetFAB();
 
     toast(NO_INTERNET_HINT);
 }) {
@@ -572,7 +600,7 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
             }, FAILURE_RETRY_INTERVAL);
         }
 
-        $('#noInternetBtn').fadeIn();
+        displayNoInternetFAB();
 
         onError();
     });
@@ -597,9 +625,7 @@ $(document).ready(() => {
         .prop('rel', 'stylesheet')
         .removeAttr('as');
 
-    if (!$('body').is(':visible')) {
-        $('body').fadeIn();
-    }
+    $('body').fadeIn();
 
     $('[class^="btn-"]').each(function () {
         if ($(this).hasClass('pulse')) {
@@ -638,7 +664,10 @@ $(document).ready(() => {
 
     $('.sidenav').sidenav({
         onOpenStart: () => {
-            $('.tooltipped').tooltip('close');
+            tooltips = $('.tooltipped');
+
+            tooltips.tooltip();
+            tooltips.tooltip('close');
         },
         onCloseEnd: () => {
             fabToggleBtn = $('#fabToggleBtn');
