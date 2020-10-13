@@ -94,10 +94,14 @@ function animateRedirect(url, fullBody = false, timeout = null) {
             });
         };
 
-        if ($('.sidenav').length > 0) {
-            $('.sidenav').sidenav('close');
+        sidenav = $('.sidenav');
 
-            setTimeout(redirCall, M.Sidenav.getInstance($('.sidenav')).options.outDuration);
+        if (sidenav.length > 0) {
+            sidenav = M.Sidenav.getInstance(sidenav);
+
+            sidenav.close();
+
+            setTimeout(redirCall, sidenav.options.outDuration);
         } else {
             redirCall();
         }
