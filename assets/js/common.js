@@ -784,6 +784,8 @@ $(document).ready(() => {
 
                     $('#signupMailAddress').val('');
 
+                    $('.tooltipped').tooltip('close');
+
                     stopPreloader();
                 });
             }
