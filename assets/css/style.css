@@ -16,7 +16,10 @@
 }
 
 html,
-body { overflow-x: hidden; }
+body {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
 
 p,
 button,

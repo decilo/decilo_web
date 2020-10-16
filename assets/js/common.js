@@ -100,7 +100,7 @@ function toast(html) {
     if (typeof(M) != 'undefined') {
         M.toast({ html: html });
     } else {
-        console.warn('Unable to display toast, there must be a slow connection, since the M class isn\'t available yet.\n\nhtml: ' + html);
+        console.warn('toast: unable to display toast, there must be a slow connection, since the M class isn\'t available yet.\n\nhtml: ' + html);
     }
 }
 
@@ -169,7 +169,7 @@ function displayRemovableWarning(html) {
             </span>
             <br>
             <div class="section"></div>
-            </div>`
+         </div>`
     );
 
     $('.showNow')
@@ -607,8 +607,6 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
 }
 
 $(document).ready(() => {
-    let isGoingTop = false;
-    
     // Initialize Day.js
     dayjs.extend(dayjs_plugin_localizedFormat);
 
@@ -653,13 +651,7 @@ $(document).ready(() => {
     //  }
 
     function goBackToTop() {
-        if (!isGoingTop) {
-            isGoingTop = true;
-
-            $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION, () => {
-                isGoingTop = false;
-            });
-        }
+        $('html, body').css({ 'scrollTop' : 0 });
     }
 
     $('.sidenav').sidenav({
@@ -941,8 +933,6 @@ $(document).ready(() => {
 
             $('.tooltip-content').addClass('thin');
         }
-    
-        $('.scrollspy').scrollSpy();
 
         M.updateTextFields();
 
