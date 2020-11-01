@@ -188,22 +188,6 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
         let previousHtml = createPostBtn.html();
 
-        let postProgressBar = $('#postProgressBar');
-
-        postProgressBar
-            .width(0)
-            .show();
-
-        let postingAnimation = setInterval(() => {
-            if (postProgressBar.width() < createPostBtn.outerWidth()) {
-                postProgressBar.css({ 'width' : postProgressBar.width() + 1 });
-            } else {
-                clearInterval(postingAnimation);
-
-                postingAnimation = null;
-            }
-        }, PROGRESSBAR_TRIGGER_INTERVAL);
-
         run('messagesManager', 'postMessage', {
             'content'       : messageContent,
             'declaredName'  : declaredName,
@@ -234,6 +218,26 @@ function postMessage(messageContent, declaredName, token, image = null) {
                 .val('');
 
             reloadLayout()
+        }, false, () => {
+            let xhr = $.ajaxSettings.xhr();
+
+            postProgressBar = $('#postProgressBar');
+            postProgressBar
+                .width(0)
+                .show();
+
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable) {
+                    percentage  = Math.round((event.loaded * 100) / event.total);
+                    width       = (percentage * createPostBtn.outerWidth()) / 100;
+
+                    if (postProgressBar.width() < createPostBtn.outerWidth()) {
+                        postProgressBar.css({ 'width' : width });
+                    }
+                }
+            }, false);
+
+            return xhr;
         })
         .done((response) => {
             console.log(response);
@@ -291,10 +295,6 @@ function postMessage(messageContent, declaredName, token, image = null) {
             createPostBtn
                 .addClass('waves-effect waves-light')
                 .html(previousHtml);
-
-            if (postingAnimation == null) {
-                clearInterval(postingAnimation);
-            }
 
             postProgressBar.animate({ 'width' : createPostBtn.outerWidth() }, () => {
                 setTimeout(() => {

@@ -32,8 +32,6 @@ jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
     setTimeout(() => {
         if (element.css('display') != 'none') {
             element.data('data-display', element.css('display'));
-
-            console.log(element, element.data());
         }
 
         element.css({ display: 'none' });
@@ -46,7 +44,7 @@ function displayNoInternetFAB() {
     $('#noInternetBtn').fadeIn(() => {}, 0.5);
 }
 
-function run(url, action, values, before = () => {}, overridesFailure = false) {
+function run(url, action, values, before = () => {}, overridesFailure = false, xhr = () => {}) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
     return $.ajax(
@@ -61,7 +59,8 @@ function run(url, action, values, before = () => {}, overridesFailure = false) {
                     'action'    : action,
                     'values'    : values
                 }
-            )
+            ),
+            xhr: xhr
         }
     )
     .done((response, status, xhr) => {
