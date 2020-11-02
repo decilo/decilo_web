@@ -44,7 +44,9 @@ function displayNoInternetFAB() {
     $('#noInternetBtn').fadeIn(() => {}, 0.5);
 }
 
-function run(url, action, values, before = () => {}, overridesFailure = false, xhr = () => {}) {
+function run(url, action, values, before = () => {}, overridesFailure = false, xhr = () => {
+    return $.ajaxSettings.xhr();
+}) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
     return $.ajax(
