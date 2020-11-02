@@ -667,6 +667,8 @@ function tryToPushRandomAd() {
             ).after(
                 getRenderedAd(response['result']['id'], response['result']['content'], response['result']['companyName'])
             );
+
+            reloadLayout();
         } else {
             console.info('tryToPushRandomAd: there are no messages in this view, this is a sad moment for advertisers. :(');
         }
