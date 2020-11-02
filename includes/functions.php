@@ -102,7 +102,7 @@ function reply($values, $status = OK) {
     print json_encode([
         'result'    => $values,
         'status'    => $status
-    ]);
+    ], JSON_NUMERIC_CHECK);
 
     exit();
 }
