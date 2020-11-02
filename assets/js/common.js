@@ -607,6 +607,75 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
     });
 }
 
+function getRenderedAd(id, content, companyName, created = null, image = null) {
+    auxiliaryContent = content;
+
+    content.split('http').forEach((match) => {
+        match
+            .split(' ')
+            .forEach((item) => {    
+                if (item.indexOf('://') > -1) {
+                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '" rel="noreferrer">http' + item + '</a>');
+                }
+        });
+    });
+
+    return `<div class="col s12 m6 l3 message" data-ad="` + id + `">
+                <div class="card bg-dark-3 card-box">` + (image == null ? '' : `
+                    <div class="card-image">
+                        <img
+                            class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
+                            alt="Imagen adjunta"
+                            src="` + image + `"
+                            onerror="
+                                $(this)
+                                    .parent()
+                                    .parent()
+                                    .hide();
+
+                                reloadLayout();
+                            "
+                        >
+                    </div>`) + `
+                    <div class="card-content white-text">
+                        <span class="card-title roboto light-3">` +
+                            (companyName == null ? 'Anónimo' : companyName) + ` <span class="badge bg-dark-10 bg-light-11"> Publicidad </span>
+                        </span>
+                        <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
+                            (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
+                        </p>
+                    </div>
+                    <div class="card-action center">
+                        <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
+                    </div
+                </div>
+            </div>`;
+}
+
+function tryToPushRandomAd() {
+    run('adsManager', 'getRandomAd', {}, () => {}, true)
+    .done((response) => {
+        console.info(response);
+
+        messages = $('.message');
+
+        if (messages.length > 0) {
+            messages.eq(
+                Math.round(
+                    Math.random() * (messages.length + 1)
+                )
+            ).after(
+                getRenderedAd(response['result']['id'], response['result']['content'], response['result']['companyName'])
+            );
+        } else {
+            console.info('tryToPushRandomAd: there are no messages in this view, this is a sad moment for advertisers. :(');
+        }
+    })
+    .fail((error) => {
+        console.error(error);
+    });
+}
+
 $(document).ready(() => {
     // Initialize Day.js
     dayjs.extend(dayjs_plugin_localizedFormat);
@@ -636,6 +705,11 @@ $(document).ready(() => {
         }
     });
 
+    localStorage.setItem('reportedImpressions', JSON.stringify([]));
+
+    let isReportingImpressions = false;
+    let reportedImpressions = [];
+
     document.addEventListener('scroll', () => {
         // Prevent this error, it doesn't really matter.
         try {
@@ -643,6 +717,27 @@ $(document).ready(() => {
                 $('.tooltipped').tooltip('close');
             }
         } catch (exception) {}
+
+        $('[data-ad]').each(function () {
+            id = $(this).data('ad');
+
+            if (isElementInViewport($(this)[0]) && !isReportingImpressions && !reportedImpressions.includes(id)) {
+                run('adsManager', 'reportImpression', { id: id }, () => {
+                    isReportingImpressions = true;
+                }, true)
+                .done((response) => {
+                    console.info(response);
+
+                    if (response.status == OK) {
+                        reportedImpressions.push(id);
+                    }
+                })
+                .fail((error) => {
+                    console.error(error);
+                })
+                .always(() => { isReportingImpressions = false; });
+            }
+        });
     }, { passive: true });
 
     // toast(navigator.userAgent);
@@ -945,6 +1040,8 @@ $(document).ready(() => {
         wallpaper.attr('src', wallpaper.attr('data-src'));
 
         loader();
+
+        tryToPushRandomAd();
 
         var script = null;
 
