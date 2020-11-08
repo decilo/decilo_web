@@ -162,7 +162,7 @@ function getRecipientUsername($username) {
 
     $result = $statement->fetch();
 
-    return $result == null ? null : $result[0];
+    return $result == null ? null : $result['username'];
 }
 
 function getUserLink() {
@@ -390,14 +390,14 @@ function getMessage($id, $private = false) {
 function isReportReasonValid($id) {
     $statement =
         $GLOBALS['database']->prepare(
-            'SELECT COUNT(*)
+            'SELECT COUNT(*) AS count
              FROM   `d_report_reasons`
              WHERE  `d_report_reasons`.`id` = :id'
         );
 
     $statement->execute([ 'id' => $id ]);
 
-    return $statement->fetch()[0] > 0;
+    return $statement->fetch()['count'] > 0;
 }
 
 function getParsedString(string $string, Array $replacements) {
