@@ -617,7 +617,9 @@ $(document).ready(() => {
                         .css({ 'display' : 'block' })
                         .animate({ 'right' : '-0.3em' });
 
-                    toast('Listo, agregaste ' + files[0].name + '.');
+                    if ($('.toast').length < 1) {
+                        toast('Listo, agregaste ' + files[0].name + '.');
+                    }
                 } else {
                     resetMessageInputs();
 
