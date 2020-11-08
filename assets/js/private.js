@@ -6,6 +6,8 @@ let isPullingChunks     = false;
 
 let toRemove = null;
 
+isPrivate = true;
+
 function requestRemoval(id) {
     toRemove = id;
 

@@ -7,6 +7,8 @@ const NO_MESSAGES_HINT =
 const NO_INTERNET_HINT = 'No tenés conexión a internet.';
 const BACK_ONLINE_HINT = 'Ya tenés internet.';
 
+let isPrivate = false;
+
 let loader = () => {
     console.info('loader: no loader was specified.');
 };
@@ -620,7 +622,7 @@ function getRenderedAd(id, content, companyName, created = null, image = null) {
         });
     });
 
-    return `<div class="col s12 m6 l3 message" data-ad="` + id + `">
+    return `<div class="col ` + (isPrivate ? 's12 m12 l6' : 's12 m6 l3') + ` message" data-ad="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (image == null ? '' : `
                     <div class="card-image">
                         <img
@@ -662,7 +664,7 @@ function tryToPushRandomAd() {
         if (messages.length > 0) {
             messages.eq(
                 Math.round(
-                    Math.random() * (messages.length + 1)
+                    Math.random() * (messages.length - 1)
                 )
             ).after(
                 getRenderedAd(response['result']['id'], response['result']['content'], response['result']['companyName'])
