@@ -88,7 +88,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                 <div class="card bg-dark-3 card-box">
                     <button
                         type="button"
-                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light red"
+                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light btn-hfab"
                         onclick="requestRemoval(` + id + `);"
                     >
                         <i class="material-icons mid-card-fab-icon">delete</i>

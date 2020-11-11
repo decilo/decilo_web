@@ -20,6 +20,174 @@ let viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
 let isOnline = navigator.onLine;
 let heartbeatLooper = null;
 
+const FONTS = [
+    {
+        family:  'Lato',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh7USSwaPGR_p.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Lato',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh7USSwiPGQ.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Lato',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6uyw4BMUTPHjxAwXjeu.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Lato',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6uyw4BMUTPHjx4wXg.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Lato',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh6UVSwaPGR_p.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Lato',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh6UVSwiPGQ.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  300,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfCRc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfABc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfCBc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBxc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfCxc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfChc4EsA.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Roboto',
+        weight:  700,
+        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format(\'woff2\')'
+    },
+    {
+        family:  'Material Icons',
+        weight:  400,
+        src:     'url(https://fonts.gstatic.com/s/materialicons/v55/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format(\'woff2\')'
+    }
+];
+
+let loadedFonts = [];
+
+FONTS.forEach((font) => {
+    let fontFace = new FontFace(font['family'], font['src'], {
+        style:          font['style'],
+        weight:         font['weight']
+    });
+
+    fontFace
+        .load()
+        .then(() => {
+            loadedFonts.push(fontFace);
+
+            if (loadedFonts.length == FONTS.length) {
+                console.info('FontFace: loaded', loadedFonts.length, '(of', FONTS.length, 'required fonts).');
+
+                loadedFonts.forEach((loadedFont) => {
+                    document.fonts.add(loadedFont);
+                });
+
+                $('body').fadeIn();
+            }
+        });
+});
+
 jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1) {
     $(this).css({ display: '', opacity: opacity });
 
@@ -216,10 +384,6 @@ function reloadLayout(toAppend = null) {
                         }
                     });
             });
-
-        if (document.fonts.check('0px Material Icons')) {
-            displayIcons();
-        }
     } else {
         console.warn('Cannot update layout, Masonry isn\'t ready.');
     }
@@ -560,10 +724,6 @@ function loadRecaptcha(defer = false, async = false) {
     }
 }
 
-function displayIcons() {
-    $('.material-icons').fadeIn();
-}
-
 function checkIfOnline(onSuccess = () => {}, onError = () => {
     console.warn('onlineTest: we\'re offline, setting the dedicated flag.');
 
@@ -660,7 +820,7 @@ function getRenderedAd(id, content, companyName, created = null, image = null) {
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto light-3">` +
-                            (companyName == null ? 'Anónimo' : companyName) + ` <span class="badge bg-dark-10 bg-light-11"> Publicidad </span>
+                            (companyName == null ? 'Anónimo' : companyName) + ` <span class="badge bg-dark-10 bg-light-11 ads-badge-text"> Publicidad </span>
                         </span>
                         <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
                             (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
@@ -719,8 +879,6 @@ $(document).ready(() => {
     $('link[as="style"]')
         .prop('rel', 'stylesheet')
         .removeAttr('as');
-
-    $('body').fadeIn();
 
     $('[class^="btn-"]').each(function () {
         if ($(this).hasClass('pulse')) {
@@ -1139,12 +1297,6 @@ $(document).ready(() => {
     $(window).on('resize', () => {
         viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
     });
-
-    document.fonts.onloadingdone = () => {
-        if (document.fonts.check('0px Material Icons')) {
-            displayIcons();
-        }
-    };
 
     window.addEventListener('online', () => {
         checkIfOnline(() => {

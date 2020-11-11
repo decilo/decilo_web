@@ -12,7 +12,6 @@
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
-    opacity: 0;
 }
 
 html,
@@ -138,7 +137,10 @@ div:focus { outline: none !important; }
 .soft-link { color: #039be5; }
 
 .mid-card-fab       { bottom: 6.10rem   !important; }
-.mid-card-fab-icon  { font-size: 1.4rem !important; }
+.mid-card-fab-icon  {
+    font-size: 1.4rem !important;
+    color: #ececec  !important;
+}
 
 .preloader-bottom-small {
     top:            0.8em;
@@ -154,6 +156,18 @@ input[type="file"] { display: none; }
 .mr-1 { margin-right: 1em; }
 
 .halfway-fab-left-btn { left: 2rem; }
+
+.btn-hfab:hover,
+.btn-hfab { background-color: #d60e00; }
+
+.btn-hfab-disabled:hover,
+.btn-hfab-disabled { background-color: #646464 !important; }
+
+.ads-badge-text { color: #bcbcbc !important; }
+
+@media (prefers-color-scheme: light) {
+    .ads-badge-text { color: #505050 !important; }
+}
 
 .message-spacer { height: 1em; }
 .collection-spacer { height: 0.5em; }
