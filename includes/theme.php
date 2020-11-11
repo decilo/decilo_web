@@ -38,7 +38,7 @@ foreach (THEME as $mode => $colors) {
         }
 
         foreach ($colors as $index => $color) {
-            print '.' . $prefix . $mode . '-' . ($index + 1) . ' { ' . $property . ': #' . $color . ' !important; }';
+            print '.' . $prefix . $mode . '-' . ($index + 1) . '{' . $property . ':#' . $color . '!important;}';
         }
 
         $hex = str_split($colors[2], 2); $rgba = [];
@@ -48,7 +48,7 @@ foreach (THEME as $mode => $colors) {
         }
 
         // Rules taken from: https://stackoverflow.com/a/44417646.
-        print '
+        print preg_replace('/\s+/', ' ', '
             input:focus + label,
             .input-field input:focus + label,
             .materialize-textarea:focus:not([readonly]) + label {
@@ -106,7 +106,8 @@ foreach (THEME as $mode => $colors) {
             
             .dropdown-content {
                 background-color: #' . $colors[10] . ';
-            }';
+            }'
+        );
     }
 
     print '}';
