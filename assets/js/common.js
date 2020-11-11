@@ -163,6 +163,68 @@ function markInvalid(element) {
         .removeClass('valid');
 }
 
+function reloadLayout(toAppend = null) {
+    function setupInstance() {
+        if (toAppend != null) {
+            grid.appended($(toAppend));
+        }
+
+        grid.reloadItems();
+        grid.layout();
+    }
+
+    if (typeof(Masonry) != 'undefined') {
+        if (toAppend == null || grid == null) {
+            console.info('reloadLayout: grid initialization started.');
+
+            grid = new Masonry(
+                '#recentsContainer',
+                {
+                    itemSelector: '.col',
+                    containerStyle: {
+                        'position' : 'relative',
+                        'padding-top' : '1em'
+                    },
+                    transitionDuration: 0
+                }
+            );
+        } else {
+            console.info('reloadLayout: reloading newly added items.');
+
+            setupInstance();
+
+            $('.tooltipped').tooltip();
+        }
+
+        $('#recentsContainer')
+            .find('.unverified-img')
+            .each(function () {
+                let clickedOnce = false;
+                let image       = $(this);
+
+                image
+                    .off('click')
+                    .on('click', () => {
+                        if (clickedOnce) {
+                            image
+                                .removeClass('unverified-img')
+                                .off('click');
+                        } else {
+                            toast('Tocá la imagen de nuevo para verla.');
+
+                            clickedOnce = true;
+                        }
+                    });
+            });
+
+        if (document.fonts.check('0px Material Icons')) {
+            displayIcons();
+        }
+    } else {
+        console.warn('Cannot update layout, Masonry isn\'t ready.');
+    }
+}
+
 function displayRemovableWarning(html) {
     $('#recentsContainer')
         .find('.removableWarning')
@@ -244,53 +306,6 @@ function isElementInViewport(element) {
     viewportBottom = viewportTop + $(window).height();
 
     return elementBottom > (viewportTop - viewportThreshold) && (elementTop - viewportThreshold) < viewportBottom;
-}
-
-function setupMaterializeImages() {
-    if ($('.materialboxed').length > 0) {
-        $('.materialboxed').materialbox({
-            'onOpenStart' : (target) => {
-                let message = $(target)
-                                .parent()
-                                .parent()
-                                .parent()
-                                .parent()
-                                .data()
-                                .message;
-
-                let img = $('.message[data-message="' + message + '"]').find('img');
-
-                if (img.hasClass('unverified-img')) {
-                    img
-                        .addClass('was-unverified')
-                        .removeClass('unverified-img');
-                }
-
-                $('.tooltipped').tooltip('close');
-            },
-            'onCloseEnd'  : (target) => {
-                let message = $(target)
-                                .parent()
-                                .parent()
-                                .parent()
-                                .parent()
-                                .data()
-                                .message;
-
-                let img = $('.message[data-message="' + message + '"]').find('img');
-
-                if (img.hasClass('was-unverified')) {
-                    img
-                        .removeClass('was-unverified')
-                        .addClass('unverified-img');
-                }
-
-                if (fabToggleBtn.length > 0 && fabToggleBtn.hasClass('pulse')) {
-                    fabToggleBtn.tooltip('open');
-                }
-            }
-        });
-    }
 }
 
 function getRenderedComment(id = null, declaredName = null, content, active = false) {
@@ -1107,8 +1122,6 @@ $(document).ready(() => {
                 break;
         }
     }
-
-    setupMaterializeImages();
 
     let nav = $('nav');
 

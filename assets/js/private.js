@@ -65,56 +65,6 @@ function tryToRemove() {
     }
 }
 
-function reloadLayout(toAppend = null) {
-    function setupInstance() {
-        if (toAppend != null) {
-            grid.appended($(toAppend));
-        }
-
-        grid.reloadItems();
-        grid.layout();
-    }
-
-    if (typeof(Masonry) != 'undefined') {
-        if (toAppend == null || grid == null) {
-            console.info('reloadLayout: grid initialization started.');
-
-            grid = new Masonry(
-                '#recentsContainer',
-                {
-                    itemSelector: '.col',
-                    containerStyle: {
-                        'position' : 'relative',
-                        'padding-top' : '1em'
-                    },
-                    transitionDuration: 0
-                }
-            );
-        } else {
-            console.info('reloadLayout: reloading newly added items.');
-
-            setupInstance();
-
-            $('.tooltipped').tooltip();
-        }
-
-        $('#recentsContainer')
-            .find('img')
-            .imagesLoaded()
-            .progress((instance) => {
-                if (instance.progressedCount == instance.images.length) {
-                    setupMaterializeImages();
-
-                    setupInstance();
-                }
-            });
-
-        $('.material-icons').fadeIn();
-    } else {
-        console.warn('Cannot update layout, Masonry isn\'t ready.');
-    }
-}
-
 function getLastMessageId() {
     return  $('.message')
                 .last()
@@ -144,19 +94,12 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <i class="material-icons mid-card-fab-icon">delete</i>
                     </button>` + (image == null ? '' : `
                     <div class="card-image">
+                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image" style="background: url('` + image + `');"></div>
                         <img
-                            alt="Imagen adjunta"
                             src="` + image + `"
+                            style="display: none; width: 0px; height: 0px;"
                             onerror="
-                                $(this)
-                                    .parent()
-                                    .hide();
-
-                                $(this)
-                                    .parent()
-                                    .parent()
-                                    .parent()
-                                    .fadeIn();
+                                $(this).parent().hide();
 
                                 reloadLayout();
                             "
@@ -313,8 +256,6 @@ $(document).ready(() => {
             }, INDEX['POST_OK_COOLDOWN']);
         });
     });
-
-    setupMaterializeImages();
 
     let idleRunner = null;
     function initializeIdleRunner() {

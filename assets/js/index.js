@@ -12,58 +12,6 @@ let fab                 = null;
 
 let deferredFetcher     = null;
 
-function reloadLayout(toAppend = null) {
-    function setupInstance() {
-        if (toAppend != null) {
-            grid.appended($(toAppend));
-        }
-
-        grid.reloadItems();
-        grid.layout();
-    }
-
-    if (typeof(Masonry) != 'undefined') {
-        if (toAppend == null || grid == null) {
-            console.info('reloadLayout: grid initialization started.');
-
-            grid = new Masonry(
-                '#recentsContainer',
-                {
-                    itemSelector: '.col',
-                    containerStyle: {
-                        'position' : 'relative',
-                        'padding-top' : '1em'
-                    },
-                    transitionDuration: 0
-                }
-            );
-        } else {
-            console.info('reloadLayout: reloading newly added items.');
-
-            setupInstance();
-
-            $('.tooltipped').tooltip();
-        }
-
-        $('#recentsContainer')
-            .find('img')
-            .imagesLoaded()
-            .progress((instance) => {
-                if (instance.progressedCount == instance.images.length) {
-                    setupMaterializeImages();
-
-                    setupInstance();
-                }
-            });
-
-        if (document.fonts.check('0px Material Icons')) {
-            displayIcons();
-        }
-    } else {
-        console.warn('Cannot update layout, Masonry isn\'t ready.');
-    }
-}
-
 function resetMessageInputs() {
     $('#messageInput, #declaredName')
         .removeClass('valid')
@@ -121,15 +69,12 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <i class="material-icons mid-card-fab-icon" style="display: none;">flag</i>
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
+                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image" style="background: url('` + image + `');"></div>
                         <img
-                            class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
-                            alt="Imagen adjunta"
                             src="` + image + `"
+                            style="display: none; width: 0px; height: 0px;"
                             onerror="
-                                $(this)
-                                    .parent()
-                                    .parent()
-                                    .hide();
+                                $(this).parent().hide();
 
                                 reloadLayout();
                             "
@@ -322,8 +267,6 @@ function attachProgressBar() {
 $(document).ready(() => {
     createPostBtn   = $('#createPostBtn');
     imageInput      = $('#imageInput');
-    
-    setupMaterializeImages();
 
     $('#createMessageModal').modal({
         onOpenEnd: () => {

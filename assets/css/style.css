@@ -200,7 +200,12 @@ input[type="file"] { display: none; }
 
 #recentsContainer { overflow: hidden; }
 
-.background .wallpaper { width: 100%; }
+.background {
+    width: 100%; height: 96px;
+    background-repeat:   no-repeat  !important;
+    background-size:     cover      !important;
+    background-position: center     !important;
+}
 
 .fab-left {
     opacity: 0;
@@ -208,4 +213,17 @@ input[type="file"] { display: none; }
     left: 23px;
     bottom: 23px;
     display: block;
+}
+
+.message-image {
+    width: 100%; height: 18rem;
+    transition: filter linear 0.5s;
+    background-repeat:   no-repeat  !important;
+    background-size:     contain    !important;
+    background-position: center     !important;
+}
+
+/* Medium-sized devices and bigger (MaterializeCSS spec.) */
+@media only screen and (min-width: 601px) {
+    .message-image { width: 100%; height: 16rem; }
 }
