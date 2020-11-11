@@ -138,10 +138,10 @@ FONTS.forEach((font) => {
         });
 });
 
-jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1) {
+jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1, duration = MATERIALIZE_TRANSITION_TIME) {
     $(this).css({ display: '', opacity: opacity });
 
-    setTimeout(callback, MATERIALIZE_TRANSITION_TIME);
+    setTimeout(callback, duration);
 }
 
 jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
