@@ -92,34 +92,9 @@ const FONTS = [
         src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format(\'woff2\')'
     },
     {
-        family:  'Roboto',
+        family:  'Robot',
         weight:  400,
         src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff2) format(\'woff2\')'
     },
     {
         family:  'Roboto',
@@ -130,31 +105,6 @@ const FONTS = [
         family:  'Roboto',
         weight:  700,
         src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfABc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfCBc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBxc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfCxc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfChc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format(\'woff2\')'
     },
     {
         family:  'Material Icons',
@@ -183,7 +133,7 @@ FONTS.forEach((font) => {
                     document.fonts.add(loadedFont);
                 });
 
-                $('body').fadeIn();
+                $('body').fadeIn(() => {}, 1, 50);
             }
         });
 });
