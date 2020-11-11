@@ -334,8 +334,6 @@ $(document).ready(() => {
 
                     reloadLayout(renderedHTML);
 
-                    displayIcons();
-
                     if (
                         $('.message').last().position()['top'] > document.documentElement.clientHeight
                         &&
