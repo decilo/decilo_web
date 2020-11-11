@@ -285,6 +285,8 @@ $(document).ready(() => {
     fab = M.FloatingActionButton.getInstance($('.fixed-action-btn'));
 
     fabDOM.on('click', () => {
+        loadRecaptcha();
+
         if (fab.isOpen) {
             $('#fabToggleBtn')
                 .find('i')
@@ -292,8 +294,7 @@ $(document).ready(() => {
         } else {
             $('#fabToggleBtn')
                 .find('i')
-                .css({ 'transform' : 'rotate(90deg)' })
-                .on('click', loadRecaptcha);
+                .css({ 'transform' : 'rotate(90deg)' });
         }
     });
 
