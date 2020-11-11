@@ -29,7 +29,7 @@ jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1) {
 jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
     element = $(this);
 
-    element.css({ opacity: opacity });
+    element.animate({ opacity: opacity });
 
     setTimeout(() => {
         if (element.css('display') != 'none') {
@@ -43,7 +43,9 @@ jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
 }
 
 function displayNoInternetFAB() {
-    $('#noInternetBtn').fadeIn(() => {}, 0.5);
+    $('#noInternetBtn')
+        .css({ oapcity: 0, display: 'block'})
+        .animate({ opacity: 0.5 });
 }
 
 function run(url, action, values, before = () => {}, overridesFailure = false, xhr = () => {
@@ -678,6 +680,10 @@ function tryToPushRandomAd() {
     .fail((error) => {
         console.error(error);
     });
+}
+
+function cum() {
+    $('*').animate({ color: 'white', backgroundColor: 'white' });
 }
 
 $(document).ready(() => {
