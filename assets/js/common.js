@@ -103,9 +103,11 @@ function run(url, action, values, before = () => {}, overridesFailure = false, x
 
 function toast(html) {
     if (typeof(M) != 'undefined') {
-        M.toast({ html: html });
+        return M.toast({ html: html });
     } else {
         console.warn('toast: unable to display toast, there must be a slow connection, since the M class isn\'t available yet.\n\nhtml: ' + html);
+
+        return null;
     }
 }
 

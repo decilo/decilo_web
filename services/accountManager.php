@@ -449,6 +449,38 @@ if ($request == null) {
                 }
 
                 break;
+            case 'tryToSaveTheme':
+                $userId = getUserId();
+
+                if ($userId == null) {
+                    reply(null, NOT_ALLOWED);
+                } else {
+                    if (isset($values['theme']) || $values['theme'] == null) {
+                        $statement =
+                            $GLOBALS['database']->prepare(
+                                'UPDATE `d_users`
+                                SET    `d_users`.`theme` = :theme
+                                WHERE  `d_users`.`id`    = :id'
+                            );
+
+                        $statement->execute([
+                            'id'    => $userId,
+                            'theme' => $values['theme']
+                        ]);
+
+                        if ($statement->rowCount() > 0) {
+                            setUserTheme($values['theme']);
+
+                            reply(null, OK);
+                        } else {
+                            reply(null, ERROR);
+                        }
+                    } else {
+                        reply(null, BAD_REQUEST);
+                    }
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

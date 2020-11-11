@@ -262,6 +262,40 @@ $(document).ready(() => {
 
                 break;
         }
+
+        let savingChangesToast = null;
+        run('accountManager', 'tryToSaveTheme', { theme: parseInt($('#themeSelect').val()) }, () => {
+            disable($('#profileUpdateTryBtn'));
+
+            M.Toast.dismissAll();
+
+            savingChangesToast = toast('Guardando cambios...');
+        })
+        .done((response) => {
+            console.info(response);
+
+            switch (response.status) {
+                case OK:
+                    toast('¡Listo!');
+
+                    break;
+                case NOT_ALLOWED:
+                    toast('No tenés permitido modificar este perfil.');
+
+                    break;
+                case ERROR:
+                    toast('Algo salió mal, por favor probá otra vez.');
+
+                    break;
+            }
+        })
+        .always(() => {
+            if (savingChangesToast != null) {
+                savingChangesToast.dismiss();
+            }
+
+            enable($('#profileUpdateTryBtn'));
+        });
     });
 
     validateUsername();
