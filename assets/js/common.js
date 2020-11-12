@@ -127,7 +127,7 @@ FONTS.forEach((font) => {
             loadedFonts.push(fontFace);
 
             if (loadedFonts.length == FONTS.length) {
-                console.info('FontFace: loaded', loadedFonts.length, '(out of', FONTS.length, 'required fonts).');
+                console.info('FontFace: loaded', loadedFonts.length, 'fonts (out of', FONTS.length, 'required fonts).');
 
                 loadedFonts.forEach((loadedFont) => {
                     document.fonts.add(loadedFont);
