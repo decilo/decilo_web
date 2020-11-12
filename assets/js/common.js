@@ -315,7 +315,7 @@ function reloadLayout(toAppend = null) {
         }
 
         $('#recentsContainer')
-            .find('.unverified-img')
+            .find('.message-image')
             .each(function () {
                 let clickedOnce = false;
                 let image       = $(this);
@@ -323,14 +323,16 @@ function reloadLayout(toAppend = null) {
                 image
                     .off('click')
                     .on('click', () => {
-                        if (clickedOnce) {
-                            image
-                                .removeClass('unverified-img')
-                                .off('click');
-                        } else {
-                            toast('Tocá la imagen de nuevo para verla.');
+                        if (image.hasClass('unverified-img')) {
+                            if (clickedOnce) {
+                                image.removeClass('unverified-img');
+                            } else {
+                                toast('Tocá la imagen de nuevo para verla.');
 
-                            clickedOnce = true;
+                                clickedOnce = true;
+                            }
+                        } else {
+                            image.toggleClass('message-image-full');
                         }
                     });
             });

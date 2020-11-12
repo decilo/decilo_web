@@ -233,9 +233,11 @@ input[type="file"] { display: none; }
     width: 100%; height: 18rem;
     transition: filter linear 0.5s;
     background-repeat:   no-repeat  !important;
-    background-size:     contain    !important;
+    background-size:     cover      !important;
     background-position: center     !important;
 }
+
+.message-image-full { background-size: contain !important; }
 
 /* Medium-sized devices and bigger (MaterializeCSS spec.) */
 @media only screen and (min-width: 601px) {
