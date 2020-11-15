@@ -44,7 +44,24 @@ function getLastMessageId() {
                 .data('message');
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0) {
+function calculateOnscreenImages() {
+    $('.message').each(function () {
+        if (isElementInViewport(this)) {
+            img = $(this).find('.message-image');
+
+            if (img.length > 0 && typeof(img.attr('data-src')) != 'undefined') {
+                img
+                    .css({ background: 'url(\'' + img.data()['src'] + '\'' })
+                    .next()
+                    .attr('src', img.data()['src']);
+
+                console.info(img.data()['src']);
+            }
+        }
+    });
+}
+
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -70,9 +87,9 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <i class="material-icons mid-card-fab-icon">flag</i>
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
-                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image" style="background: url('` + image + `');"></div>
+                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image" ` + (deferImage ? `data-src="` + image + `"` : `style="background: url('` + image + `');"`) + `></div>
                         <img
-                            src="` + image + `"
+                            ` + (deferImage ? `data-src="` + image + `"` : `src="` + image + `"`) + `
                             style="display: none; width: 0px; height: 0px;"
                             onerror="
                                 $(this).parent().hide();
@@ -326,7 +343,7 @@ $(document).ready(() => {
                         
                         response.result.forEach((message) => {
                             renderedHTML += getRenderedMessage(
-                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments']
+                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true
                             );
                         });
 
@@ -387,15 +404,7 @@ $(document).ready(() => {
             tryToPullChunks();
         }
 
-        $('.message').each(function () {
-            if (isElementInViewport(this)) {
-                img = $(this).find('img');
-
-                if (img.length > 0 && typeof(img.attr('src')) == 'undefined') {
-                    img.attr('src', img.data()['src']);
-                }
-            }
-        });
+        calculateOnscreenImages();
 
         $('#fabToggleBtn').tooltip('close');
     }, { passive: true });
@@ -694,7 +703,8 @@ $(document).ready(() => {
                     parseInt(message['reported']) == 1,
                     message['image'],
                     parseInt(message['verified']) == 1,
-                    message['comments']
+                    message['comments'],
+                    true
                 );
             });
             
@@ -708,15 +718,7 @@ $(document).ready(() => {
                 deferredFetcher = setInterval(tryToPullChunks, 1000);
             }
 
-            $('.message').each(function () {
-                if (isElementInViewport(this)) {
-                    img = $(this).find('img');
-
-                    if (img.length > 0 && typeof(img.attr('src')) == 'undefined') {
-                        img.attr('src', img.data()['src']);
-                    }
-                }
-            });
+            calculateOnscreenImages();
 
             reloadLayout();
         }
