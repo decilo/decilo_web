@@ -47,15 +47,12 @@ function getLastMessageId() {
 function calculateOnscreenImages() {
     $('.message').each(function () {
         if (isElementInViewport(this)) {
-            img = $(this).find('.message-image');
+            img = $(this).find('img');
 
             if (img.length > 0 && typeof(img.attr('data-src')) != 'undefined') {
                 img
-                    .css({ background: 'url(\'' + img.data()['src'] + '\'' })
-                    .next()
-                    .attr('src', img.data()['src']);
-
-                console.info(img.data()['src']);
+                    .attr('src', img.data()['src'])
+                    .removeAttr('data-src');
             }
         }
     });
@@ -87,10 +84,15 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <i class="material-icons mid-card-fab-icon">flag</i>
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
-                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image" ` + (deferImage ? `data-src="` + image + `"` : `style="background: url('` + image + `');"`) + `></div>
+                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image"></div>
                         <img
                             ` + (deferImage ? `data-src="` + image + `"` : `src="` + image + `"`) + `
                             style="display: none; width: 0px; height: 0px;"
+                            onload="
+                                $(this)
+                                    .prev()
+                                    .css({ background: 'url(\\'` + image + `\\')' });
+                            "
                             onerror="
                                 $(this).parent().hide();
 
