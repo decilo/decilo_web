@@ -1182,16 +1182,18 @@ $(document).ready(() => {
 
         tryToPushRandomAd();
 
-        var script = null;
+        setTimeout(() => {
+            var script = null;
 
-        // Global Tag Manager (gtag.js)
-        script          = document.createElement('script');
-        script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
-        script.onload   = setupGoogleAnalytics;
+            // Global Tag Manager (gtag.js)
+            script          = document.createElement('script');
+            script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
+            script.onload   = setupGoogleAnalytics;
 
-        script.defer    = true;
+            script.defer    = true;
 
-        document.getElementsByTagName('body')[0].appendChild(script);
+            document.getElementsByTagName('body')[0].appendChild(script);
+        }, IDLE_TIMEOUT);
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker
