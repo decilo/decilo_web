@@ -283,12 +283,14 @@ function markInvalid(element) {
 
 function reloadLayout(toAppend = null) {
     function setupInstance() {
-        if (toAppend != null) {
-            grid.appended($(toAppend));
+        if (toAppend == null) {
+            grid.reloadItems();
+            grid.layout();
+        } else {
+            grid.appended(
+                $('.message').not('[style^="position"]')
+            );
         }
-
-        grid.reloadItems();
-        grid.layout();
     }
 
     if (typeof(Masonry) != 'undefined') {
