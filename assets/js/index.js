@@ -84,14 +84,28 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <i class="material-icons mid-card-fab-icon">flag</i>
                     </button>` : ``) + (image == null ? '' : `
                     <div class="card-image">
-                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image"></div>
+                        <div class="message-image valign-wrapper">
+                            <div class="preloader-wrapper small active center-block">
+                                <div class="spinner-layer border-dark-5 border-light-9">
+                                    <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <img
                             ` + (deferImage ? `data-src="` + image + `"` : `src="` + image + `"`) + `
                             style="display: none; width: 0px; height: 0px;"
                             onload="
                                 $(this)
-                                    .prev()
-                                    .css({ background: 'url(\\'` + image + `\\')' });
+                                    .prev()` + (verified ? '' : `.addClass('unverified-img')`) + `
+                                    .css({ background: 'url(` + image + `)' })
+                                    .find('.preloader-wrapper')
+                                    .remove();
                             "
                             onerror="
                                 $(this).parent().hide();

@@ -231,7 +231,6 @@ input[type="file"] { display: none; }
 
 .message-image {
     width: 100%; height: 18rem;
-    transition: filter linear 0.5s;
     background-repeat:   no-repeat  !important;
     background-size:     cover      !important;
     background-position: center     !important;

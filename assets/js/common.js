@@ -323,6 +323,9 @@ function reloadLayout(toAppend = null) {
                 let image       = $(this);
 
                 image
+                    .css({
+                        transition: 'filter linear 0.5s'
+                    })
                     .off('click')
                     .on('click', () => {
                         if (image.hasClass('unverified-img')) {
