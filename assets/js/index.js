@@ -740,7 +740,7 @@ $(document).ready(() => {
         }
     }
 
-    loadPreloadedRecents();
+    $(window).on('load', loadPreloadedRecents);
 
     $('.tooltipped').tooltip();
 });

@@ -316,6 +316,8 @@ function reloadLayout(toAppend = null) {
             $('.tooltipped').tooltip();
         }
 
+        calculateOnscreenImages();
+
         $('#recentsContainer')
             .find('.message-image')
             .each(function () {
