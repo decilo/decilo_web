@@ -39,7 +39,7 @@ function resetMessageInputs() {
 }
 
 function getLastMessageId() {
-    return  $('.message')
+    return  $('*[data-message]')
                 .last()
                 .data('message');
 }
