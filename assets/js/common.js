@@ -822,6 +822,17 @@ function cum() {
     $('*').animate({ color: 'white', backgroundColor: 'white' });
 }
 
+function tryToDeferAutoTooltip() {
+    fabToggleBtn = $('#fabToggleBtn');
+    fabToggleBtn.tooltip();
+
+    $(window).on('load', () => {
+        if (fabToggleBtn.length > 0) {
+            fabToggleBtn.tooltip('open');
+        }
+    });
+}
+
 $(document).ready(() => {
     // Initialize Day.js
     dayjs.extend(dayjs_plugin_localizedFormat);
@@ -1324,7 +1335,11 @@ $(document).ready(() => {
 
             gdprModal.close();
 
+            tryToDeferAutoTooltip();
+
             toast('¡Listo! Ya podés seguir navegando.');
         });
+    } else {
+        tryToDeferAutoTooltip();
     }
 });

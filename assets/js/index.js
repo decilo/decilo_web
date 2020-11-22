@@ -721,15 +721,15 @@ $(document).ready(() => {
                 .find('.row')
                 .append(renderedHTML);
 
-            reloadLayout(renderedHTML);
-
             if ($('.message').last().position()['top'] < document.documentElement.clientHeight) {
                 deferredFetcher = setInterval(tryToPullChunks, 1000);
             }
 
             calculateOnscreenImages();
 
-            reloadLayout();
+            reloadLayout(renderedHTML);
+        } else {
+            displayRemovableWarning('¡Nada por acá, publicá primero!');
         }
     }
 
