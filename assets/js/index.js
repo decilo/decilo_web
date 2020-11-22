@@ -421,8 +421,6 @@ $(document).ready(() => {
         }
 
         calculateOnscreenImages();
-
-        $('#fabToggleBtn').tooltip('close');
     }, { passive: true });
 
     $('#messageInput, #declaredName').on('keyup change', function (event) {
@@ -682,11 +680,6 @@ $(document).ready(() => {
                 toast('Para enviar tu reporte, seleccioná una opción.');
             }
         });
-
-        fabToggleBtn = $('#fabToggleBtn');
-        if (fabToggleBtn.hasClass('pulse')) {
-            fabToggleBtn.tooltip('open');
-        }
     };
 
     if (localStorage.getItem('hasTriedFAB') == null) {

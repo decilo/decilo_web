@@ -1307,14 +1307,20 @@ $(document).ready(() => {
     }
 
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
+        main = $('main');
+
+        main.css({ filter: 'blur(0.5rem)' });
+
         gdprModal = document.getElementById('gdprModal');
 
-        M.Modal.init(gdprModal);
+        M.Modal.init(gdprModal, { dismissible: false });
 
         gdprModal = M.Modal.getInstance(gdprModal).open();
 
         $('#acceptCollectionBtn').on('click', () => {
             localStorage.setItem('acceptedGDPR', true);
+
+            main.css({ transition: MATERIALIZE_TRANSITION_TIME + 'ms filter linear', filter: '' });
 
             gdprModal.close();
         });
