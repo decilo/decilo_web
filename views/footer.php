@@ -50,7 +50,7 @@
             <!-- Data collection consent modal modal -->
             <div id="gdprModal" class="modal bottom-sheet">
                 <div class="modal-content bg-dark-3">
-                    <div class="modal-content">
+                    <div class="modal-content dark-5">
                         <h4>Sobre tu privacidad</h4>
                         <p>Usamos cookies y otras técnicas de rastreo para mejorar tu experiencia de navegación y mostrarte contenidos personalizados, para analizar el tráfico en nuestra web y para comprender de dónde vienen nuestros visitantes. Continuando, web aceptás el uso de estas tecnologías. Si querés saber más, leé nuestra <a href="/privacy">política de privacidad</a>.</p>
                     </div>
