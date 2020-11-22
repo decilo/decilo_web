@@ -1323,6 +1323,8 @@ $(document).ready(() => {
             main.css({ transition: MATERIALIZE_TRANSITION_TIME + 'ms filter linear', filter: '' });
 
             gdprModal.close();
+
+            toast('¡Listo! Ya podés seguir navegando.');
         });
     }
 });
