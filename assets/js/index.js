@@ -742,5 +742,7 @@ $(document).ready(() => {
 
     $(window).on('load', loadPreloadedRecents);
 
+    $(window).resize(calculateOnscreenImages);
+
     $('.tooltipped').tooltip();
 });
