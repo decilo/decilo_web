@@ -170,7 +170,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     </a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
                         <li>
-                            <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center"> Privacidad </a>
+                            <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center custom-link"> Privacidad </a>
                         </li>
                         <?= $userId == null ? '
                         <li>
