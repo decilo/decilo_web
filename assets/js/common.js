@@ -1025,7 +1025,12 @@ $(document).ready(() => {
                         case OK:
                             $('#loginForm').fadeOut(() => {
                                 loginModal = $('#loginModal');
-                
+
+                                loginModal
+                                    .find('.input-field')
+                                    .first()
+                                    .animate({ height: 0 });
+
                                 loginModal.animate(
                                     { bottom : -1 * loginModal.find('.modal-footer').outerHeight() },
                                     MATERIALIZE_TRANSITION_TIME,
@@ -1097,7 +1102,14 @@ $(document).ready(() => {
                 .click();
         },
         onCloseEnd: () => {
-            $('#loginModal').css({ bottom : '' });
+            $('#loginModal')
+                .css({ bottom : '' })
+                .find('#loginForm')
+                .css({ opacity: 1 })
+                .find('.input-field')
+                .first()
+                .css({ height: '' });
+
             $('#loginForm').show();
             $('#loginStatus').html('');
 
