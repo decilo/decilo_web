@@ -47,6 +47,19 @@
                 </div>
             </div>
 
+            <!-- Data collection consent modal modal -->
+            <div id="gdprModal" class="modal bottom-sheet">
+                <div class="modal-content bg-dark-3">
+                    <div class="modal-content">
+                        <h4>Sobre tu privacidad</h4>
+                        <p>Usamos cookies y otras técnicas de rastreo para mejorar tu experiencia de navegación y mostrarte contenidos personalizados, para analizar el tráfico en nuestra web y para comprender de dónde vienen nuestros visitantes. Continuando, web aceptás el uso de estas tecnologías. Si querés saber más, leé nuestra <a href="/privacy">política de privacidad</a>.</p>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light-5 bg-dark-4">
+                    <button id="acceptCollectionBtn" class="waves-effect waves-light btn-flat dark-5"> Continuar </button>
+                </div>
+            </div>
+
             <button id="noInternetBtn" type="button" class="btn-floating btn-large red no-select fab-left">
                 <i class="large material-icons" style="opacity: 1;"> signal_wifi_off </i>
             </button>
@@ -55,7 +68,8 @@
         <footer></footer>
 
         <script>
-            const EXCEPTION = <?= json_encode(isset($_GET['e']) ? $_GET['e'] : null); ?>
+            const EXCEPTION             = <?= json_encode(isset($_GET['e']) ? $_GET['e'] : null);   ?>;
+            const DISPLAY_GDPR_MODAL    = <?= json_encode($_SERVER['REQUEST_URI'] != '/privacy');   ?>;
         </script>
 
         <!-- Default passive events -->

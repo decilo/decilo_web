@@ -1305,4 +1305,18 @@ $(document).ready(() => {
             );
         });
     }
+
+    if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
+        gdprModal = document.getElementById('gdprModal');
+
+        M.Modal.init(gdprModal);
+
+        gdprModal = M.Modal.getInstance(gdprModal).open();
+
+        $('#acceptCollectionBtn').on('click', () => {
+            localStorage.setItem('acceptedGDPR', true);
+
+            gdprModal.close();
+        });
+    }
 });
