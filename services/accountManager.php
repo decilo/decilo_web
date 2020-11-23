@@ -567,6 +567,48 @@ if ($request == null) {
                 }
 
                 break;
+            case 'generateSubscriptionPlan':
+                $allowance = getAllowance();
+
+                if ($allowance == USER_LEVEL_OWNER) {
+                    $request = curl_init('https://api.mercadopago.com/preapproval_plan');
+
+                    curl_setopt_array($request, [
+                        CURLOPT_HTTPHEADER     => [
+                            'Content-Type: application/json',
+                            'Authorization: Bearer ' . MERCADOPAGO_KEYS['PRIVATE']
+                        ],
+                        CURLOPT_POSTFIELDS     => json_encode([
+                            'back_url'          => 'https://mercadopago.com.ar',
+                            'reason'            => 'Servicios publicitarios',
+                            'auto_recurring'    => [
+                                'frequency'             => 1,
+                                'frequency_type'        => 'months',
+                                'transaction_amount'    => MERCADOPAGO_SUBSCRIPTION_COST,
+                                'currency_id'           => 'ARS',
+                                'repetitions'           => 12,
+                                'free_trial'            => [
+                                    'frequency'      => 1,
+                                    'frequency_type' => 'months'
+                                ]
+                            ]
+                        ]),
+                        CURLOPT_RETURNTRANSFER => true
+                    ]);
+
+                    $response = curl_exec($request);
+
+                    $result   = json_decode($response, true);
+
+                    reply(
+                        $result,
+                        $result['status'] == 'active' ? OK : ERROR
+                    );
+                } else {
+                    reply([ 'allowance' => $allowance ], NOT_ALLOWED);
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

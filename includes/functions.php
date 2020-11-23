@@ -1,4 +1,5 @@
 <?php
+
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use \Ahc\Jwt\JWT;
@@ -637,4 +638,5 @@ function getRandomWallpaper() {
 
     return $url;
 }
+
 ?>
