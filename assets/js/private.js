@@ -65,12 +65,6 @@ function tryToRemove() {
     }
 }
 
-function getLastMessageId() {
-    return  $('.message')
-                .last()
-                .data('message');
-}
-
 function getRenderedMessage(id, content, declaredName, created = null, display = false, image = null, comments = 0) {
     auxiliaryContent = content;
 
@@ -337,5 +331,9 @@ $(document).ready(() => {
         }
     }
 
-    loadPreloadedRecents();
+    if (document.readyState == 'complete') {
+        loadPreloadedRecents();
+    } else {
+        $(window).on('load', loadPreloadedRecents);
+    }
 });

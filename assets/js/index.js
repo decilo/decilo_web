@@ -38,12 +38,6 @@ function resetMessageInputs() {
     enable($('#messageInput, #declaredName, label[for="imageInput"]'));
 }
 
-function getLastMessageId() {
-    return  $('*[data-message]')
-                .last()
-                .data('message');
-}
-
 function calculateOnscreenImages() {
     $('.message').each(function () {
         if (isElementInViewport(this)) {
@@ -733,7 +727,11 @@ $(document).ready(() => {
         }
     }
 
-    $(window).on('load', loadPreloadedRecents);
+    if (document.readyState == 'complete') {
+        loadPreloadedRecents();
+    } else {
+        $(window).on('load', loadPreloadedRecents);
+    }
 
     $(window).resize(calculateOnscreenImages);
 

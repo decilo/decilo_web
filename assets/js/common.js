@@ -818,6 +818,12 @@ function tryToPushRandomAd() {
     });
 }
 
+function getLastMessageId() {
+    return  $('*[data-message]')
+                .last()
+                .data('message');
+}
+
 function cum() {
     $('*').animate({ color: 'white', backgroundColor: 'white' });
 }
