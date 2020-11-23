@@ -46,6 +46,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 
         <base href="<?= SYSTEM_HOSTNAME ?>">
 
+        <style>
+            <?php readfile('assets/css/critical.min.css'); ?>
+        </style>
+
         <?php
             foreach (CRITICAL_ORIGINS as $criticalOrigin) {
                 print '<link rel="preconnect" href="' . $criticalOrigin . '">';
