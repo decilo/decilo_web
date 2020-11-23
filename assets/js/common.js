@@ -1271,11 +1271,6 @@ $(document).ready(() => {
         }
     }
 
-    let nav = $('nav');
-
-    nav.pushpin();
-    $('main').css({ 'padding-top' : nav.height() });
-
     $('.brand-logo').on('click', () => {
         if ($(window).scrollTop() >= document.documentElement.clientHeight) {
             goBackToTop();
@@ -1359,5 +1354,19 @@ $(document).ready(() => {
         });
     } else {
         tryToDeferAutoTooltip();
+    }
+
+    function setupNav() {
+        let nav = $('nav');
+
+        nav.pushpin();
+
+        $('main').css({ 'padding-top' : nav.height() });
+    }
+
+    if (document.readyState == 'complete') {
+        setupNav();
+    } else {
+        $(window).on('load', setupNav);
     }
 });
