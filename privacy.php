@@ -35,7 +35,7 @@ require_once 'views/header.php';
         <br>
         Es importante destacar que tu IP suele cambiar frecuentemente y, además, el identificador único que te asignó el sistema de validación se vence en dos minutos, por lo que esta información se guarda por motivos históricos y legales, de modo que normalmente no representa una relación identificable con tu actividad. <br>
         <br>
-        Finalmente, es posible que utilicemos Google Analytics para obtener, almacenar y analizar información anónima sobre tu actividad en el sitio como tu manera de navegar, tus intereses, qué es lo que más te gusta ver y hacer, entre otros. Esta información se divide en países o "regiones de tráfico" y no posse datos específicos de tu actividad identificable como un usuario único.
+        Finalmente, es posible que utilicemos Google Analytics para obtener, almacenar y analizar información anónima sobre tu actividad en el sitio como tu manera de navegar, tus intereses, qué es lo que más te gusta ver y hacer, entre otros. Esta información se divide en países o "regiones de tráfico" y no posee datos específicos de tu actividad identificable como un usuario único.
     </p>
 
     <p class="flow-text center"> Sobre vos </p>
