@@ -265,7 +265,7 @@ if ($request == null) {
                     !empty($values['username']) && !empty($values['mailAddress'])
                 ) {
                     if (filter_var($values['mailAddress'], FILTER_VALIDATE_EMAIL)) {
-                        if (strpos($values, ' ') !== false) {
+                        if (strpos($values['username'], ' ') !== false) {
                             reply([ 'containsSpaces' => true ], ERROR);
                         }
 
