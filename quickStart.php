@@ -107,7 +107,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
 
                 setAllowance($match['allowance']);
 
-                redirect('private.php');
+                redirect('private');
             } else {
                 redirect(SYSTEM_HOSTNAME . '?e=' . QUICKSTART['INVALID_MAIL_ADDRESS']);
             }
