@@ -1,7 +1,7 @@
 function validateUsername() {
     let username = $('#username');
 
-    if (username.val().length > 0) {
+    if (username.val().length > 0 && username.val().indexOf(' ') < 0) {
         markValid(username);
     } else {
         markInvalid(username);
@@ -44,7 +44,7 @@ $(document).ready(() => {
             let mailAddress         = $('#mailAddress').val();
             let theme               = parseInt($('#themeSelect').val());
 
-            if (username.contains(' ')) {
+            if (username.indexOf(' ') > -1) {
                 toast('Tu nombre de usuario no puede contener espacios.');
 
                 return;
