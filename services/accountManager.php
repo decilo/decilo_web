@@ -354,14 +354,14 @@ if ($request == null) {
                                 'WHERE  `d_users`.`id`   = :id'
                             );
 
-                        $statement->bindParam('username',   $values['username']);
-                        $statement->bindParam('theme',      $values['theme']);
+                        $statement->bindValue('username',   $values['username']);
+                        $statement->bindValue('theme',      $values['theme']);
 
                         if (!empty($values['password'])) {
-                            $statement->bindParam('password', password_hash($values['password'], PASSWORD_ARGON2ID));
+                            $statement->bindValue('password', password_hash($values['password'], PASSWORD_ARGON2ID));
                         }
 
-                        $statement->bindParam('id', $user['id']);
+                        $statement->bindValue('id', $user['id']);
 
                         $statement->execute();
 
