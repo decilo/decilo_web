@@ -265,6 +265,10 @@ if ($request == null) {
                     !empty($values['username']) && !empty($values['mailAddress'])
                 ) {
                     if (filter_var($values['mailAddress'], FILTER_VALIDATE_EMAIL)) {
+                        if (strpos($values, ' ') !== false) {
+                            reply([ 'containsSpaces' => true ], ERROR);
+                        }
+
                         $user = getCurrentUser();
 
                         $matchByUsername    = getUserByUsername($values['username']);

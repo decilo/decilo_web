@@ -44,6 +44,12 @@ $(document).ready(() => {
             let mailAddress         = $('#mailAddress').val();
             let theme               = parseInt($('#themeSelect').val());
 
+            if (username.contains(' ')) {
+                toast('Tu nombre de usuario no puede contener espacios.');
+
+                return;
+            }
+
             run('accountManager', 'profileUpdateTry', {
                 username:       username,
                 mailAddress:    mailAddress,
@@ -76,6 +82,14 @@ $(document).ready(() => {
                             toast('Ya existe otra cuenta usando ese nombre de usuario.');
                         } else {
                             toast('Ya existe otra cuenta usando esa dirección de correo electrónico.');
+                        }
+
+                        break;
+                    case ERROR:
+                        if (typeof(response.result.containsSpaces) != 'undefined' && response.response.containsSpaces) {
+                            toast('Tu nombre de usuario no puede contener espacios.');
+                        } else {
+                            toast('Algo salió mal.');
                         }
 
                         break;
