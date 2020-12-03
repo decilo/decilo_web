@@ -64,7 +64,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
 
                         setAllowance($match['allowance']);
 
-                        redirect('profile.php?e=' . QUICKSTART['MAIL_CHANGE_OK']);
+                        redirect('profile?e=' . QUICKSTART['MAIL_CHANGE_OK']);
                     } else {
                         redirect(SYSTEM_HOSTNAME . '?e=' . QUICKSTART['INVALID_MAIL_ADDRESS']);
                     }

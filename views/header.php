@@ -205,7 +205,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 <li>
                     <div class="user-view">
                         <div class="background" style="background: url('<?= getRandomWallpaper() ?>');" style="filter: blur(1px);"></div>
-                        <a href="profile.php" class="custom-link">
+                        <a href="profile" class="custom-link">
                             <span class="white-text name">
                                 <?=
                                     $userId == null

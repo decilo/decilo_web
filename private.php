@@ -24,7 +24,7 @@ require_once 'views/header.php';
                 <p class="col s12 regular center" style="margin-top: 1.5em;">
                     Falta un paso para que puedas empezar a recibir mensajes. <br>
                     <br>                    
-                    Visitá tu perfil y <a href="profile.php" class="custom-link">configurá tu nombre de usuario</a>.
+                    Visitá tu perfil y <a href="profile" class="custom-link">configurá tu nombre de usuario</a>.
                 </p>';
             } else {
                 print '
