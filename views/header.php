@@ -173,9 +173,6 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <i class="material-icons">menu</i>
                     </a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
-                        <li>
-                            <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center custom-link"> Privacidad </a>
-                        </li>
                         <?= $userId == null ? '
                         <li>
                             <a id="loginBtn" class="lato center"> Iniciá sesión </a>
@@ -186,7 +183,15 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                                     <p class="lato"> Creá tu cuenta y empezá a recibir mensajes anónimos de tus seguidores. </p>
                                 </div>
                             </div>
-                        </li>' : '
+                        </li>' : ''
+                        ?>
+                        <li>
+                            <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center custom-link"> Privacidad </a>
+                        </li>
+                        <li>
+                            <a href="<?= STATUS_SERVER ?>" class="lato center custom-link"> Estado </a>
+                        </li>
+                        <?= $userId == null ? '' : '
                         <li>
                             <a href="' . SYSTEM_HOSTNAME . 'private" class="lato center custom-link"> Mis mensajes </a>
                         </li>
@@ -226,13 +231,18 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     </div>
                 </li>
 
-                <li>
-                    <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="dark-5 hand custom-link"> Privacidad </a>
-                </li>
                 <?= $userId == null ? '
                 <li>
                     <a id="loginBtnMobile" class="dark-5 hand"> Iniciá sesión </a>
-                </li>' : '
+                </li>' : ''
+                ?>
+                <li>
+                    <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="dark-5 hand custom-link"> Privacidad </a>
+                </li>
+                <li>
+                    <a href="<?= STATUS_SERVER ?>" class="dark-5 hand custom-link"> Estado </a>
+                </li>
+                <?= $userId == null ? '' : '
                 <li>
                     <a href="' . SYSTEM_HOSTNAME . 'private" class="dark-5 custom-link"> Mis mensajes </a>
                 </li>
