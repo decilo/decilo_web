@@ -275,3 +275,9 @@ input[type="file"] { display: none; }
     position: relative;
     top: 0.10em;
 }
+
+.likes-toggle,
+.comments-open-btn { width: 50%; }
+
+.likes-toggle       { text-align: right; }
+.comments-open-btn  { text-align: left;  }
