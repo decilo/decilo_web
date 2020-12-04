@@ -800,15 +800,19 @@ function tryToPushRandomAd() {
         messages = $('.message');
 
         if (messages.length > 0) {
-            messages.eq(
-                Math.round(
-                    Math.random() * (messages.length - 1)
-                )
-            ).after(
-                getRenderedAd(response['result']['id'], response['result']['content'], response['result']['companyName'])
-            );
+            if (response) {
+                messages.eq(
+                    Math.round(
+                        Math.random() * (messages.length - 1)
+                    )
+                ).after(
+                    getRenderedAd(response['result']['id'], response['result']['content'], response['result']['companyName'])
+                );
 
-            reloadLayout();
+                reloadLayout();
+            } else {
+                console.warn('tryToPushRandomAd: unable to push, unexpected response.');
+            }
         } else {
             console.info('tryToPushRandomAd: there are no messages in this view, this is a sad moment for advertisers. :(');
         }
