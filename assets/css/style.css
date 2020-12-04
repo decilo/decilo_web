@@ -246,3 +246,7 @@ input[type="file"] { display: none; }
 .sidenav .user-view {
     margin-bottom: 3em;
 }
+
+#nav-options-dropdown {
+    top: 4.4em !important;
+}

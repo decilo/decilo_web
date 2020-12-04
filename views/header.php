@@ -71,7 +71,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
 
                 // Custom styles.
-                'assets/css/style.min.css'
+                'assets/css/style.min.css?v=2'
             ];
 
             $css = array_merge($css, $backupCSS);
@@ -185,12 +185,6 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             </div>
                         </li>' : ''
                         ?>
-                        <li>
-                            <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center custom-link"> Privacidad </a>
-                        </li>
-                        <li>
-                            <a href="<?= STATUS_SERVER ?>" class="lato center custom-link"> Estado </a>
-                        </li>
                         <?= $userId == null ? '' : '
                         <li>
                             <a href="' . SYSTEM_HOSTNAME . 'private" class="lato center custom-link"> Mis mensajes </a>
@@ -202,6 +196,21 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             <a id="logoutBtn" class="lato"> Salir </a>
                         </li>'
                         ?>
+
+                        <ul id="nav-options-dropdown" class="dropdown-content">
+                            <li class="bg-dark-12">
+                                <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center custom-link dark-5"> Privacidad </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="bg-dark-12">
+                                <a href="<?= STATUS_SERVER ?>" class="lato center custom-link dark-5"> Estado del servicio </a>
+                            </li>
+                        </ul>
+                        <li>
+                            <a class="lato center dropdown-button tooltipped" href="#!" data-tooltip="Más opciones" data-position="left" data-target="nav-options-dropdown">
+                                <i class="material-icons"> settings </i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -234,15 +243,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 <?= $userId == null ? '
                 <li>
                     <a id="loginBtnMobile" class="dark-5 hand"> Iniciá sesión </a>
-                </li>' : ''
-                ?>
-                <li>
-                    <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="dark-5 hand custom-link"> Privacidad </a>
-                </li>
-                <li>
-                    <a href="<?= STATUS_SERVER ?>" class="dark-5 hand custom-link"> Estado </a>
-                </li>
-                <?= $userId == null ? '' : '
+                </li>' : '
                 <li>
                     <a href="' . SYSTEM_HOSTNAME . 'private" class="dark-5 custom-link"> Mis mensajes </a>
                 </li>
@@ -253,6 +254,20 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     <a id="logoutBtnMobile" class="dark-5 hand"> Salir </a>
                 </li>'
                 ?>
+                <li>
+                    <div class="divider bg-dark-8"></div>
+                </li>
+                <li>
+                    <a class="subheader dark-8 small">
+                        Más opciones
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="dark-5 hand custom-link"> Privacidad </a>
+                </li>
+                <li>
+                    <a href="<?= STATUS_SERVER ?>" class="dark-5 hand custom-link"> Estado del servicio </a>
+                </li>
             </ul>
         </header>
         <main>
