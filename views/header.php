@@ -183,9 +183,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                                     <p class="lato"> Creá tu cuenta y empezá a recibir mensajes anónimos de tus seguidores. </p>
                                 </div>
                             </div>
-                        </li>' : ''
-                        ?>
-                        <?= $userId == null ? '' : '
+                        </li>' : '
                         <li>
                             <a href="' . SYSTEM_HOSTNAME . 'private" class="lato center custom-link"> Mis mensajes </a>
                         </li>
@@ -199,7 +197,11 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 
                         <ul id="nav-options-dropdown" class="dropdown-content">
                             <li class="bg-dark-12">
-                                <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center custom-link dark-5"> Privacidad </a>
+                                <a href="<?= SYSTEM_HOSTNAME . 'privacy' ?>" class="lato center hand custom-link light-4 dark-5"> Privacidad </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="bg-dark-12">
+                                <a href="<?= STATUS_SERVER ?>" class="lato center hand custom-link light-4 dark-5"> Estado del servicio </a>
                             </li>
                             <li class="divider"></li>
                             <li class="bg-dark-12">
