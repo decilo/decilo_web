@@ -71,7 +71,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
 
                 // Custom styles.
-                'assets/css/style.min.css?v=2'
+                'assets/css/style.min.css?v=3'
             ];
 
             $css = array_merge($css, $backupCSS);

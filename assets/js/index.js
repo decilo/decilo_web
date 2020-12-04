@@ -52,7 +52,36 @@ function calculateOnscreenImages() {
     });
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false) {
+function toggleLike(messageId) {
+    run('messagesManager', 'toggleLike', { id: messageId })
+    .done((response) => {
+        console.info(response);
+
+        if (response.status == OK) {
+            likesCountElement = $('[data-message="' + messageId + '"]').find('.likesCount');
+
+            likesCount = parseInt(likesCountElement.html());
+
+            M.Toast.dismissAll();
+
+            if (response.result.wasLiked) {
+                toast('Ya no te gusta esta publicación.');
+
+                likesCount--;
+            } else {
+                toast('Te gusta esta publicación.');
+
+                likesCount++;
+            }
+
+            likesCountElement.html(likesCount);
+        } else {
+            toast('Algo anda mal, por favor probá otra vez.');
+        }
+    });
+}
+
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false, likes = 0) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -127,8 +156,16 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
                     </div>
                     <ul class="collection with-header bg-dark-7 border-dark-7 hand">
-                        <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `>
-                            Comentarios (<span class="commentCount">` + comments + `</span>)
+                        <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select">
+                            <div class="d-flex flex-center">
+                                <div ` + (id == null ? '' : `onclick="toggleLike(` + id + `);"`) + `>
+                                    <span class="counter likesCount">` + likes + `</span> <i class="material-icons small collection-icon"> thumb_up </i>
+                                </div>
+                                <div class="flex-divider bg-light-10 bg-dark-8"></div>
+                                <div ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `>
+                                    <i class="material-icons small collection-icon"> comment </i> <span class="counter commentCount">` + comments + `</span>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -353,7 +390,7 @@ $(document).ready(() => {
                         
                         response.result.forEach((message) => {
                             renderedHTML += getRenderedMessage(
-                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true
+                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
                             );
                         });
 
@@ -707,7 +744,8 @@ $(document).ready(() => {
                     message['image'],
                     parseInt(message['verified']) == 1,
                     message['comments'],
-                    true
+                    true,
+                    message['likes']
                 );
             });
             

@@ -436,6 +436,42 @@ if ($request == null) {
                 }
 
                 break;
+            case 'toggleLike':
+                if (isset($values['id']) && is_numeric($values['id'])) {
+                    $isLiked = false;
+
+                    $likedMessages = getLikedMessages();
+
+                    foreach ($likedMessages as $key => $likedMessage) {
+                        if ($likedMessage == $values['id']) {
+                            $isLiked = true;
+
+                            unset($likedMessages[$key]);
+                        }
+                    }
+
+                    $statement = $GLOBALS['database']->prepare(
+                        'UPDATE `d_messages_public`
+                         SET    `d_messages_public`.`likes` = `d_messages_public`.`likes` + (:likeCount)
+                         WHERE  `d_messages_public`.`id`    = :id'
+                    );
+
+                    if ($isLiked) {
+                        $statement->execute([ 'likeCount' => -1, 'id' => $values['id'] ]);
+                    } else {
+                        $statement->execute([ 'likeCount' =>  1, 'id' => $values['id'] ]);
+
+                        $likedMessages[] = $values['id'];
+                    }
+
+                    setLikedMessages($likedMessages);
+
+                    reply([ 'wasLiked' => $isLiked, 'liked' => $likedMessages ], $statement->rowCount() > 0 ? OK : ERROR);
+                } else {
+                    reply(null, BAD_REQUEST);
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

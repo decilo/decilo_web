@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js';
+$title = 'Página principal'; $js = 'index.min.js?v=2';
 
 require_once 'includes/main.php'; 
 require_once 'views/header.php';
@@ -115,7 +115,7 @@ if (isset($_GET['to'])) {
     const RECIPIENT = <?= json_encode($recipientUsername)        ?>;
     const LOGGED_IN = <?= json_encode(getUserId() != null)       ?>;
 
-    const RECENTS   = <?= json_encode(getRecentMessages($recipientUsername)) ?>;
+    const RECENTS   = <?= json_encode(getRecentMessages($recipientUsername), JSON_NUMERIC_CHECK) ?>;
 </script>
 
 <?php require_once 'views/footer.php'; ?>

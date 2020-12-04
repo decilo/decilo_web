@@ -250,3 +250,28 @@ input[type="file"] { display: none; }
 #nav-options-dropdown {
     top: 4.4em !important;
 }
+
+.d-flex { display: flex; }
+
+.flex-center {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-divider {
+    width: 0.05em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    height: 1.5em;
+}
+
+.counter {
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}
+
+.collection-icon {
+    position: relative;
+    top: 0.10em;
+}

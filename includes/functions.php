@@ -89,6 +89,20 @@ function getAllowance() {
     return isset($_SESSION[ALLOWANCE_LEVEL_STORE]) ? $_SESSION[ALLOWANCE_LEVEL_STORE] : null;
 }
 
+function setLikedMessages($likedMessages) {
+    $_SESSION[LIKED_MESSAGES_STORE] = $likedMessages;
+}
+
+function getLikedMessages() {
+    if (isset($_SESSION[LIKED_MESSAGES_STORE])) {
+        return $_SESSION[LIKED_MESSAGES_STORE];
+    } else {
+        setLikedMessages([]);
+
+        return $_SESSION[LIKED_MESSAGES_STORE];
+    }
+}
+
 function getUIConstants($array) {
     $constants = '';
 

@@ -166,6 +166,7 @@ if ($request == null) {
                                 setUserMailAddress($match['mailAddress']);
                                 setUserTheme($match['theme']);
                                 setAllowance($match['allowance']);
+                                setLikedMessages([]);
 
                                 reply([
                                     'user'      => (int) $match['id'],
