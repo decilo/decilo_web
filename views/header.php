@@ -205,7 +205,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             </li>
                             <li class="divider"></li>
                             <li class="bg-dark-12">
-                                <a href="<?= STATUS_SERVER ?>" class="lato center custom-link dark-5"> Estado del servicio </a>
+                                <a href="<?= WHATSAPP_LINK ?>" class="lato center hand custom-link light-4 dark-5"> Reportar un problema </a>
                             </li>
                         </ul>
                         <li>
@@ -269,6 +269,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
                 <li>
                     <a href="<?= STATUS_SERVER ?>" class="dark-5 hand custom-link"> Estado del servicio </a>
+                </li>
+                <li>
+                    <a href="<?= WHATSAPP_LINK ?>" class="dark-5 hand custom-link"> Reportar un problema </a>
                 </li>
             </ul>
         </header>
