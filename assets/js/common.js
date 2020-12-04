@@ -800,7 +800,7 @@ function tryToPushRandomAd() {
         messages = $('.message');
 
         if (messages.length > 0) {
-            if (response) {
+            if (response.result) {
                 messages.eq(
                     Math.round(
                         Math.random() * (messages.length - 1)
