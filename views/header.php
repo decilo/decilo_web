@@ -77,19 +77,14 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             $css = array_merge($css, $backupCSS);
         ?>
 
-        <!--
-
-        TODO: Buy a logo and use it.
-
         <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="194x194" href="assets/icons/favicon-194x194.png">
         <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-chrome-192x192.png">
         <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
-        <link rel="manifest" href="assets/misc/site.webmanifest">
-        <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#2196f3">
+        <link rel="manifest" href="assets/misc/site.webmanifest.php">
+        <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#c121a7">
         <link rel="shortcut icon" href="assets/icons/favicon.ico">
-        -->
 
         <?php
 

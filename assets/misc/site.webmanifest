@@ -1,20 +1,20 @@
 {
-    "name": "Decílo",
-    "short_name": "Decílo",
+    "name": "Decilo",
+    "short_name": "Decilo",
     "icons": [
         {
-            "src": "../icons/android-chrome-192x192.png",
+            "src": "assets/icons/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "../icons/android-chrome-512x512.png",
+            "src": "assets/icons/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         }
     ],
-    "start_url": "?noAddressBarMode",
-    "theme_color": "#DCE4F2",
-    "background_color": "#DCE4F2",
+    "theme_color": "#c121a7",
+    "background_color": "#c121a7",
+    "start_url": "https://decilo.ar",
     "display": "standalone"
 }
