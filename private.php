@@ -41,7 +41,7 @@ require_once 'views/header.php';
                 <div class="col s12 center">
                     <button
                         id="shareProfileBtn"
-                        class="btn waves-effect waves-light btn-block bg-dark-1 dark-5 fixed-height-btn"
+                        class="btn waves-effect waves-light btn-block bg-light-1 bg-dark-1 dark-5 fixed-height-btn"
                         type="button"
                         style="display: none;"
                     >
