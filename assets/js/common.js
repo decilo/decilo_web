@@ -1364,7 +1364,11 @@ $(document).ready(() => {
 
     function loadModulesAfterGDPR() {
         if (typeof(loadPreloadedRecents) != 'undefined') {
-            loadPreloadedRecents();
+            if (document.readyState == 'complete') {
+                loadPreloadedRecents();
+            } else {
+                $(window).on('load', loadPreloadedRecents);
+            }
         }
 
         if (IS_XMAS) {
