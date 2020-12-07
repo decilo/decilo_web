@@ -1411,6 +1411,25 @@ $(document).ready(() => {
 
             initializeIdleRunner();
         }
+
+        let searchParams = new URL(window.location).searchParams;
+
+        if (searchParams.has('then')) {
+            switch (searchParams.get('then')) {
+                case 'displaySignupModal':
+                    if (!LOGGED_IN) {
+                        if (document.readyState == 'complete') {
+                            $('#loginBtnMobile').click();
+                        } else {
+                            $(window).on('load', () => {
+                                $('#loginBtnMobile').click();
+                            });
+                        }
+                    }
+
+                    break;
+            }
+        }
     }
 
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
