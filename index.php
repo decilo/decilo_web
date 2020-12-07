@@ -15,7 +15,7 @@ if (isset($_GET['to'])) {
 <div class="dark-5 row">
     <div class="col s12">
         <p class="flow-text center">
-            Mirá lo que dicen los demás
+            <?= $recipientUsername == null ? 'Mirá lo que dicen los demás' : 'Mirá lo que le dicen los demás a @' . $recipientUsername ?>
         </p>
         <div class="divider"></div>
         <div id="recentsContainer">
