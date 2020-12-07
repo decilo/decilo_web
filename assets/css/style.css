@@ -111,6 +111,7 @@ div:focus { outline: none !important; }
 }
 
 #createPostBtn { margin-right: 1em; }
+#createMessageBtn { font-size: x-large; }
 
 .word-wrap { word-break: break-word; }
 

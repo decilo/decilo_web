@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js?v=8';
+$title = 'Página principal'; $js = 'index.min.js?v=9';
 
 require_once 'includes/main.php'; 
 require_once 'views/header.php';
@@ -99,16 +99,22 @@ if (isset($_GET['to'])) {
 </div>
 
 <div class="fixed-action-btn">
-    <button id="fabToggleBtn" type="button" class="btn-floating btn-large bg-light-1 bg-dark-1 no-select tooltipped" data-tooltip="Publicá algo" data-position="left">
-        <i class="large material-icons"> add </i>
+    <button id="createMessageBtn" type="button" class="btn-floating btn-large bg-light-1 bg-dark-1 no-select tooltipped" data-tooltip="Publicá algo" data-position="left">
+    
+        <div class="preloader-wrapper big" style="position: absolute; left: 25%; top: 25%; width: 50%; height: 50%;">
+            <div class="spinner-layer border-dark-9">
+            <div class="circle-clipper left">
+                <div class="circle"></div>
+            </div><div class="gap-patch">
+                <div class="circle"></div>
+            </div><div class="circle-clipper right">
+                <div class="circle"></div>
+            </div>
+            </div>
+        </div>
+
+        <i class="material-icons"> message </i>
     </button>
-    <ul>
-        <li>
-            <button id="createMessageBtn" type="button" class="btn-floating bg-light-2 bg-dark-2 no-select">
-                <i class="material-icons small"> message </i>
-            </button>
-        </li>
-    </ul>
 </div>
 
 <script>

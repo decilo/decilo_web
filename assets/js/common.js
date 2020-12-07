@@ -760,7 +760,7 @@ function openCommentsModal(message, private) {
     }
 }
 
-function loadRecaptcha(defer = false, async = false) {
+function loadRecaptcha(defer = false, async = false, then = () => {}) {
     if (isOnline && typeof(grecaptcha) == 'undefined') {
         // Google reCaptcha v3
         script          = document.createElement('script');
@@ -769,6 +769,8 @@ function loadRecaptcha(defer = false, async = false) {
             console.log('reCaptcha v3: successfully loaded.');
 
             loader();
+
+            then();
         };
 
         if (defer) {
@@ -1029,12 +1031,12 @@ function cum() {
 }
 
 function tryToDeferAutoTooltip() {
-    fabToggleBtn = $('#fabToggleBtn');
-    fabToggleBtn.tooltip();
+    createMessageBtn = $('#createMessageBtn');
+    createMessageBtn.tooltip();
 
     $(window).on('load', () => {
-        if (fabToggleBtn.length > 0) {
-            fabToggleBtn.tooltip('open');
+        if (createMessageBtn.length > 0) {
+            createMessageBtn.tooltip('open');
         }
     });
 }
@@ -1160,10 +1162,10 @@ $(document).ready(() => {
             tooltips.tooltip('close');
         },
         onCloseEnd: () => {
-            fabToggleBtn = $('#fabToggleBtn');
+            createMessageBtn = $('#createMessageBtn');
 
-            if (fabToggleBtn.length > 0 && fabToggleBtn.hasClass('pulse')) {
-                fabToggleBtn.tooltip('open');
+            if (createMessageBtn.length > 0 && createMessageBtn.hasClass('pulse')) {
+                createMessageBtn.tooltip('open');
             }
         }
     });
@@ -1372,10 +1374,10 @@ $(document).ready(() => {
             $('#tryAccountRecoveryBtn').hide();
             $('#continueLoginBtn').html('Continuar');
 
-            fabToggleBtn = $('#fabToggleBtn');
+            createMessageBtn = $('#createMessageBtn');
 
-            if (fabToggleBtn.length > 0 && fabToggleBtn.hasClass('pulse')) {
-                fabToggleBtn.tooltip('open');
+            if (createMessageBtn.length > 0 && createMessageBtn.hasClass('pulse')) {
+                createMessageBtn.tooltip('open');
             }
 
             allowDeferredPreloader = true;

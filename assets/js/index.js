@@ -243,25 +243,34 @@ $(document).ready(() => {
 
     fab = M.FloatingActionButton.getInstance($('.fixed-action-btn'));
 
-    fabDOM.on('click', () => {
-        loadRecaptcha();
+    createMessageBtn = fabDOM.find('#createMessageBtn');
 
-        if (fab.isOpen) {
-            $('#fabToggleBtn')
-                .find('i')
-                .css({ 'transform' : 'rotate(0deg)' });
-        } else {
-            $('#fabToggleBtn')
-                .find('i')
-                .css({ 'transform' : 'rotate(90deg)' });
-        }
-    });
-
-    fabDOM
-        .find('#createMessageBtn')
+    createMessageBtn
         .on('click', () => {
             if (isOnline) {
-                $('#createMessageModal').modal('open');
+                icon = fabDOM.find('.material-icons');
+                icon.fadeOut(() => {
+                    preloader = fabDOM.find('.preloader-wrapper');
+                    preloader.fadeIn(() => {
+                        preloader.addClass('active');
+
+                        loadRecaptcha(false, false, () => {
+                            $('#createMessageModal').modal('open');
+
+                            preloader.fadeOut(() => {
+                                preloader.removeClass('active');
+
+                                icon.fadeIn();
+
+                                createMessageBtn
+                                    .off('click')
+                                    .on('click', () => {
+                                        $('#createMessageModal').modal('open');
+                                    });
+                            });
+                        });
+                    });
+                });
             } else {
                 toast(NO_INTERNET_HINT);
             }
@@ -509,7 +518,7 @@ $(document).ready(() => {
     };
 
     if (localStorage.getItem('hasTriedFAB') == null) {
-        $('#fabToggleBtn')
+        $('#createMessageBtn')
             .addClass('pulse')
             .on('click', function () {
                 if (
