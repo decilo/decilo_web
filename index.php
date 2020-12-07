@@ -114,8 +114,7 @@ if (isset($_GET['to'])) {
 <script>
     const RECIPIENT = <?= json_encode($recipientUsername)        ?>;
     const LOGGED_IN = <?= json_encode(getUserId() != null)       ?>;
-
-    const RECENTS   = <?= json_encode(getRecentMessages($recipientUsername), JSON_NUMERIC_CHECK) ?>;
+    const PRIVATE   = false;
 </script>
 
 <?php require_once 'views/footer.php'; ?>

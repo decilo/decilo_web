@@ -24,7 +24,7 @@ if ($request == null) {
 
         switch ($request['action']) {
             case 'getRecent':
-                if (isset($values['after']) && !isset($values['private'])) {
+                if (isset($values['after']) && (!isset($values['private']) || $values['private'] === false)) {
                     $statement = $GLOBALS['database']
                         ->prepare(
                             'SELECT     `d_messages_public`.*, (

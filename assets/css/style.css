@@ -286,3 +286,5 @@ input[type="file"] { display: none; }
     top: 0.35em;
     background-size: cover !important;
 }
+
+.force-center { text-align: center !important; }

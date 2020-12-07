@@ -65,89 +65,6 @@ function tryToRemove() {
     }
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, image = null, comments = 0) {
-    auxiliaryContent = content;
-
-    content.split('http').forEach((match) => {
-        match
-            .split(' ')
-            .forEach((item) => {    
-                if (item.indexOf('://') > -1) {
-                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '" rel="noreferrer">http' + item + '</a>');
-                }
-        });
-    });
-
-    return `<div class="col s12 m12 l6 message" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
-                <div class="card bg-dark-3 card-box">
-                    <button
-                        type="button"
-                        class="btn-floating halfway-fab mid-card-fab waves-effect waves-light btn-hfab"
-                        onclick="requestRemoval(` + id + `);"
-                    >
-                        <i class="material-icons mid-card-fab-icon">delete</i>
-                    </button>` + (image == null ? '' : `
-                    <div class="card-image">
-                        <div class="` + (verified ? '' : 'unverified-img') + ` message-image" style="background: url('` + image + `');"></div>
-                        <img
-                            src="` + image + `"
-                            style="display: none; width: 0px; height: 0px;"
-                            onerror="
-                                $(this).parent().hide();
-
-                                reloadLayout();
-                            "
-                        >
-                    </div>`) + `
-                    <div class="card-content white-text">
-                        <span class="card-title roboto light-3">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato thin regular word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
-                            (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
-                        </p>
-                        <div class="message-spacer"></div>
-                        <a
-                            class="custom-link regular small"
-                            href="view/private/` + id + `"
-                        >
-                            Ver más
-                        </a>
-                    </div>
-                    <div class="card-action center">
-                        <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
-                    </div>
-                    <ul class="collection with-header bg-dark-7 border-dark-7 hand">
-                        <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, true);"`) + `>
-                            Comentarios (<span class="commentCount">` + comments + `</span>)
-                        </li>
-                    </ul>
-                </div>
-            </div>`;
-}
-
-function loadPreloadedRecents() {
-    if (RECENTS.length > 0) {
-        RECENTS.forEach((message) => {
-            $('#recentsContainer')
-                .find('.row')
-                .append(
-                    getRenderedMessage(
-                        message['id'],
-                        message['content'],
-                        message['declaredName'],
-                        message['created'],
-                        true,
-                        message['image'],
-                        message['comments']
-                    )
-                );
-        });
-
-        reloadLayout();
-    } else {
-        displayRemovableWarning(NO_MESSAGES_HINT);
-    }
-}
-
 $(document).ready(() => {
     createPostBtn = $('#createPostBtn');
 
@@ -169,39 +86,7 @@ $(document).ready(() => {
             &&
             !isPullingChunks
         ) {
-            run('messagesManager', 'getRecent', { private: true, after: getLastMessageId() }, () => { isPullingChunks = true; })
-            .done((response) => {
-                console.log(response);
-
-                if (response.result.length > 0) {
-                    let renderedHTML = '';
-                    
-                    response.result.forEach((message) => {
-                        renderedHTML += getRenderedMessage(
-                            message['id'], message['content'], message['declaredName'], message['created'], true, message['image'], message['comments']
-                        );
-                    });
-
-                    $('#recentsContainer')
-                        .find('.row')
-                        .append(renderedHTML);
-
-                    reloadLayout(renderedHTML);
-
-                    displayIcons();
-
-                    isPullingChunks = false;
-                } else {
-                    $(window).off('scroll');
-
-                    isPullingChunks = true;
-                }
-            })
-            .fail((error) => {
-                isPullingChunks = false;
-
-                console.error(error);
-            });
+            tryToPullChunks();
         }
     }, { passive: true });
 

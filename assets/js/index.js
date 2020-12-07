@@ -4,7 +4,6 @@ let createPostBtn       = null;
 let imageInput          = null;
 let maxScrollTop        = null;
 let isPullingChunks     = false;
-let canPullChunks       = true;
 let isPosting           = false;
 
 let toReport            = null;
@@ -38,20 +37,6 @@ function resetMessageInputs() {
     enable($('#messageInput, #declaredName, label[for="imageInput"]'));
 }
 
-function calculateOnscreenImages() {
-    $('.message').each(function () {
-        if (isElementInViewport(this)) {
-            img = $(this).find('img');
-
-            if (img.length > 0 && typeof(img.attr('data-src')) != 'undefined') {
-                img
-                    .attr('src', img.data()['src'])
-                    .removeAttr('data-src');
-            }
-        }
-    });
-}
-
 function toggleLike(messageId) {
     run('messagesManager', 'toggleLike', { id: messageId })
     .done((response) => {
@@ -79,97 +64,6 @@ function toggleLike(messageId) {
             toast('Algo anda mal, por favor probá otra vez.');
         }
     });
-}
-
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false, likes = 0) {
-    auxiliaryContent = content;
-
-    content.split('http').forEach((match) => {
-        match
-            .split(' ')
-            .forEach((item) => {    
-                if (item.indexOf('://') > -1) {
-                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '" rel="noreferrer">http' + item + '</a>');
-                }
-        });
-    });
-
-    return `<div class="col s12 m6 l3 message ` + (id == null ? 'not-posted' : '') + `" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
-                <div class="card bg-dark-3 card-box">` + (LOGGED_IN && id != null ? `
-                    <button
-                        type="button"
-                        class="` + (reported ? 'btn-hfab-disabled' : 'btn-hfab') + ` btn-floating halfway-fab mid-card-fab waves-effect waves-light tooltipped"
-                        data-position="left"` + (reported ? `
-                        data-tooltip="Ya lo reportaste"` : `
-                        data-tooltip="Reportar"
-                        onclick="reportMessage(` + id + `);"`) + `
-                    >
-                        <i class="material-icons mid-card-fab-icon">flag</i>
-                    </button>` : ``) + (image == null ? '' : `
-                    <div class="card-image">
-                        <div class="message-image valign-wrapper">
-                            <div class="preloader-wrapper small active center-block">
-                                <div class="spinner-layer border-dark-5 border-light-9">
-                                    <div class="circle-clipper left">
-                                    <div class="circle"></div>
-                                    </div><div class="gap-patch">
-                                    <div class="circle"></div>
-                                    </div><div class="circle-clipper right">
-                                    <div class="circle"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <img
-                            ` + (deferImage ? `data-src="` + image + `"` : `src="` + image + `"`) + `
-                            style="display: none; width: 0px; height: 0px;"
-                            onload="
-                                $(this)
-                                    .prev()` + (verified ? '' : `.addClass('unverified-img')`) + `
-                                    .css({ background: 'url(` + image + `)' })
-                                    .find('.preloader-wrapper')
-                                    .remove();
-                            "
-                            onerror="
-                                $(this).parent().hide();
-
-                                reloadLayout();
-                            "
-                        >
-                    </div>`) + `
-                    <div class="card-content white-text">
-                        <span class="card-title roboto light-3">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
-                            (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
-                        </p>
-                        <div class="message-spacer"></div>
-                        <a
-                            class="custom-link regular small"
-                            href="` + (id == null ? '#' : `view/` + (RECIPIENT == null ? '' : 'private/') + id) + `"
-                        >
-                            Ver más
-                        </a>` + (verified || image == null ? `` : `
-                        <div class="message-spacer"></div>
-                        <p class="red-text thin small">* Verificación pendiente</p>`) + `
-                    </div>
-                    <div class="card-action center">
-                        <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
-                    </div>
-                    <ul class="collection with-header bg-dark-7 border-dark-7 hand">
-                        <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select">
-                            <div class="d-flex flex-center">
-                                <div class="no-select likes-toggle" ` + (id == null ? '' : `onclick="toggleLike(` + id + `);"`) + `>
-                                    <span class="counter likesCount">` + likes + `</span> <i class="material-icons small collection-icon"> thumb_up </i>
-                                </div>
-                                <div class="flex-divider bg-light-10 bg-dark-8"></div>
-                                <div class="no-select comments-open-btn" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, false);"`) + `>
-                                    <i class="material-icons small collection-icon"> comment </i> <span class="counter commentCount">` + comments + `</span>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-             </div>`;
 }
 
 function reportMessage(id) {
@@ -327,105 +221,6 @@ function attachProgressBar() {
         'left'   : createPostBtn.position()['left'],
         'height' : createPostBtn.height()
     });
-}
-
-function loadPreloadedRecents() {
-    if (RECENTS.length > 0) {
-        let renderedHTML = '';
-
-        RECENTS.forEach((message) => {
-            renderedHTML += getRenderedMessage(
-                message['id'],
-                message['content'],
-                message['declaredName'],
-                message['created'],
-                true,
-                parseInt(message['reported']) == 1,
-                message['image'],
-                parseInt(message['verified']) == 1,
-                message['comments'],
-                true,
-                message['likes']
-            );
-        });
-        
-        $('#recentsContainer')
-            .find('.row')
-            .append(renderedHTML);
-
-        if ($('.message').last().position()['top'] < document.documentElement.clientHeight) {
-            deferredFetcher = setInterval(tryToPullChunks, 1000);
-        }
-
-        calculateOnscreenImages();
-
-        reloadLayout(renderedHTML);
-    } else {
-        displayRemovableWarning('¡Nada por acá, publicá primero!');
-    }
-}
-
-async function tryToPullChunks() {
-    if (canPullChunks) {
-        if (isOnline) {
-            if (isPullingChunks) {
-                console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
-            } else {
-                run('messagesManager', 'getRecent', {
-                    after:      getLastMessageId(),
-                    recipient:  RECIPIENT
-                }, () => { isPullingChunks = true; })
-                .done((response) => {
-                    console.log(response);
-
-                    if (response.result.length > 0) {
-                        let renderedHTML = '';
-                        
-                        response.result.forEach((message) => {
-                            renderedHTML += getRenderedMessage(
-                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
-                            );
-                        });
-
-                        $('#recentsContainer')
-                            .find('.row')
-                            .append(renderedHTML);
-
-                        reloadLayout(renderedHTML);
-
-                        if (
-                            $('.message').last().position()['top'] > document.documentElement.clientHeight
-                            &&
-                            deferredFetcher != null
-                        ) {
-                            clearInterval(deferredFetcher);
-
-                            deferredFetcher = null;
-                        }
-
-                        console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
-                    } else {
-                        isPullingChunks = true;
-                        canPullChunks   = false;
-
-                        console.info('tryToPullChunks: nothing to pull, shutting down...');
-
-                        return;
-                    }
-
-
-                    isPullingChunks = false;
-                })
-                .fail((error) => {
-                    isPullingChunks = false;
-
-                    console.error(error);
-                });
-            }
-        } else {
-            console.info('tryToPullChunks: you\'re offline, so you can\'t try to pull chunks now.');
-        }
-    }
 }
 
 $(document).ready(() => {

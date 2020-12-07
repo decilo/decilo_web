@@ -84,6 +84,8 @@ require_once 'views/header.php';
 
 <script>
     const RECENTS   = <?= json_encode(getRecentMessages(getUserName())) ?>;
+    const RECIPIENT = <?= json_encode(getUserName())                    ?>;
+    const PRIVATE   = true;
 </script>
 
 <?php require_once 'views/footer.php'; ?>
