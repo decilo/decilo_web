@@ -98,7 +98,7 @@
         <script src="https://unpkg.com/imagesloaded@4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous" onload="console.info('imagesLoaded: loaded successfully.');"></script>
 
         <!-- Common script -->
-        <script src="assets/js/common.min.js?v=4"></script>
+        <script src="assets/js/common.min.js?v=9"></script>
 
         <?php
 

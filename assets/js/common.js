@@ -694,26 +694,34 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
 }) {
     fetch(new Request('/?onlineTest', { headers: { 'x-online-test': true } }))
     .then(() => {
-        console.log('onlineTest: we\'re online, updating caches.');
+        console.info('onlineTest: waiting ' + Math.round(FAILURE_RETRY_INTERVAL / 1000) + ' seconds before trying to update caches...');
 
-        caches.delete('response-store');
-        caches.open('response-store').then((cache) => {
-            urls = [
-                '/',
-                '/privacy',
-                '/profile',
-                '/private',
-                '/exceptions/not_found',
-                '/exceptions/bad_request',
-                '/exceptions/forbidden',
-                '/exceptions/failed_dependency',
-                '/exceptions/internal_server_error',
-                '/exceptions/maintenance',
-                '/assets/css/maintenance.min.css'
-            ];
+        setTimeout(() => {
+            if (isOnline) {
+                console.log('onlineTest: we\'re online, updating caches.');
 
-            return cache.addAll(urls)
-        });
+                caches.delete('response-store');
+                caches.open('response-store').then((cache) => {
+                    urls = [
+                        '/',
+                        '/privacy',
+                        '/profile',
+                        '/private',
+                        '/exceptions/not_found',
+                        '/exceptions/bad_request',
+                        '/exceptions/forbidden',
+                        '/exceptions/failed_dependency',
+                        '/exceptions/internal_server_error',
+                        '/exceptions/maintenance',
+                        '/assets/css/maintenance.min.css'
+                    ];
+
+                    return cache.addAll(urls)
+                });
+            } else {
+                console.warn('onlineTest: we\'re offline, waiting for the next promise to resolve.');
+            }
+        }, FAILURE_RETRY_INTERVAL);
 
         $('#noInternetBtn').fadeOut();
 
