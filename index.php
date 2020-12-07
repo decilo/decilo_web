@@ -102,7 +102,7 @@ if (isset($_GET['to'])) {
     <button id="createMessageBtn" type="button" class="btn-floating btn-large bg-light-1 bg-dark-1 no-select tooltipped" data-tooltip="Publicá algo" data-position="left">
     
         <div class="preloader-wrapper big" style="position: absolute; left: 25%; top: 25%; width: 50%; height: 50%;">
-            <div class="spinner-layer border-dark-9">
+            <div class="spinner-layer border-dark-9 border-light-5">
             <div class="circle-clipper left">
                 <div class="circle"></div>
             </div><div class="gap-patch">
