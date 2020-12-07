@@ -411,59 +411,63 @@ $(document).ready(() => {
 
     async function tryToPullChunks() {
         if (canPullChunks) {
-            if (isPullingChunks) {
-                console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
-            } else {
-                run('messagesManager', 'getRecent', {
-                    after:      getLastMessageId(),
-                    recipient:  RECIPIENT
-                }, () => { isPullingChunks = true; })
-                .done((response) => {
-                    console.log(response);
+            if (isOnline) {
+                if (isPullingChunks) {
+                    console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
+                } else {
+                    run('messagesManager', 'getRecent', {
+                        after:      getLastMessageId(),
+                        recipient:  RECIPIENT
+                    }, () => { isPullingChunks = true; })
+                    .done((response) => {
+                        console.log(response);
 
-                    if (response.result.length > 0) {
-                        let renderedHTML = '';
-                        
-                        response.result.forEach((message) => {
-                            renderedHTML += getRenderedMessage(
-                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
-                            );
-                        });
+                        if (response.result.length > 0) {
+                            let renderedHTML = '';
+                            
+                            response.result.forEach((message) => {
+                                renderedHTML += getRenderedMessage(
+                                    message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
+                                );
+                            });
 
-                        $('#recentsContainer')
-                            .find('.row')
-                            .append(renderedHTML);
+                            $('#recentsContainer')
+                                .find('.row')
+                                .append(renderedHTML);
 
-                        reloadLayout(renderedHTML);
+                            reloadLayout(renderedHTML);
 
-                        if (
-                            $('.message').last().position()['top'] > document.documentElement.clientHeight
-                            &&
-                            deferredFetcher != null
-                        ) {
-                            clearInterval(deferredFetcher);
+                            if (
+                                $('.message').last().position()['top'] > document.documentElement.clientHeight
+                                &&
+                                deferredFetcher != null
+                            ) {
+                                clearInterval(deferredFetcher);
 
-                            deferredFetcher = null;
+                                deferredFetcher = null;
+                            }
+
+                            console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
+                        } else {
+                            isPullingChunks = true;
+                            canPullChunks   = false;
+
+                            console.info('tryToPullChunks: nothing to pull, shutting down...');
+
+                            return;
                         }
 
-                        console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
-                    } else {
-                        isPullingChunks = true;
-                        canPullChunks   = false;
 
-                        console.info('tryToPullChunks: nothing to pull, shutting down...');
+                        isPullingChunks = false;
+                    })
+                    .fail((error) => {
+                        isPullingChunks = false;
 
-                        return;
-                    }
-
-
-                    isPullingChunks = false;
-                })
-                .fail((error) => {
-                    isPullingChunks = false;
-
-                    console.error(error);
-                });
+                        console.error(error);
+                    });
+                }
+            } else {
+                console.info('tryToPullChunks: you\'re offline, so you can\'t try to pull chunks now.');
             }
         }
     }
