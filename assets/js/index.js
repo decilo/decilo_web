@@ -365,6 +365,69 @@ function loadPreloadedRecents() {
     }
 }
 
+async function tryToPullChunks() {
+    if (canPullChunks) {
+        if (isOnline) {
+            if (isPullingChunks) {
+                console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
+            } else {
+                run('messagesManager', 'getRecent', {
+                    after:      getLastMessageId(),
+                    recipient:  RECIPIENT
+                }, () => { isPullingChunks = true; })
+                .done((response) => {
+                    console.log(response);
+
+                    if (response.result.length > 0) {
+                        let renderedHTML = '';
+                        
+                        response.result.forEach((message) => {
+                            renderedHTML += getRenderedMessage(
+                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
+                            );
+                        });
+
+                        $('#recentsContainer')
+                            .find('.row')
+                            .append(renderedHTML);
+
+                        reloadLayout(renderedHTML);
+
+                        if (
+                            $('.message').last().position()['top'] > document.documentElement.clientHeight
+                            &&
+                            deferredFetcher != null
+                        ) {
+                            clearInterval(deferredFetcher);
+
+                            deferredFetcher = null;
+                        }
+
+                        console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
+                    } else {
+                        isPullingChunks = true;
+                        canPullChunks   = false;
+
+                        console.info('tryToPullChunks: nothing to pull, shutting down...');
+
+                        return;
+                    }
+
+
+                    isPullingChunks = false;
+                })
+                .fail((error) => {
+                    isPullingChunks = false;
+
+                    console.error(error);
+                });
+            }
+        } else {
+            console.info('tryToPullChunks: you\'re offline, so you can\'t try to pull chunks now.');
+        }
+    }
+}
+
 $(document).ready(() => {
     createPostBtn   = $('#createPostBtn');
     imageInput      = $('#imageInput');
@@ -408,69 +471,6 @@ $(document).ready(() => {
                 toast(NO_INTERNET_HINT);
             }
         });
-
-    async function tryToPullChunks() {
-        if (canPullChunks) {
-            if (isOnline) {
-                if (isPullingChunks) {
-                    console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
-                } else {
-                    run('messagesManager', 'getRecent', {
-                        after:      getLastMessageId(),
-                        recipient:  RECIPIENT
-                    }, () => { isPullingChunks = true; })
-                    .done((response) => {
-                        console.log(response);
-
-                        if (response.result.length > 0) {
-                            let renderedHTML = '';
-                            
-                            response.result.forEach((message) => {
-                                renderedHTML += getRenderedMessage(
-                                    message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
-                                );
-                            });
-
-                            $('#recentsContainer')
-                                .find('.row')
-                                .append(renderedHTML);
-
-                            reloadLayout(renderedHTML);
-
-                            if (
-                                $('.message').last().position()['top'] > document.documentElement.clientHeight
-                                &&
-                                deferredFetcher != null
-                            ) {
-                                clearInterval(deferredFetcher);
-
-                                deferredFetcher = null;
-                            }
-
-                            console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
-                        } else {
-                            isPullingChunks = true;
-                            canPullChunks   = false;
-
-                            console.info('tryToPullChunks: nothing to pull, shutting down...');
-
-                            return;
-                        }
-
-
-                        isPullingChunks = false;
-                    })
-                    .fail((error) => {
-                        isPullingChunks = false;
-
-                        console.error(error);
-                    });
-                }
-            } else {
-                console.info('tryToPullChunks: you\'re offline, so you can\'t try to pull chunks now.');
-            }
-        }
-    }
 
     document.addEventListener('scroll', () => {
         if (
