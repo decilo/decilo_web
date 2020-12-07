@@ -1336,6 +1336,14 @@ $(document).ready(() => {
 
     $(window).on('resize', () => {
         viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
+
+        $('.tooltipped').each(function () {
+            tooltip = M.Tooltip.getInstance($(this));
+
+            if (typeof(tooltip) != 'undefined' && tooltip.isOpen) {
+                tooltip.close();
+            }
+        });
     });
 
     window.addEventListener('online', () => {
