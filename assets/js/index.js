@@ -591,46 +591,6 @@ $(document).ready(() => {
         });
     });
 
-    let idleRunner = null;
-    function initializeIdleRunner() {
-        if (idleRunner != null) {
-            clearInterval(idleRunner);
-
-            idleRunner = null;
-        }
-
-        idleRunner = setTimeout(() => {
-
-            localStorage.setItem('hasSeenFeatures', true);
-
-            if ($('.sidenav-trigger').is(':visible')) {
-                $('.sidenav').sidenav('open');
-
-                $('#loginBtnMobile').addClass('pulse bg-dark-1');
-
-                toast('Recibí mensajes, reportá y mucho más.');
-            } else {
-                $('.tap-target[data-target="loginBtn"]').tapTarget('open');
-            }
-        }, IDLE_TIMEOUT);
-    }
-
-    function hasSeenFeatures() {
-        return localStorage.getItem('hasSeenFeatures') != null;
-    }
-
-    if (!hasSeenFeatures()) {
-        console.info('FeatureDiscovery will fire in ' + (IDLE_TIMEOUT / 1000) + ' seconds, since we don\'t know if this is a new user.');
-
-        $(window).on('scroll click keyup keydown keypress change wheel', function () {
-            if (!hasSeenFeatures()) {
-                initializeIdleRunner();
-            }
-        });
-
-        initializeIdleRunner();
-    }
-
     console.info('document: success fetching critical assets.');
 
     loader = () => {

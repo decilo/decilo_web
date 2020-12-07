@@ -869,6 +869,29 @@ function loadSnowfall() {
         .appendChild(script);
 }
 
+let idleRunner = null;
+function initializeIdleRunner() {
+    if (idleRunner != null) {
+        clearInterval(idleRunner);
+
+        idleRunner = null;
+    }
+
+    idleRunner = setTimeout(() => {
+        $('.tap-target').tapTarget('open');
+
+        localStorage.setItem('hasSeenFeatures', true);
+
+        if ($(window).scrollTop() > 0) {
+            $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION);
+        }
+    }, IDLE_TIMEOUT);
+}
+
+function hasSeenFeatures() {
+    return localStorage.getItem('hasSeenFeatures') != null;
+}
+
 $(document).ready(() => {
     // Initialize Day.js
     dayjs.extend(dayjs_plugin_localizedFormat);
@@ -1376,6 +1399,18 @@ $(document).ready(() => {
         }
 
         registerServiceWorker();
+
+        if (!hasSeenFeatures()) {
+            console.info('FeatureDiscovery will fire in ' + (IDLE_TIMEOUT / 1000) + ' seconds, since we don\'t know if this is a new user.');
+
+            $(window).on('scroll click keyup keydown keypress change wheel', () => {
+                if (!hasSeenFeatures()) {
+                    initializeIdleRunner();
+                }
+            });
+
+            initializeIdleRunner();
+        }
     }
 
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
