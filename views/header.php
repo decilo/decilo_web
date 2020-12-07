@@ -163,7 +163,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         <header>
             <nav class="nav-extended bg-light-1 bg-dark-1">
                 <div class="nav-wrapper">
-                    <a class="brand-logo thin hand no-select"><?= SYSTEM_TITLE ?></a>
+                    <a class="brand-logo thin hand no-select">
+                        <?= IS_XMAS ? '<div id="santaHatOverlayImg" style="background: url(\'assets/icons/santa_hat.webp\');"></div>' : '' ?>
+                        <?= SYSTEM_TITLE ?>
+                    </a>
                     <a href="#" data-target="mobile-nav" class="sidenav-trigger">
                         <i class="material-icons">menu</i>
                     </a>

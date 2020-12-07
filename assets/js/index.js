@@ -329,6 +329,42 @@ function attachProgressBar() {
     });
 }
 
+function loadPreloadedRecents() {
+    if (RECENTS.length > 0) {
+        let renderedHTML = '';
+
+        RECENTS.forEach((message) => {
+            renderedHTML += getRenderedMessage(
+                message['id'],
+                message['content'],
+                message['declaredName'],
+                message['created'],
+                true,
+                parseInt(message['reported']) == 1,
+                message['image'],
+                parseInt(message['verified']) == 1,
+                message['comments'],
+                true,
+                message['likes']
+            );
+        });
+        
+        $('#recentsContainer')
+            .find('.row')
+            .append(renderedHTML);
+
+        if ($('.message').last().position()['top'] < document.documentElement.clientHeight) {
+            deferredFetcher = setInterval(tryToPullChunks, 1000);
+        }
+
+        calculateOnscreenImages();
+
+        reloadLayout(renderedHTML);
+    } else {
+        displayRemovableWarning('¡Nada por acá, publicá primero!');
+    }
+}
+
 $(document).ready(() => {
     createPostBtn   = $('#createPostBtn');
     imageInput      = $('#imageInput');
@@ -727,48 +763,6 @@ $(document).ready(() => {
                     $(this).removeClass('pulse');
                 }
             });
-    }
-
-    function loadPreloadedRecents() {
-        if (RECENTS.length > 0) {
-            let renderedHTML = '';
-
-            RECENTS.forEach((message) => {
-                renderedHTML += getRenderedMessage(
-                    message['id'],
-                    message['content'],
-                    message['declaredName'],
-                    message['created'],
-                    true,
-                    parseInt(message['reported']) == 1,
-                    message['image'],
-                    parseInt(message['verified']) == 1,
-                    message['comments'],
-                    true,
-                    message['likes']
-                );
-            });
-            
-            $('#recentsContainer')
-                .find('.row')
-                .append(renderedHTML);
-
-            if ($('.message').last().position()['top'] < document.documentElement.clientHeight) {
-                deferredFetcher = setInterval(tryToPullChunks, 1000);
-            }
-
-            calculateOnscreenImages();
-
-            reloadLayout(renderedHTML);
-        } else {
-            displayRemovableWarning('¡Nada por acá, publicá primero!');
-        }
-    }
-
-    if (document.readyState == 'complete') {
-        loadPreloadedRecents();
-    } else {
-        $(window).on('load', loadPreloadedRecents);
     }
 
     $(window).resize(calculateOnscreenImages);

@@ -843,6 +843,24 @@ function tryToDeferAutoTooltip() {
     });
 }
 
+function loadSnowfall() {
+    script          = document.createElement('script');
+    script.src      = 'https://rawcdn.githack.com/loktar00/JQuery-Snowfall/d22ba78f76804e21404bc000142c019d6c10973d/dist/snowfall.jquery.min.js';
+    script.defer    = true;
+    script.onload   = () => {
+        console.info('Snowfall: loaded successfully.');
+
+        $('nav').snowfall({
+            flakeCount  : SNOWFALL['FLAKE_COUNT'],
+            maxSpeed    : SNOWFALL['MAX_SPEED']
+        });
+    }
+
+    document
+        .getElementsByTagName('body')[0]
+        .appendChild(script);
+}
+
 $(document).ready(() => {
     // Initialize Day.js
     dayjs.extend(dayjs_plugin_localizedFormat);
@@ -1184,6 +1202,26 @@ $(document).ready(() => {
         }
     });
 
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .getRegistrations()
+                .then((registrations) => {
+                    navigator.serviceWorker
+                        .register(SYSTEM_HOSTNAME + 'serviceWorker.js')
+                        .then(() => {
+                            if (registrations.length > 0) {
+                                console.info('serviceWorker: the registered worker is up to date.');
+                            } else {
+                                console.info('serviceWorker: registration succeded.');
+                            }
+
+                            checkIfOnline();
+                        });
+                });
+        }
+    }
+
     async function pushLoader() {
         console.log('common/window: success loading assets.');
 
@@ -1232,24 +1270,6 @@ $(document).ready(() => {
 
             document.getElementsByTagName('body')[0].appendChild(script);
         }, IDLE_TIMEOUT);
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker
-                .getRegistrations()
-                .then((registrations) => {
-                    navigator.serviceWorker
-                        .register(SYSTEM_HOSTNAME + 'serviceWorker.js')
-                        .then(() => {
-                            if (registrations.length > 0) {
-                                console.info('serviceWorker: the registered worker is up to date.');
-                            } else {
-                                console.info('serviceWorker: registration succeded.');
-                            }
-
-                            checkIfOnline();
-                        });
-                });
-        }
     }
     
     if (document.readyState != 'complete') {
@@ -1334,6 +1354,18 @@ $(document).ready(() => {
         });
     }
 
+    function loadModulesAfterGDPR() {
+        if (typeof(loadPreloadedRecents) != 'undefined') {
+            loadPreloadedRecents();
+        }
+
+        if (IS_XMAS) {
+            loadSnowfall();
+        }
+
+        registerServiceWorker();
+    }
+
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
         main = $('main');
 
@@ -1355,9 +1387,13 @@ $(document).ready(() => {
             tryToDeferAutoTooltip();
 
             toast('¡Listo! Ya podés seguir navegando.');
+
+            loadModulesAfterGDPR();
         });
     } else {
         tryToDeferAutoTooltip();
+
+        loadModulesAfterGDPR();
     }
 
     function setupNav() {

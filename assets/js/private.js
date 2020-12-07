@@ -124,6 +124,30 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
             </div>`;
 }
 
+function loadPreloadedRecents() {
+    if (RECENTS.length > 0) {
+        RECENTS.forEach((message) => {
+            $('#recentsContainer')
+                .find('.row')
+                .append(
+                    getRenderedMessage(
+                        message['id'],
+                        message['content'],
+                        message['declaredName'],
+                        message['created'],
+                        true,
+                        message['image'],
+                        message['comments']
+                    )
+                );
+        });
+
+        reloadLayout();
+    } else {
+        displayRemovableWarning(NO_MESSAGES_HINT);
+    }
+}
+
 $(document).ready(() => {
     createPostBtn = $('#createPostBtn');
 
@@ -306,34 +330,4 @@ $(document).ready(() => {
 
         $('#requestRemovalModal').modal();
     };
-
-    function loadPreloadedRecents() {
-        if (RECENTS.length > 0) {
-            RECENTS.forEach((message) => {
-                $('#recentsContainer')
-                    .find('.row')
-                    .append(
-                        getRenderedMessage(
-                            message['id'],
-                            message['content'],
-                            message['declaredName'],
-                            message['created'],
-                            true,
-                            message['image'],
-                            message['comments']
-                        )
-                    );
-            });
-
-            reloadLayout();
-        } else {
-            displayRemovableWarning(NO_MESSAGES_HINT);
-        }
-    }
-
-    if (document.readyState == 'complete') {
-        loadPreloadedRecents();
-    } else {
-        $(window).on('load', loadPreloadedRecents);
-    }
 });
