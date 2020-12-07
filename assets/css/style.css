@@ -243,10 +243,6 @@ input[type="file"] { display: none; }
     .message-image { width: 100%; height: 16rem; }
 }
 
-.sidenav .user-view {
-    margin-bottom: 3em;
-}
-
 #nav-options-dropdown {
     top: 4.4em !important;
 }
