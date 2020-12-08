@@ -167,10 +167,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <?= IS_XMAS ? '<div id="santaHatOverlayImg" style="background: url(\'assets/icons/santa_hat.webp\');"></div>' : '' ?>
                         <?= SYSTEM_TITLE ?>
                     </a>
-                    <a href="#" data-target="mobile-nav" class="sidenav-trigger" style="opacity: 0;">
+                    <a href="#" data-target="mobile-nav" class="sidenav-trigger" style="display: none; opacity: 0;">
                         <i class="material-icons">menu</i>
                     </a>
-                    <ul id="nav-mobile" class="right hide-on-med-and-down" style="opacity: 0;">
+                    <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: none; opacity: 0;">
                         <?= $userId == null ? '
                         <li>
                             <a id="loginBtn" class="lato center"> Iniciá sesión </a>
@@ -279,4 +279,4 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
             </ul>
         </header>
-        <main style="opacity: 0;">
+        <main style="display: none; opacity: 0;">

@@ -1631,7 +1631,7 @@ $(document).ready(() => {
             }
         }
 
-        $('.sidenav-trigger, #nav-mobile, main').animate({ opacity: 1 });
+        $('.sidenav-trigger, #nav-mobile, main').fadeIn();
     }
 
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
