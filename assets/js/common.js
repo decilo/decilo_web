@@ -134,8 +134,6 @@ FONTS.forEach((font) => {
                 loadedFonts.forEach((loadedFont) => {
                     document.fonts.add(loadedFont);
                 });
-
-                $('body').fadeIn(() => {}, 1, 50);
             }
         });
 });
@@ -1632,6 +1630,8 @@ $(document).ready(() => {
                     break;
             }
         }
+
+        $('.sidenav-trigger, #nav-mobile, main').animate({ opacity: 1 });
     }
 
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {

@@ -111,7 +111,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         </style>
     </head>
 
-    <body class="bg-light-5 bg-dark-4" style="opacity: 0;">
+    <body class="bg-light-5 bg-dark-4">
         <?php
 
         if ($isCrawling) {
@@ -167,10 +167,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <?= IS_XMAS ? '<div id="santaHatOverlayImg" style="background: url(\'assets/icons/santa_hat.webp\');"></div>' : '' ?>
                         <?= SYSTEM_TITLE ?>
                     </a>
-                    <a href="#" data-target="mobile-nav" class="sidenav-trigger">
+                    <a href="#" data-target="mobile-nav" class="sidenav-trigger" style="opacity: 0;">
                         <i class="material-icons">menu</i>
                     </a>
-                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <ul id="nav-mobile" class="right hide-on-med-and-down" style="opacity: 0;">
                         <?= $userId == null ? '
                         <li>
                             <a id="loginBtn" class="lato center"> Iniciá sesión </a>
@@ -279,4 +279,4 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
             </ul>
         </header>
-        <main>
+        <main style="opacity: 0;">
