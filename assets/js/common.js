@@ -761,31 +761,37 @@ function openCommentsModal(message, private) {
 }
 
 function loadRecaptcha(defer = false, async = false, then = () => {}) {
-    if (isOnline && typeof(grecaptcha) == 'undefined') {
-        // Google reCaptcha v3
-        script          = document.createElement('script');
-        script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
-        script.onload   = () => {
-            console.log('reCaptcha v3: successfully loaded.');
+    if (isOnline) {
+        if (typeof(grecaptcha) == 'undefined') {
+            // Google reCaptcha v3
+            script          = document.createElement('script');
+            script.src      = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_PUBLIC_KEY;
+            script.onload   = () => {
+                console.log('reCaptcha v3: successfully loaded.');
 
-            loader();
+                loader();
 
+                then();
+            };
+
+            if (defer) {
+                script.defer = true;
+            }
+
+            if (async) {
+                script.async = true;
+            }
+
+            script.onerror  = () => {
+                toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
+            }
+        
+            document.getElementsByTagName('head')[0].appendChild(script);
+        } else {
             then();
-        };
-
-        if (defer) {
-            script.defer = true;
         }
-
-        if (async) {
-            script.async = true;
-        }
-
-        script.onerror  = () => {
-            toast('Algunos módulos no fueron cargados, si falla algo, intentá recargando la página.');
-        }
-    
-        document.getElementsByTagName('head')[0].appendChild(script);
+    } else {
+        console.info('loadRecaptcha: you\'re offline, we won\'t try to load reCaptcha v3 for now.');
     }
 }
 
