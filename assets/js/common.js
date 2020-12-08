@@ -1632,6 +1632,12 @@ $(document).ready(() => {
         }
 
         $('.sidenav-trigger, #nav-mobile, main').fadeIn();
+
+        $('.tap-target').tapTarget({
+            onOpen: () => {
+                $('.tap-target-origin').addClass('black-text');
+            }
+        });
     }
 
     if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {

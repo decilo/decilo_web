@@ -458,12 +458,6 @@ $(document).ready(() => {
             $('#imageInput').val(null);
         });
 
-        $('.tap-target').tapTarget({
-            onOpen: () => {
-                $('.tap-target-origin').addClass('black-text');
-            }
-        });
-
         $('#reportMessageModal').modal({
             onCloseEnd: () => {
                 $('input[name="reportReason"]').prop('checked', false);
