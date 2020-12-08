@@ -205,6 +205,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             <li class="bg-dark-12">
                                 <a href="<?= WHATSAPP_LINK ?>" class="lato center hand custom-link light-4 dark-5"> Reportar un problema </a>
                             </li>
+                            <li class="bg-dark-12">
+                                <a href="<?= SYSTEM_HOSTNAME . 'about' ?>" class="lato center hand custom-link light-4 dark-5"> Acerca de </a>
+                            </li>
                         </ul>
                         <li>
                             <a class="lato center dropdown-button tooltipped" href="#!" data-tooltip="Más opciones" data-position="left" data-target="nav-options-dropdown">
@@ -270,6 +273,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
                 <li>
                     <a href="<?= WHATSAPP_LINK ?>" class="dark-5 hand custom-link"> Reportar un problema </a>
+                </li>
+                <li>
+                    <a href="<?= SYSTEM_HOSTNAME . 'about' ?>" class="dark-5 hand custom-link"> Acerca de </a>
                 </li>
             </ul>
         </header>

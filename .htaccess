@@ -19,6 +19,7 @@ RewriteEngine On
 RewriteRule ^profile$ /profile.php [L]
 RewriteRule ^private$ /private.php [L]
 RewriteRule ^privacy$ /privacy.php [L]
+RewriteRule ^about$   /about.php   [L]
 RewriteRule ^view/(\d+)$ /view.php?message=$1 [L]
 RewriteRule ^view/private/(\d+)$ /view.php?message=$1&private [L]
 RewriteRule ^to/(.*)$ /?to=$1 [L]
