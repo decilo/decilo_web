@@ -96,7 +96,7 @@ if ($request == null) {
                     ]);
 
                     reply($statement->fetchAll());
-                } else if (isset($values['private']) && $values['private']) {
+                } else if (!isset($values['recipient']) && isset($values['private']) && $values['private']) {
                     $statement = $GLOBALS['database']
                         ->prepare(
                             'SELECT     `d_messages_private`.*, (
@@ -162,7 +162,7 @@ if ($request == null) {
                                 FROM    `d_images`
                                 WHERE   `d_images`.`message`     = `d_messages_private`.`id`
                                 AND     `d_images`.`private`     = TRUE
-                             ) AS image
+                             ) AS image,
                              CASE
                                 WHEN CHARACTER_LENGTH(`d_messages_private`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
                                 THEN

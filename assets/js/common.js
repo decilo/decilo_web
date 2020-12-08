@@ -518,12 +518,12 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     </div>
                     <ul class="collection with-header bg-dark-7 border-dark-7 hand">
                         <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select">
-                            <div class="d-flex flex-center">` + (PRIVATE ? `` : `
+                            <div class="d-flex flex-center">` + (PRIVATE || RECIPIENT != null ? `` : `
                                 <div class="no-select likes-toggle" ` + (id == null ? '' : `onclick="toggleLike(` + id + `);"`) + `>
                                     <span class="counter likesCount">` + likes + `</span> <i class="material-icons small collection-icon"> thumb_up </i>
                                 </div>
                                 <div class="flex-divider bg-light-10 bg-dark-8"></div>`) + `
-                                <div class="no-select comments-open-btn ` + (PRIVATE ? `force-center` : ``) + `" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, ` + PRIVATE + `);"`) + `>
+                                <div class="no-select comments-open-btn ` + (PRIVATE || RECIPIENT != null ? `force-center` : ``) + `" ` + (id == null ? '' : `onclick="openCommentsModal(` + id + `, ` + PRIVATE + `);"`) + `>
                                     <i class="material-icons small collection-icon"> comment </i> <span class="counter commentCount">` + comments + `</span>
                                 </div>
                             </div>
