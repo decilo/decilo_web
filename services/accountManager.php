@@ -526,7 +526,7 @@ if ($request == null) {
 
                     $writer->writeSheet(
                         getExcelSheet(
-                            getColumnNames('d_messages_private', [ 'recipient' ]),
+                            getColumnNames('d_messages_private', [ 'recipient' ], [ 'image' ]),
                             getPrivateMessages($user['id'], false, false)
                         ),
                         'Mensajes privados'

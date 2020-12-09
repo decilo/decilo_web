@@ -276,7 +276,12 @@ function getPrivateMessages($userId, $includeId = true, $includeRecipient = true
                 ' . ($includeRecipient  ? 'recipient, ' : '') . '
                 content,
                 declaredName,
-                created
+                created, (
+                    SELECT  `d_images`.`url`
+                    FROM    `d_images`
+                    WHERE   `d_images`.`message`     = `d_messages_private`.`id`
+                    AND     `d_images`.`private`     = TRUE
+                ) AS image
              FROM   `d_messages_private`
              WHERE  `d_messages_private`.`recipient` = :recipient'
         );
@@ -286,7 +291,7 @@ function getPrivateMessages($userId, $includeId = true, $includeRecipient = true
     return $statement->fetchAll();
 }
 
-function getColumnNames($table, $ignore = []) {
+function getColumnNames($table, $ignore = [], $add = []) {
     $names = [];
 
     $statement = $GLOBALS['database']->query('DESCRIBE `' . $table . '`');
@@ -300,6 +305,8 @@ function getColumnNames($table, $ignore = []) {
             $names[] = $columnMetadata['Field'];
         }
     }
+
+    $names = array_merge($names, $add);
 
     return $names;
 }
