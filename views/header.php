@@ -175,7 +175,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <li>
                             <a id="loginBtn" class="lato center"> Iniciá sesión </a>
 
-                            <div class="tap-target bg-dark-1" data-target="loginBtn">
+                            <div class="tap-target bg-dark-1 bg-light-1" data-target="loginBtn">
                                 <div class="tap-target-content">
                                     <h5> Recibí mensajes privados </h5>
                                     <p class="lato"> Creá tu cuenta y empezá a recibir mensajes anónimos de tus seguidores. </p>
