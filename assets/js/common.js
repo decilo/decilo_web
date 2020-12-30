@@ -1442,6 +1442,9 @@ $(document).ready(() => {
                             }
 
                             checkIfOnline();
+                        })
+                        .catch((exception) => {
+                            console.warn('We were unable to set up a service worker due to the following reason: \n\n', exception);
                         });
                 });
         }
