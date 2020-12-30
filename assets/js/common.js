@@ -919,7 +919,7 @@ function getRenderedAd(id, content, companyName, created = null, image = null) {
                     </div>
                     <div class="card-action center">
                         <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
-                    </div
+                    </div>
                 </div>
             </div>`;
 }
