@@ -1,3 +1,9 @@
+RedirectMatch 403 ^/.git/.*$
+
+# As suggested here: https://serverfault.com/a/646227
+Header always edit Set-Cookie "(?i)^((?:(?!;\s?HttpOnly).)+)$" "$1; HttpOnly"
+Header always edit Set-Cookie "(?i)^((?:(?!;\s?secure).)+)$" "$1; secure"
+
 <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf|manifest)$">
     Header set Cache-Control "max-age=84600, public"
     ExpiresActive On
