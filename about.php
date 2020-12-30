@@ -101,7 +101,7 @@ require_once 'views/header.php';
 
         <div class="row">
             <div class="col s12 m6">
-                <h5> PHP (con PHP-FPM) </h5>
+                <h5> PHP 8.0.0 (con PHP-FPM) </h5>
                 <p>
                     Una versión eficiente del intérprete de scripts PHP para sitios de alto tráfico.
                 </p>
