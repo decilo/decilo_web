@@ -205,6 +205,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             <li class="bg-dark-12">
                                 <a href="<?= WHATSAPP_LINK ?>" class="lato center hand custom-link light-4 dark-5"> Reportar un problema </a>
                             </li>
+                            <li class="divider"></li>
                             <li class="bg-dark-12">
                                 <a href="<?= SYSTEM_HOSTNAME . 'about' ?>" class="lato center hand custom-link light-4 dark-5"> Acerca de </a>
                             </li>
