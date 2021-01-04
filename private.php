@@ -69,7 +69,7 @@ require_once 'views/header.php';
     </div>
 </div>
 
-<!-- Modal Structure -->
+<!-- Message remove request modal -->
 <div id="requestRemovalModal" class="modal">
     <div class="modal-content bg-dark-4 dark-5">
         <p class="flow-text roboto thin"> ¿Querés eliminar este mensaje? </h4>
