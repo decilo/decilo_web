@@ -161,6 +161,8 @@ input[type="file"] { display: none; }
 .btn-hfab:hover,
 .btn-hfab { background-color: #d60e00; }
 
+.btn-hfab:hover, .btn-hfab:focus { background-color: #d60e00 !important; }
+
 .btn-hfab-disabled:hover,
 .btn-hfab-disabled { background-color: #646464 !important; }
 
