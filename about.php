@@ -74,6 +74,15 @@ require_once 'views/header.php';
                 </p>
                 <a href="https://raw.githack.com/" rel="noreferrer" target="_blank">Más información</a>
             </div>
+            <div class="col s12 m6">
+                <h5> Mercado Pago </h5>
+                <p>
+                    Un servicio externo que procesa nuestras transacciones de manera rápida y segura.
+                </p>
+                <div>
+                    <a href="https://www.mercadopago.com.ar/developers/es/guides" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
         </div>
     </p>
 
@@ -192,12 +201,47 @@ require_once 'views/header.php';
                 <div>
                     <a href="https://imagesloaded.desandro.com/" rel="noreferrer" target="_blank"> Más información </a>
                 </div>
+            </div>
+            <div class="col s12 m6">
                 <h5> JQuery-Snowfall </h5>
                 <p>
                     Una biblioteca para jQuery que permite generar el efecto de caída de nieve sobre cualquier elemento del documento.
                 </p>
                 <div>
                     <a href="https://github.com/loktar00/JQuery-Snowfall/" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 m6">
+                <h5> Argentina Data Validator </h5>
+                <p>
+                    Una biblioteca capaz de validar datos utilizados a nivel nacional en Argentina como el CUIT y el CUIL.
+                </p>
+                <div>
+                    <a href="https://github.com/pablorsk/argentina-data-validator/" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
+            <div class="col s12 m6">
+                <h5> Card </h5>
+                <p>
+                    Una biblioteca para jQuery que provee de un diseño amigable al momento de ingresar datos sobre una tarjeta de crédito o débito.
+                </p>
+                <div>
+                    <a href="https://github.com/jessepollak/card/" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 m6">
+                <h5> payform </h5>
+                <p>
+                    Una biblioteca para jQuery capaz de validar los datos de una tarjeta de crédito o débito y exponer la validación a través de una API.
+                </p>
+                <div>
+                    <a href="https://github.com/jondavidjohn/payform/" rel="noreferrer" target="_blank"> Más información </a>
                 </div>
             </div>
         </div>

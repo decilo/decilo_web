@@ -200,7 +200,7 @@ input[type="file"] { display: none; }
     position: relative;
 }
 
-#postProgressBar {
+#postProgressBar, #transactionProgressBar {
     display: block;
     background-color: white;
     opacity: 0.2;
@@ -296,3 +296,32 @@ input[type="file"] { display: none; }
 }
 
 .force-center { text-align: center !important; }
+
+.btn-wrapper {
+    display: block;
+    width: 100%;
+    float: left;
+    position: relative;
+}
+
+#adPreview { margin-top: 3em; }
+
+.card-wrapper { padding-top: 1em; }
+
+@media screen and (max-width: 320px) {
+    .card-wrapper .jp-card-container {
+        left: -14%;
+    }
+}
+
+.plurals { display: none; }
+
+.badge-icon {
+    line-height: 20px !important;
+    position: relative;
+    top: 2px;
+}
+
+.mid-card-fab-ad {
+    bottom: 2.5rem!important;
+}

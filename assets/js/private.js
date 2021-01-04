@@ -128,7 +128,7 @@ $(document).ready(() => {
 
             switch (response.status) {
                 case OK:
-                    $('#recentsContainer')
+                    $('.gridContainer')
                         .find('.row')
                         .prepend(
                             getRenderedMessage(

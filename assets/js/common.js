@@ -22,6 +22,8 @@ let heartbeatLooper = null;
 
 let canPullChunks = true;
 
+let reportAdImpressions = true;
+
 const FONTS = [
     {
         family:  'Lato',
@@ -147,7 +149,10 @@ jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1, duration = MATERIA
 jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
     element = $(this);
 
-    element.animate({ opacity: opacity });
+    element.css({
+        transition: 'opacity ' + (MATERIALIZE_TRANSITION_TIME / 1000) + 's linear',
+        opacity: opacity
+    });
 
     setTimeout(() => {
         if (element.css('display') != 'none') {
@@ -266,7 +271,9 @@ function disable(element) {
 }
 
 function enable(element) {
-    element.removeAttr('disabled');
+    element
+        .removeAttr('disabled')
+        .removeClass('disabled');
 }
 
 function markValid(element) {
@@ -298,7 +305,7 @@ function reloadLayout(toAppend = null) {
             console.info('reloadLayout: grid initialization started.');
 
             grid = new Masonry(
-                '#recentsContainer',
+                '.gridContainer',
                 {
                     itemSelector: '.col',
                     containerStyle: {
@@ -318,7 +325,7 @@ function reloadLayout(toAppend = null) {
 
         calculateOnscreenImages();
 
-        recentsContainer = $('#recentsContainer');
+        recentsContainer = $('.gridContainer');
 
         if (recentsContainer.length > 0) {
             recentsContainer
@@ -352,12 +359,12 @@ function reloadLayout(toAppend = null) {
     }
 }
 
-function displayRemovableWarning(html) {
-    $('#recentsContainer')
+function displayRemovableWarning(html, target = $('.gridContainer')) {
+    target
         .find('.removableWarning')
         .remove();
 
-    $('#recentsContainer').prepend(
+    target.prepend(
         `<div class="removableWarning center">
             <div class="section"></div>
             <span style="display: none;" class="showNow thin">
@@ -879,7 +886,17 @@ function checkIfOnline(onSuccess = () => {}, onError = () => {
     });
 }
 
-function getRenderedAd(id, content, companyName, created = null, image = null) {
+function getRenderedAd(
+    id,
+    content,
+    companyName,
+    created = null,
+    image = null,
+    forceClass = null,
+    badgeData = { bgClass: 'bg-dark-10 bg-light-11', text: 'Publicidad' },
+    impressions = null,
+    showRemoveButton = false
+) {
     auxiliaryContent = content;
 
     content.split('http').forEach((match) => {
@@ -892,8 +909,15 @@ function getRenderedAd(id, content, companyName, created = null, image = null) {
         });
     });
 
-    return `<div class="col ` + (isPrivate ? 's12 m12 l6' : 's12 m6 l3') + ` message" data-ad="` + id + `">
-                <div class="card bg-dark-3 card-box">` + (image == null ? '' : `
+    return `<div class="col ` + (forceClass == null ? (isPrivate ? 's12 m12 l6' : 's12 m6 l3') : forceClass) + ` message" data-ad="` + id + `">
+                <div class="card bg-dark-3 card-box">` + (showRemoveButton ? `
+                    <button
+                        type="button"
+                        class="btn-floating halfway-fab mid-card-fab-ad waves-effect waves-light btn-hfab"
+                        data-ad="` + id + `"
+                    >
+                        <i class="material-icons mid-card-fab-icon">delete</i>
+                    </button>` : '') + (image == null ? '' : `
                     <div class="card-image">
                         <img
                             class="` + (id == null ? '' : 'materialboxed') + ' ' + (verified ? '' : 'unverified-img') + `"
@@ -911,7 +935,10 @@ function getRenderedAd(id, content, companyName, created = null, image = null) {
                     </div>`) + `
                     <div class="card-content white-text">
                         <span class="card-title roboto light-3">` +
-                            (companyName == null ? 'Anónimo' : companyName) + ` <span class="badge bg-dark-10 bg-light-11 ads-badge-text"> Publicidad </span>
+                            (companyName == null ? 'Anónimo' : companyName) + `
+                            <span class="badge ` + badgeData.bgClass + ` ads-badge-text"> ` + badgeData.text + (impressions == null ? `` : ` 
+                                | <i class="material-icons badge-icon tiny"> visibility </i> ` + impressions) + `
+                            </span>
                         </span>
                         <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
                             (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
@@ -977,7 +1004,7 @@ async function tryToPullChunks(firstCall = false) {
                             );
                         });
 
-                        $('#recentsContainer')
+                        $('.gridContainer')
                             .find('.row')
                             .append(renderedHTML);
 
@@ -1008,7 +1035,6 @@ async function tryToPullChunks(firstCall = false) {
 
                         return;
                     }
-
 
                     isPullingChunks = false;
                 })
@@ -1086,6 +1112,10 @@ function hasSeenFeatures() {
     return localStorage.getItem('hasSeenFeatures') != null;
 }
 
+function goBackToTop() {
+    $('html, body').scrollTop(0);
+}
+
 $(document).ready(() => {
     // Initialize Day.js
     dayjs.extend(dayjs_plugin_localizedFormat);
@@ -1113,7 +1143,9 @@ $(document).ready(() => {
         }
     });
 
-    localStorage.setItem('reportedImpressions', JSON.stringify([]));
+    if (reportAdImpressions) {
+        localStorage.setItem('reportedImpressions', JSON.stringify([]));
+    }
 
     let isReportingImpressions = false;
     let reportedImpressions = [];
@@ -1126,26 +1158,28 @@ $(document).ready(() => {
             }
         } catch (exception) {}
 
-        $('[data-ad]').each(function () {
-            id = $(this).data('ad');
+        if (reportAdImpressions) {
+            $('[data-ad]').each(function () {
+                id = $(this).data('ad');
 
-            if (isElementInViewport($(this)[0]) && !isReportingImpressions && !reportedImpressions.includes(id)) {
-                run('adsManager', 'reportImpression', { id: id }, () => {
-                    isReportingImpressions = true;
-                }, true)
-                .done((response) => {
-                    console.info(response);
+                if (isElementInViewport($(this)[0]) && !isReportingImpressions && !reportedImpressions.includes(id)) {
+                    run('adsManager', 'reportImpression', { id: id }, () => {
+                        isReportingImpressions = true;
+                    }, true)
+                    .done((response) => {
+                        console.info(response);
 
-                    if (response.status == OK) {
-                        reportedImpressions.push(id);
-                    }
-                })
-                .fail((error) => {
-                    console.error(error);
-                })
-                .always(() => { isReportingImpressions = false; });
-            }
-        });
+                        if (response.status == OK) {
+                            reportedImpressions.push(id);
+                        }
+                    })
+                    .fail((error) => {
+                        console.error(error);
+                    })
+                    .always(() => { isReportingImpressions = false; });
+                }
+            });
+        }
     }, { passive: true });
 
     // toast(navigator.userAgent);
@@ -1153,10 +1187,6 @@ $(document).ready(() => {
     // if (navigator.userAgent.includes('Android')) {
     //     toast('Hey there, it\'s an Android device!');
     //  }
-
-    function goBackToTop() {
-        $('html, body').scrollTop(0);
-    }
 
     $('.sidenav').sidenav({
         onOpenStart: () => {
@@ -1333,7 +1363,11 @@ $(document).ready(() => {
 
     $('.modal').modal({
         onOpenStart: () => {
-            $('.tooltipped').tooltip('close');
+            try {
+                $('.tooltipped').tooltip('close');
+            } catch (exception) {
+                console.warn('modal/onOpenStart: unable to close tooltips due to the following reason: \n\n', exception);
+            }
         }
     });
 
@@ -1506,6 +1540,10 @@ $(document).ready(() => {
 
     if (EXCEPTION != null) {
         switch (parseInt(EXCEPTION)) {
+            case COMPANY['REMOVAL_SUCCEEDED']:
+                toast('¡Listo! Tu empresa fue eliminada.');
+
+                break;
             case EXPIRED_TOKEN:
                 toast('Ese código ya expiró, por favor pedí otro.');
 

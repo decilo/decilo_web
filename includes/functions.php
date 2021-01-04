@@ -94,13 +94,23 @@ function setLikedMessages($likedMessages) {
 }
 
 function getLikedMessages() {
-    if (isset($_SESSION[LIKED_MESSAGES_STORE])) {
-        return $_SESSION[LIKED_MESSAGES_STORE];
-    } else {
+    if (!isset($_SESSION[LIKED_MESSAGES_STORE])) {
         setLikedMessages([]);
-
-        return $_SESSION[LIKED_MESSAGES_STORE];
     }
+
+    return $_SESSION[LIKED_MESSAGES_STORE];
+}
+
+function setUserHasCompanies($hasCompanies) {
+    $_SESSION[COMPANIES_BOOLEAN_STORE] = $hasCompanies;
+}
+
+function getUserHasCompanies() {
+    if (!isset($_SESSION[COMPANIES_BOOLEAN_STORE])) {
+        setUserHasCompanies(count(getCompaniesForUser()) > 0);
+    }
+
+    return $_SESSION[COMPANIES_BOOLEAN_STORE];
 }
 
 function getUIConstants($array) {
@@ -163,6 +173,161 @@ function getCurrentUser() {
 
         return $user;
     }
+}
+
+function getCompaniesForUser($user = null) {
+    if ($user == null) {
+        $user = getCurrentUser();
+    } else {
+        $user = getUserById($user);
+    }
+
+    if ($user == null) {
+        return null;
+    } else {
+        $statement =
+            $GLOBALS['database']->prepare(
+                'SELECT
+                    *,
+                    CONCAT(
+                        SUBSTR(REPLACE ( `d_companies`.`identifier`, \'-\', \'\' ), 1,  2),
+                        \'-\',
+                        SUBSTR(REPLACE ( `d_companies`.`identifier`, \'-\', \'\' ), 3,  8),
+                        \'-\',
+                        SUBSTR(REPLACE ( `d_companies`.`identifier`, \'-\', \'\' ), 11, 1)
+                    ) AS identifier, (
+                        SELECT	COUNT(*)
+                        FROM	`d_subscriptions`
+                        WHERE	`d_subscriptions`.`company` = `d_companies`.`id`
+                        AND     `d_subscriptions`.`active`
+                    ) > 0 AS isBillingEnabled
+                 FROM   `d_companies`
+                 WHERE  `d_companies`.`owner` = :owner'
+            );
+
+        $statement->execute([ 'owner' => $user['id'] ]);
+
+        return $statement->fetchAll();
+    }
+}
+
+function getCompany($company) {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT
+                *,
+                CONCAT(
+                    SUBSTR(REPLACE ( `d_companies`.`identifier`, \'-\', \'\' ), 1,  2),
+                    \'-\',
+                    SUBSTR(REPLACE ( `d_companies`.`identifier`, \'-\', \'\' ), 3,  8),
+                    \'-\',
+                    SUBSTR(REPLACE ( `d_companies`.`identifier`, \'-\', \'\' ), 11, 1)
+                ) AS identifier, (
+                    SELECT	COUNT(*)
+                    FROM	`d_subscriptions`
+                    WHERE	`d_subscriptions`.`company` = `d_companies`.`id`
+                    AND     `d_subscriptions`.`active`
+                ) > 0 AS isBillingEnabled
+             FROM   `d_companies`
+             WHERE  `d_companies`.`id` = :company'
+        );
+
+    $statement->execute([ 'company' => $company ]);
+
+    return $statement->fetch();
+}
+
+function getAdsForUser($user = null) {
+    if ($user == null) {
+        $user = getCurrentUser();
+    } else {
+        $user = getUserById($user);
+    }
+
+    if ($user == null) {
+        return null;
+    } else {
+        $statement =
+            $GLOBALS['database']->prepare(
+                'SELECT
+                    *,
+                    `d_ads`.`id`         AS id,
+                    `d_companies`.`name` AS companyName
+                 FROM   `d_ads`
+                 JOIN   `d_companies`
+                    ON  `d_companies`.`id`    = `d_ads`.`company`
+                    AND `d_companies`.`owner` = :owner
+                 ORDER BY `d_ads`.`created` DESC'
+            );
+
+        $statement->execute([ 'owner' => $user['id'] ]);
+
+        return $statement->fetchAll();
+    }
+}
+
+function getAd($id) {
+    $statement =
+        $GLOBALS['database']->prepare(
+            'SELECT
+                *,
+                `d_ads`.`id`         AS id,
+                `d_companies`.`name` AS companyName
+             FROM   `d_ads`
+             JOIN   `d_companies`    ON `d_companies`.`id` = `d_ads`.`company`
+             WHERE  `d_ads`.`id`     =  :id'
+        );
+
+    $statement->execute([ 'id' => $id ]);
+
+    return $statement->fetch();
+}
+
+function isOwnerOf($company) {
+    $userId = getUserId();
+
+    if ($userId == null) {
+        return null;
+    } else {
+        $statement = $GLOBALS['database']->prepare(
+            'SELECT COUNT(*) AS count
+             FROM   `d_companies`
+             WHERE  `d_companies`.`id`      = :company
+             AND    `d_companies`.`owner`   = :owner'
+        );
+
+        $statement->execute([
+            'company'   => $company,
+            'owner'     => $userId
+        ]);
+
+        return $statement->fetch()['count'] > 0;
+    }
+}
+
+function getSubscriptions($company) {
+    $statement = $GLOBALS['database']->prepare(
+        'SELECT *
+         FROM   `d_subscriptions`
+         WHERE  `d_subscriptions`.`company` = :company
+         AND    `d_subscriptions`.`active`'
+    );
+
+    $statement->execute([ 'company' => $company ]);
+
+    return $statement->fetchAll();
+}
+
+function getSubscription($subscription) {
+    $statement = $GLOBALS['database']->prepare(
+        'SELECT *
+         FROM   `d_subscriptions`
+         WHERE  `d_subscriptions`.`id` = :subscription'
+    );
+
+    $statement->execute([ 'subscription' => $subscription ]);
+
+    return $statement->fetch();
 }
 
 function getRecipientUsername($username) {

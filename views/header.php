@@ -3,6 +3,7 @@
 $userId             = getUserId();
 $userName           = getUserName();
 $userMailAddress    = getUserMailAddress();
+$hasCompanies       = getUserHasCompanies();
 
 $isCrawling = false;
 foreach (GOOGLE_CRAWLER_UAS as $userAgent) {
@@ -207,6 +208,18 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             </li>
                             <li class="divider"></li>
                             <li class="bg-dark-12">
+                                <a href="<?= SYSTEM_HOSTNAME . 'company' ?>" class="lato center hand custom-link light-4 dark-5"> Empresas </a>
+                            </li>
+                            <li class="divider <?= $hasCompanies ? '' : 'hide' ?>"></li>
+                            <li class="bg-dark-12 ads-menu <?= $hasCompanies ? '' : 'hide' ?>">
+                                <a href="<?= SYSTEM_HOSTNAME . 'company/ads/manage' ?>" class="lato center hand custom-link light-4 dark-5"> Anuncios </a>
+                            </li>
+                            <li class="divider <?= $hasCompanies ? '' : 'hide' ?>"></li>
+                            <li class="bg-dark-12 billing-menu <?= $hasCompanies ? '' : 'hide' ?>">
+                                <a href="<?= SYSTEM_HOSTNAME . 'company/billing' ?>" class="lato center hand custom-link light-4 dark-5"> Facturación </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="bg-dark-12">
                                 <a href="<?= SYSTEM_HOSTNAME . 'about' ?>" class="lato center hand custom-link light-4 dark-5"> Acerca de </a>
                             </li>
                         </ul>
@@ -258,6 +271,23 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     <a id="logoutBtnMobile" class="dark-5 hand"> Salir </a>
                 </li>'
                 ?>
+                <li>
+                    <div class="divider bg-dark-8"></div>
+                </li>
+                <li>
+                    <a class="subheader dark-8 small">
+                        Comercial
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= SYSTEM_HOSTNAME . 'company' ?>" class="dark-5 hand custom-link"> Empresas </a>
+                </li>
+                <li class="ads-menu <?= $hasCompanies ? '' : 'hide' ?>">
+                    <a href="<?= SYSTEM_HOSTNAME . 'company/ads/manage' ?>" class="dark-5 hand custom-link"> Anuncios </a>
+                </li>
+                <li class="billing-menu <?= $hasCompanies ? '' : 'hide' ?>">
+                    <a href="<?= SYSTEM_HOSTNAME . 'company/billing' ?>" class="dark-5 hand custom-link"> Facturación </a>
+                </li>
                 <li>
                     <div class="divider bg-dark-8"></div>
                 </li>

@@ -29,7 +29,10 @@ if ($request == null) {
                         d_ads.company AS companyId,
                         d_companies.name AS companyName
                      FROM       d_ads
-                     JOIN       d_companies ON d_companies.id = d_ads.company
+                     JOIN       d_companies     ON d_companies.id           = d_ads.company
+                     JOIN       d_subscriptions ON d_subscriptions.company  = d_companies.id
+                     WHERE      d_ads.approved
+                     AND        d_subscriptions.active
                      ORDER BY   RAND()
                      LIMIT 1'
                 );
@@ -53,6 +56,70 @@ if ($request == null) {
                 } else {
                     reply(null, BAD_REQUEST);
                 }
+
+                break;
+            case 'createAd':
+                if (
+                    isset($values['company'])  && isset($values['content'])
+                    &&
+                    !empty($values['company']) && !empty($values['content'])
+                    &&
+                    is_numeric($values['company'])
+                ) {
+                    if (isOwnerOf($values['company'])) {
+                        $statement = $GLOBALS['database']->prepare(
+                            'INSERT INTO `d_ads` (
+                                `content`,
+                                `company`
+                             ) VALUES (
+                                :content,
+                                :company
+                             )'
+                        );
+
+                        $statement->execute([
+                            'content'   => $values['content'],
+                            'company'   => $values['company']
+                        ]);
+
+                        reply(
+                            [ 'id' => $GLOBALS['database']->lastInsertId() ],
+                            $statement->rowCount() > 0 ? OK : ERROR
+                        );
+                    } else {
+                        reply(null, NO_SUCH_ELEMENT);
+                    }
+                } else {
+                    reply(null, BAD_REQUEST);
+                }
+
+                break;
+            case 'tryToRemoveAd':
+                if (isset($values['id']) && is_numeric($values['id'])) {
+                    $ad = getAd($values['id']);
+
+                    if ($ad == null) {
+                        reply(null, NO_SUCH_ELEMENT);
+                    } else {
+                        if (isOwnerOf($ad['company'])) {
+                            $statement = $GLOBALS['database']->prepare(
+                                'DELETE
+                                 FROM   `d_ads`
+                                 WHERE  `d_ads`.`id` = :id'
+                            );
+
+                            $statement->execute([ 'id' => $values['id'] ]);
+
+                            reply(null, $statement->rowCount() > 0 ? OK : ERROR);
+                        } else {
+                            reply(null, NOT_ALLOWED);
+                        }
+                    }
+                } else {
+                    reply(null, BAD_REQUEST);
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

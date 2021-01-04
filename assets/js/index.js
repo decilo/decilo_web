@@ -105,7 +105,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
                 .removeClass('waves-effect waves-light')
                 .html('Publicando');
 
-            $('#recentsContainer')
+            $('.gridContainer')
                 .find('.row')
                 .prepend(
                     getRenderedMessage(
@@ -154,8 +154,8 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
                     break;
                 case OK:
-                    if ($('#recentsContainer').find('.removableWarning').length > 0) {
-                        $('#recentsContainer')
+                    if ($('.gridContainer').find('.removableWarning').length > 0) {
+                        $('.gridContainer')
                             .find('.removableWarning')
                             .fadeOut();
                     }
