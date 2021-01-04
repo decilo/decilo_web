@@ -7,7 +7,7 @@ define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 $title = 'Facturación';
 
 $js = [
-    'billing.js',
+    'billing.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/card/2.5.0/jquery.card.min.js',
     'https://cdn.jsdelivr.net/npm/payform@1.4.0/dist/jquery.payform.min.js',
     'https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js'

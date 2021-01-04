@@ -4,7 +4,7 @@ require_once 'includes/main.php';
 
 define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 
-$title = 'Empresa'; $js = 'company.js';
+$title = 'Empresa'; $js = 'company.min.js';
 
 require_once 'views/header.php';
 
