@@ -325,3 +325,15 @@ input[type="file"] { display: none; }
 .mid-card-fab-ad {
     bottom: 2.5rem!important;
 }
+
+strong {
+    font-weight: 550;
+}
+
+li[data-comment]
+.collapsible-body { padding-bottom: 0; }
+
+li[data-comment]
+.collapsible-body
+span
+p { margin: 0; }

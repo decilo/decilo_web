@@ -110,4 +110,10 @@ $(document).ready(() => {
             toast(NO_INTERNET_HINT);
         }
     }
+
+    messageContent = $('#messageContent');
+
+    messageContent.html(
+        markdownConverter.makeHtml(messageContent.html().trim())
+    );
 });

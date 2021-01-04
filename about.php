@@ -244,6 +244,15 @@ require_once 'views/header.php';
                     <a href="https://github.com/jondavidjohn/payform/" rel="noreferrer" target="_blank"> Más información </a>
                 </div>
             </div>
+            <div class="col s12 m6">
+                <h5> Showdown </h5>
+                <p>
+                    Una biblioteca que permite transformar texto plano formateado para Markdown en HTML y viceversa.
+                </p>
+                <div>
+                    <a href="https://github.com/showdownjs/showdown/" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
         </div>
     </p>
 

@@ -78,6 +78,14 @@ if (isset($_GET['to'])) {
                         <label for="declaredName"> Tu nombre </label>
                     </div>
 
+                    <div class="col s12">
+                        <small class="grey-text">
+                            Podés usar Markdown para agregar links personalizados, letra cursiva y otros. <a rel="noreferrer" target="_blank" href="https://github.com/showdownjs/showdown/wiki/Showdown's-Markdown-syntax"> ¿Cómo? </a>
+                        </small>
+                    </div>
+
+                    <div class="col s12 hide-on-med-and-up" style="height: 1em;"></div>
+
                     <button id="createPostBtn" class="btn waves-effect waves-light col s5 m5 l3 right mr-1 btn-block bg-light-1 bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
                         Publicar
                         <i class="material-icons right"> send </i>

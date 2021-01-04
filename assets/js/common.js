@@ -24,6 +24,8 @@ let canPullChunks = true;
 
 let reportAdImpressions = true;
 
+let markdownConverter = null;
+
 const FONTS = [
     {
         family:  'Lato',
@@ -443,18 +445,6 @@ function isElementInViewport(element) {
 }
 
 function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false, likes = 0) {
-    auxiliaryContent = content;
-
-    content.split('http').forEach((match) => {
-        match
-            .split(' ')
-            .forEach((item) => {    
-                if (item.indexOf('://') > -1) {
-                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '" rel="noreferrer">http' + item + '</a>');
-                }
-        });
-    });
-
     return `<div class="col s12 ` + (PRIVATE ? `m12 l6` : `m6 l3`) + ` message ` + (id == null ? 'not-posted' : '') + `" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (PRIVATE ? `
                     <button
@@ -508,7 +498,13 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     <div class="card-content white-text">
                         <span class="card-title roboto light-3">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
                         <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
-                            (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
+                            (
+                                content.length > MESSAGES['MAX_LENGTH']
+                                    ? markdownConverter.makeHtml(
+                                        content.substr(0, MESSAGES['MAX_LENGTH']) + '…'
+                                    ) 
+                                    : markdownConverter.makeHtml(content)
+                             ) + `
                         </p>
                         <div class="message-spacer"></div>
                         <a
@@ -546,7 +542,9 @@ function getRenderedComment(id = null, declaredName = null, content, active = fa
                     ` + (declaredName == null ? 'Anónimo' : declaredName) + ` • <span class="thin add-space"> ` + dayjs().format('L LT') +` </span>
                 </div>
                 <div class="collapsible-body bg-dark-7 border-dark-8">
-                    <span class="thin word-wrap process-whitespaces overflow-ellipsis">` + content + `</span>
+                    <span class="thin word-wrap process-whitespaces overflow-ellipsis">` + 
+                        markdownConverter.makeHtml(content) + `
+                    </span>
                 </div>
              </li>`;
 }
@@ -897,18 +895,6 @@ function getRenderedAd(
     impressions = null,
     showRemoveButton = false
 ) {
-    auxiliaryContent = content;
-
-    content.split('http').forEach((match) => {
-        match
-            .split(' ')
-            .forEach((item) => {    
-                if (item.indexOf('://') > -1) {
-                    auxiliaryContent = auxiliaryContent.replace('http' + item, '<a target="_blank" href="http' + item + '" rel="noreferrer">http' + item + '</a>');
-                }
-        });
-    });
-
     return `<div class="col ` + (forceClass == null ? (isPrivate ? 's12 m12 l6' : 's12 m6 l3') : forceClass) + ` message" data-ad="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (showRemoveButton ? `
                     <button
@@ -941,7 +927,13 @@ function getRenderedAd(
                             </span>
                         </span>
                         <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
-                            (auxiliaryContent.length > MESSAGES['MAX_LENGTH'] ? auxiliaryContent.substr(0, MESSAGES['MAX_LENGTH']) + '…' : auxiliaryContent) + `
+                            (
+                                content.length > MESSAGES['MAX_LENGTH']
+                                    ? markdownConverter.makeHtml(
+                                        content.substr(0, MESSAGES['MAX_LENGTH']) + '…' 
+                                    )
+                                    : markdownConverter.makeHtml(content)
+                            ) + `
                         </p>
                     </div>
                     <div class="card-action center">
@@ -1127,6 +1119,15 @@ $(document).ready(() => {
     if (typeof(dayjs.locale()) == 'undefined') {
         dayjs.locale('en'); // Fallback to English.
     }
+
+    // Initialize Showdown
+    showdown.setOption('simplifiedAutoLink', true);
+    showdown.setOption('strikethrough', true);
+    showdown.setOption('openLinksInNewWindow', true);
+    showdown.setOption('emoji', true);
+    showdown.setOption('underline', true);
+
+    markdownConverter = new showdown.Converter();
 
     // Grab preloaded CSS.
     $('link[as="style"]')

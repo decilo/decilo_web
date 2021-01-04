@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Ver'; $js = 'view.min.js';
+$title = 'Ver'; $js = 'view.min.js?v=2';
 
 require_once 'includes/functions.php';
 require_once 'includes/main.php';
@@ -56,7 +56,7 @@ require_once 'views/header.php';
 
         <div class="col s12"></div>
 
-        <p class="lato regular word-wrap col s12 word-wrap process-whitespaces overflow-ellipsis">
+        <p id="messageContent" class="lato regular word-wrap col s12 word-wrap process-whitespaces overflow-ellipsis">
             <?= $message['content'] ?>
         </p>
     </div>
