@@ -6,8 +6,6 @@ define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 
 $title = 'Anuncios'; $js = 'manageAds.min.js';
 
-require_once 'views/header.php';
-
 $userId = getUserId();
 
 if ($userId == null) {
@@ -19,6 +17,8 @@ if ($userId == null) {
 if (count($companies) < 1) {
     redirect(SYSTEM_HOSTNAME);
 }
+
+require_once 'views/header.php';
 
 ?>
 
