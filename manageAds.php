@@ -4,7 +4,7 @@ require_once 'includes/main.php';
 
 define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 
-$title = 'Anuncios'; $js = 'manageAds.min.js';
+$title = 'Anuncios'; $js = 'manageAds.min.js?v=2';
 
 $userId = getUserId();
 

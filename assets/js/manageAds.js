@@ -91,7 +91,7 @@ $(document).ready(() => {
                                         company['name'],
                                         null,
                                         null,
-                                        's12',
+                                        's12 onReview',
                                         company['isBillingEnabled'] == 1
                                             ? { bgClass: 'orange darken-3 dark-5 light-10',     text: 'En revisión' }
                                             : { bgClass: 'light-blue darken-2 dark-5 light-10', text: 'En pausa'    },
@@ -107,23 +107,36 @@ $(document).ready(() => {
                                     .removeClass('valid invalid')
                                     .trigger('change');
 
-                                reviewingWarningCollection
-                                    .show()
-                                    .parent()
-                                    .slideDown();
+                                if (company['isBillingEnabled'] == 1) {
+                                    reviewingWarningCollection.show();      
 
-                                onReview++;
+                                    if (reviewingWarningCollection.parent().css('opacity') == 0) {
+                                        reviewingWarningCollection.parent().fadeIn();
+                                    } else {
+                                        reviewingWarningCollection.parent().slideDown();
+                                    }
 
-                                collection = $('#reviewingWarningCollection');
+                                    onReview++;
 
-                                collection
-                                    .find('.reviewingHint')
-                                    .html(onReview == 1 ? 'un' : onReview);
+                                    collection = $('#reviewingWarningCollection');
 
-                                if (onReview > 1) {
                                     collection
-                                        .find('.plurals')
-                                        .show();
+                                        .find('.reviewingHint')
+                                        .html(onReview == 1 ? 'un' : onReview);
+
+                                    if (onReview > 1) {
+                                        collection
+                                            .find('.plurals')
+                                            .show();
+                                    }
+                                } else {
+                                    if ($('.message').filter('[data-ad!="null"]').length > 1) {
+                                        pausedWarningCollection.find('.plurals').show();
+                                    } else {
+                                        pausedWarningCollection.find('.plurals').hide();
+                                    }
+
+                                    pausedWarningCollection.parent().fadeIn();
                                 }
 
                                 attachADsActions();
@@ -181,7 +194,11 @@ $(document).ready(() => {
                 ad['companyName'],
                 ad['created'],
                 null,
-                's12',
+                's12 ' + (
+                    company['isBillingEnabled'] == 1 && ad['approved'] == null
+                        ? 'onReview'
+                        : ''
+                ),
                 company['isBillingEnabled'] == 1
                     ? (
                         ad['approved'] == null
@@ -275,6 +292,56 @@ $(document).ready(() => {
                             target.remove();
 
                             reloadLayout();
+
+                            if (company['isBillingEnabled'] == 1) {
+                                onReview = $('.onReview').length;
+
+                                if ($('.message').filter('[data-ad!="null"]').length == 0) {
+                                    reviewingWarningCollection.parent().fadeOut(() => {
+                                        reviewingWarningCollection.parent().hide();
+
+                                        displayRemovableWarning('¡Nada por acá! Publicá tu primer anuncio.');
+
+                                        $('.gridContainer')
+                                            .find('.removableWarning')
+                                            .fadeIn();
+                                    });
+                                } else if (onReview == 0) {
+                                    reviewingWarningCollection.slideUp(() => {
+                                        if (!pausedWarningCollection.is(':visible')) {
+                                            reviewingWarningCollection.parent().hide();
+                                        }
+                                    });
+                                } else {
+                                    reviewingWarningCollection.find('.reviewingHint').html(
+                                        onReview == 1 ? 'un' : onReview
+                                    );
+
+                                    plurals = reviewingWarningCollection.find('.plurals');
+
+                                    if (onReview > 1) {
+                                        plurals.show();
+                                    } else {
+                                        plurals.hide();
+                                    }
+                                }
+                            } else {
+                                pausedADs = $('.message').filter('[data-ad!="null"]');
+
+                                if (pausedADs.length > 1) {
+                                    pausedWarningCollection.find('.plurals').show();
+                                } else if (pausedADs == 1) {
+                                    pausedWarningCollection.find('.plurals').hide();
+                                } else {
+                                    pausedWarningCollection.parent().fadeOut();
+
+                                    displayRemovableWarning('¡Nada por acá! Publicá tu primer anuncio.');
+
+                                    $('.gridContainer')
+                                        .find('.removableWarning')
+                                        .fadeIn();
+                                }
+                            }
                         });
 
                         break;
