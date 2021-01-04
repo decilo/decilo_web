@@ -504,7 +504,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                                         content.substr(0, MESSAGES['MAX_LENGTH']) + '…'
                                     ) 
                                     : markdownConverter.makeHtml(content)
-                             ) + `
+                            ) + `
                         </p>
                         <div class="message-spacer"></div>
                         <a
@@ -570,7 +570,7 @@ function openCommentsModal(message, private) {
                 <div class="collection-spacer"></div>
                 <div class="collection-spacer"></div>
                 <p class="thin word-wrap process-whitespaces">` + 
-                    card.find('.card-content').find('p[class*="message-content"]').text().trim() + `
+                    card.find('.card-content').find('p').text().trim() + `
                 </p>
                 <div class="collection-spacer"></div>
             </li>
