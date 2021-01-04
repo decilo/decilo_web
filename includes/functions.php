@@ -107,7 +107,11 @@ function setUserHasCompanies($hasCompanies) {
 
 function getUserHasCompanies() {
     if (!isset($_SESSION[COMPANIES_BOOLEAN_STORE])) {
-        setUserHasCompanies(count(getCompaniesForUser()) > 0);
+        setUserHasCompanies(
+            getUserId() == null
+                ? false
+                : count(getCompaniesForUser()) > 0
+        );
     }
 
     return $_SESSION[COMPANIES_BOOLEAN_STORE];
