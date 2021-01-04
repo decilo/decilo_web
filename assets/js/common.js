@@ -26,6 +26,8 @@ let reportAdImpressions = true;
 
 let markdownConverter = null;
 
+let loginTarget = null;
+
 const FONTS = [
     {
         family:  'Lato',
@@ -1254,7 +1256,11 @@ $(document).ready(() => {
                                         .removeClass('valid invalid')
                                         .val('');
 
-                                    animateRedirect(window.location.href);
+                                    animateRedirect(
+                                        loginTarget == null
+                                            ? window.location.href
+                                            : loginTarget
+                                    );
 
                                     break;
                             }
@@ -1659,6 +1665,15 @@ $(document).ready(() => {
         if (searchParams.has('then')) {
             switch (searchParams.get('then')) {
                 case 'displaySignupModal':
+                    if (searchParams.has('onLogin')) {
+                        switch (searchParams.get('onLogin')) {
+                            case 'setupCompany':
+                                loginTarget = '/company';
+
+                                break;
+                        }
+                    }
+
                     if (!LOGGED_IN) {
                         if (document.readyState == 'complete') {
                             $('#loginBtnMobile').click();
@@ -1667,6 +1682,8 @@ $(document).ready(() => {
                                 $('#loginBtnMobile').click();
                             });
                         }
+                    } else if (loginTarget != null) {
+                        redirect(loginTarget);
                     }
 
                     break;
