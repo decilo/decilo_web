@@ -18,7 +18,7 @@ if (isset($_GET['to'])) {
             <?= $recipientUsername == null ? 'Mirá lo que dicen los demás' : 'Mirá lo que le dicen los demás a @' . $recipientUsername ?>
         </p>
         <div class="divider"></div>
-        <div id="recentsContainer">
+        <div id="recentsContainer" class="gridContainer">
 
             <div class="row">
                 <!-- Messages container -->

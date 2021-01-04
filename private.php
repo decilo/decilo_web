@@ -59,7 +59,7 @@ require_once 'views/header.php';
             Qué te dijeron
         </p>
         <div class="divider"></div>
-        <div id="recentsContainer">
+        <div id="recentsContainer" class="gridContainer">
 
             <div class="row">
                 <!-- Messages container -->
