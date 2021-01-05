@@ -337,3 +337,8 @@ li[data-comment]
 .collapsible-body
 span
 p { margin: 0; }
+
+#markdownHint {
+    font-weight: lighter;
+    font-size: small;
+}

@@ -79,9 +79,9 @@ if (isset($_GET['to'])) {
                     </div>
 
                     <div class="col s12">
-                        <small class="grey-text">
+                        <p id="markdownHint" class="grey-text">
                             Podés usar Markdown para agregar links personalizados, letra cursiva y otros. <a rel="noreferrer" target="_blank" href="https://github.com/showdownjs/showdown/wiki/Showdown's-Markdown-syntax"> ¿Cómo? </a>
-                        </small>
+                        </p>
                     </div>
 
                     <div class="col s12 hide-on-med-and-up" style="height: 1em;"></div>
