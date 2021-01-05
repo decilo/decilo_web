@@ -116,14 +116,18 @@ if ($request == null) {
                          WHERE  `d_comments`.`id`       = :id
                          AND    `d_comments`.`private`  = :private'
                     );
+                    $statement->bindValue(':id'         , $values['id']     , PDO::PARAM_INT );
+                    $statement->bindValue(':private'    , $values['private'], PDO::PARAM_BOOL);
 
                     if ($isLiked) {
-                        $statement->execute([ 'likeCount' => -1, 'id' => $values['id'], 'private' => $values['private'] ]);
+                        $statement->bindValue(':likeCount', -1, PDO::PARAM_INT );
                     } else {
-                        $statement->execute([ 'likeCount' =>  1, 'id' => $values['id'], 'private' => $values['private'] ]);
+                        $statement->bindValue(':likeCount', 1, PDO::PARAM_INT );
 
                         $likedComments[] = $values['id'];
                     }
+
+                    $statement->execute();
 
                     setLikedComments($likedComments);
 
