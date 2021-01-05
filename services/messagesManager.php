@@ -475,7 +475,7 @@ if ($request == null) {
 
                     setLikedMessages($likedMessages);
 
-                    reply([ 'wasLiked' => $isLiked, 'liked' => $likedMessages ], $statement->rowCount() > 0 ? OK : ERROR);
+                    reply([ 'wasLiked' => $isLiked, 'liked' => $likedMessages ], $statement->rowCount() > -1 ? OK : ERROR);
                 } else {
                     reply(null, BAD_REQUEST);
                 }
