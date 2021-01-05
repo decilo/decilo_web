@@ -96,6 +96,8 @@ if ($request == null) {
                     &&
                     isset($values['private']) && is_bool($values['private'])
                 ) {
+                    $values['private'] = $values['private'] === false ? 'FALSE' : 'TRUE';
+
                     $isLiked = false;
 
                     $likedComments = getLikedComments();
