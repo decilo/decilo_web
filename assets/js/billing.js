@@ -362,6 +362,10 @@ $(document).ready(() => {
             enable($('#saveBillingMethodBtn'));
         } else {
             toast('Algo anda mal, por favor probá de nuevo más tarde.');
+
+            isProcessingTransaction = false;
+
+            console.error('Mercado Pago/getIdentificationTypes:', response);
         }
     });
 
@@ -384,6 +388,8 @@ $(document).ready(() => {
                     );
             } else {
                 toast('Algo anda mal, por favor probá de nuevo más tarde.');
+
+                isProcessingTransaction = false;
 
                 console.error('Mercado Pago/getInstallments:', response);
             }
@@ -409,6 +415,8 @@ $(document).ready(() => {
                 } else {
                     toast('Algo anda mal, por favor probá de nuevo más tarde.');
 
+                    isProcessingTransaction = false;
+
                     console.error('Mercado Pago/getIssuers:', response);
                 }
             }
@@ -433,6 +441,8 @@ $(document).ready(() => {
                 } else {
                     toast('Algo anda mal, por favor probá de nuevo más tarde.');
 
+                    isProcessingTransaction = false;
+
                     console.error('Mercado Pago/getPaymentMethod:', response);
                 }
             });
@@ -449,6 +459,8 @@ $(document).ready(() => {
                 onSuccess(status, response);
             } else {
                 toast('Algo anda mal, por favor probá de nuevo más tarde.');
+
+                isProcessingTransaction = false;
 
                 console.error('Mercado Pago/createToken:', response);
             }
