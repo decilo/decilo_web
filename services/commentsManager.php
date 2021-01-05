@@ -131,7 +131,7 @@ if ($request == null) {
 
                     setLikedComments($likedComments);
 
-                    reply([ 'wasLiked' => $isLiked, 'liked' => $likedComments ], $statement->rowCount() > -1 ? OK : ERROR);
+                    reply([ 'wasLiked' => $isLiked, 'liked' => $likedComments ], $statement->rowCount() > 0 ? OK : ERROR);
                 } else {
                     reply(null, BAD_REQUEST);
                 }
