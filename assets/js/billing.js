@@ -599,6 +599,10 @@ $(document).ready(() => {
                                     }
 
                                     break;
+                                case ALREADY_EXISTS:
+                                    toast('Ya te subscribiste, por favor probá recargando la página.');
+
+                                    break;
                             }
                         })
                         .always(() => {

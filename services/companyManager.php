@@ -142,59 +142,63 @@ if ($request == null) {
                     if (count($companies) > 0) {
                         $company = $companies[0];
 
-                        if (
-                            isset($values['cardToken'])  && isset($values['mailAddress'])
-                            &&
-                            !empty($values['cardToken']) && !empty($values['mailAddress'])
-                            &&
-                            filter_var($values['mailAddress'], FILTER_VALIDATE_EMAIL) !== false
-                        ) {
+                        if (count(getSubscriptions($company['id'])) > 0) {
+                            reply(null, ALREADY_EXISTS);
+                        } else {
+                            if (
+                                isset($values['cardToken'])  && isset($values['mailAddress'])
+                                &&
+                                !empty($values['cardToken']) && !empty($values['mailAddress'])
+                                &&
+                                filter_var($values['mailAddress'], FILTER_VALIDATE_EMAIL) !== false
+                            ) {
 
-                            $request = curl_init('https://api.mercadopago.com/preapproval');
+                                $request = curl_init('https://api.mercadopago.com/preapproval');
 
-                            curl_setopt_array($request, [
-                                CURLOPT_HTTPHEADER     => [
-                                    'Content-Type: application/json',
-                                    'Authorization: Bearer ' . MERCADOPAGO_KEYS['PRIVATE']
-                                ],
-                                CURLOPT_POSTFIELDS      => json_encode([
-                                    'preapproval_plan_id'   => MERCADOPAGO_SUBSCRIPTION_PLAN_ID,
-                                    'card_token_id'         => $values['cardToken'],
-                                    'payer_email'           => $values['mailAddress']
-                                ]),
-                                CURLOPT_RETURNTRANSFER => true
-                            ]);
-
-                            $subscription = json_decode(curl_exec($request), true);
-
-                            if ($subscription['status'] == 'authorized') {
-                                $statement = $GLOBALS['database']->prepare(
-                                    'INSERT INTO `d_subscriptions` (
-                                        `company`,
-                                        `token`
-                                     ) VALUES (
-                                        :company,
-                                        :token
-                                     )'
-                                );
-
-                                $statement->execute([
-                                    'company'   => $company['id'],
-                                    'token'     => $subscription['id']
+                                curl_setopt_array($request, [
+                                    CURLOPT_HTTPHEADER     => [
+                                        'Content-Type: application/json',
+                                        'Authorization: Bearer ' . MERCADOPAGO_KEYS['PRIVATE']
+                                    ],
+                                    CURLOPT_POSTFIELDS      => json_encode([
+                                        'preapproval_plan_id'   => MERCADOPAGO_SUBSCRIPTION_PLAN_ID,
+                                        'card_token_id'         => $values['cardToken'],
+                                        'payer_email'           => $values['mailAddress']
+                                    ]),
+                                    CURLOPT_RETURNTRANSFER => true
                                 ]);
 
-                                if ($statement->rowCount() > 0) {
-                                    $subscription['internalId'] = $GLOBALS['database']->lastInsertId();
+                                $subscription = json_decode(curl_exec($request), true);
 
-                                    reply([ 'subscription' => $subscription ]);
+                                if ($subscription['status'] == 'authorized') {
+                                    $statement = $GLOBALS['database']->prepare(
+                                        'INSERT INTO `d_subscriptions` (
+                                            `company`,
+                                            `token`
+                                        ) VALUES (
+                                            :company,
+                                            :token
+                                        )'
+                                    );
+
+                                    $statement->execute([
+                                        'company'   => $company['id'],
+                                        'token'     => $subscription['id']
+                                    ]);
+
+                                    if ($statement->rowCount() > 0) {
+                                        $subscription['internalId'] = $GLOBALS['database']->lastInsertId();
+
+                                        reply([ 'subscription' => $subscription ]);
+                                    } else {
+                                        reply([ 'subscription' => $subscription ], ERROR);
+                                    }
                                 } else {
                                     reply([ 'subscription' => $subscription ], ERROR);
                                 }
                             } else {
-                                reply([ 'subscription' => $subscription ], ERROR);
+                                reply(null, BAD_REQUEST);
                             }
-                        } else {
-                            reply(null, BAD_REQUEST);
                         }
                     } else {
                         reply(null, BAD_REQUEST);
