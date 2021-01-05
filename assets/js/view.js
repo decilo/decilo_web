@@ -114,6 +114,6 @@ $(document).ready(() => {
     messageContent = $('#messageContent');
 
     messageContent.html(
-        markdownConverter.makeHtml(messageContent.html().trim())
+        convertMDtoHTML(messageContent.html().trim())
     );
 });

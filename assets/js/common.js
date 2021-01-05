@@ -502,10 +502,10 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
                             (
                                 content.length > MESSAGES['MAX_LENGTH']
-                                    ? markdownConverter.makeHtml(
+                                    ? convertMDtoHTML(
                                         content.substr(0, MESSAGES['MAX_LENGTH']) + '…'
-                                    ) 
-                                    : markdownConverter.makeHtml(content)
+                                    )
+                                    : convertMDtoHTML(content)
                             ) + `
                         </p>
                         <div class="message-spacer"></div>
@@ -545,7 +545,7 @@ function getRenderedComment(id = null, declaredName = null, content, active = fa
                 </div>
                 <div class="collapsible-body bg-dark-7 border-dark-8">
                     <span class="thin word-wrap process-whitespaces overflow-ellipsis">` + 
-                        markdownConverter.makeHtml(content) + `
+                        convertMDtoHTML(content) + `
                     </span>
                 </div>
              </li>`;
@@ -931,10 +931,10 @@ function getRenderedAd(
                         <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
                             (
                                 content.length > MESSAGES['MAX_LENGTH']
-                                    ? markdownConverter.makeHtml(
+                                    ? convertMDtoHTML(
                                         content.substr(0, MESSAGES['MAX_LENGTH']) + '…' 
                                     )
-                                    : markdownConverter.makeHtml(content)
+                                    : convertMDtoHTML(content)
                             ) + `
                         </p>
                     </div>
@@ -1108,6 +1108,14 @@ function hasSeenFeatures() {
 
 function goBackToTop() {
     $('html, body').scrollTop(0);
+}
+
+function convertMDtoHTML(content) {
+    newContent = $(markdownConverter.makeHtml(content));
+
+    newContent.find('p').addClass('light-4');
+
+    return newContent.html();
 }
 
 $(document).ready(() => {
