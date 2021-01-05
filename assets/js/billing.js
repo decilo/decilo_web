@@ -49,10 +49,11 @@ $(document).ready(() => {
                 ` + (active ? `Estás pagando` : `Pagabas`) + ` ` + MERCADOPAGO_SUBSCRIPTION_COST + ` AR$ por mes. <br>
                 ` + (active
                         ? `Podés darte de baja cuando quieras`
-                        : (modified == null
-                                        ? `Pero te diste de baja` 
-                                        : `Cancelaste tu subscripción el ` + modified.format('LL') + ' a las ' + modified.format('HH:MM')
-                                    )
+                        : `Cancelaste tu subscripción` +
+                            (modified == null
+                                ? ``
+                                : ` el ` + modified.format('LL') + ' a las ' + modified.format('HH:MM')
+                            )
                     ) + `.  <br>` + (active ? `
                 <br>
                 <a class="hand" data-subscription-id="` + internalId + `">
