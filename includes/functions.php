@@ -45,7 +45,9 @@ function getUserQR() {
 
         $qrcode = new QRCode($options);
 
-        $image = $qrcode->render(getUserLink());
+        $image = base64_decode(
+            explode(',', $qrcode->render(getUserLink()) )[1]
+        );
 
         $filename = sha1($image) . '.svg';
 
