@@ -90,6 +90,47 @@ if ($request == null) {
                 }
 
                 break;
+            case 'toggleLike':
+                if (
+                    isset($values['id']) && is_numeric($values['id'])
+                    &&
+                    isset($values['private']) && is_bool($values['private'])
+                ) {
+                    $isLiked = false;
+
+                    $likedComments = getLikedComments();
+
+                    foreach ($likedComments as $key => $likedComment) {
+                        if ($likedComment == $values['id']) {
+                            $isLiked = true;
+
+                            unset($likedComments[$key]);
+                        }
+                    }
+
+                    $statement = $GLOBALS['database']->prepare(
+                        'UPDATE `d_comments`
+                         SET    `d_comments`.`likes`    = `d_comments`.`likes` + (:likeCount)
+                         WHERE  `d_comments`.`id`       = :id
+                         AND    `d_comments`.`private`  = :private'
+                    );
+
+                    if ($isLiked) {
+                        $statement->execute([ 'likeCount' => -1, 'id' => $values['id'], 'private' => $values['private'] ]);
+                    } else {
+                        $statement->execute([ 'likeCount' =>  1, 'id' => $values['id'], 'private' => $values['private'] ]);
+
+                        $likedComments[] = $values['id'];
+                    }
+
+                    setLikedComments($likedComments);
+
+                    reply([ 'wasLiked' => $isLiked, 'liked' => $likedComments ], $statement->rowCount() > 0 ? OK : ERROR);
+                } else {
+                    reply(null, BAD_REQUEST);
+                }
+
+                break;
             default:
                 reply(null, WHAT_THE_FUCK);
         }

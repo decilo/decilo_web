@@ -334,3 +334,33 @@ strong {
     font-weight: lighter;
     font-size: small;
 }
+
+.full-width { width: 100%; }
+
+.force-inline { display: contents !important; }
+
+[data-comment] .collapsible-header {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.collection-header-main {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.collection-header-extra-wrapper {
+    position: relative;
+    padding-left: 1em;
+    border-left: 1px solid;
+}
+
+.collection-header-extra {
+    position: relative;
+    top: 33.3333333%;
+}
+
+.collection-counter {
+    position: relative;
+    top: -0.1em;
+}

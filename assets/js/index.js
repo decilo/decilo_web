@@ -37,7 +37,7 @@ function resetMessageInputs() {
     enable($('#messageInput, #declaredName, label[for="imageInput"]'));
 }
 
-function toggleLike(messageId) {
+function toggleMessageLike(messageId) {
     run('messagesManager', 'toggleLike', { id: messageId })
     .done((response) => {
         console.info(response);

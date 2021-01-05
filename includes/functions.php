@@ -103,6 +103,18 @@ function getLikedMessages() {
     return $_SESSION[LIKED_MESSAGES_STORE];
 }
 
+function setLikedComments($likedComments) {
+    $_SESSION[LIKED_COMMENTS_STORE] = $likedComments;
+}
+
+function getLikedComments() {
+    if (!isset($_SESSION[LIKED_COMMENTS_STORE])) {
+        setLikedComments([]);
+    }
+
+    return $_SESSION[LIKED_COMMENTS_STORE];
+}
+
 function setUserHasCompanies($hasCompanies) {
     $_SESSION[COMPANIES_BOOLEAN_STORE] = $hasCompanies;
 }

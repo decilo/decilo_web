@@ -524,7 +524,7 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                     <ul class="collection with-header bg-dark-7 border-dark-7 hand">
                         <li class="collection-header bg-light-5 bg-dark-7 border-dark-7 no-select">
                             <div class="d-flex flex-center">` + (PRIVATE || RECIPIENT != null ? `` : `
-                                <div class="no-select likes-toggle" ` + (id == null ? '' : `onclick="toggleLike(` + id + `);"`) + `>
+                                <div class="no-select likes-toggle" ` + (id == null ? '' : `onclick="toggleMessageLike(` + id + `);"`) + `>
                                     <span class="counter likesCount">` + likes + `</span> <i class="material-icons small collection-icon"> thumb_up </i>
                                 </div>
                                 <div class="flex-divider bg-light-10 bg-dark-8"></div>`) + `
@@ -538,10 +538,18 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
              </div>`;
 }
 
-function getRenderedComment(id = null, declaredName = null, content, active = false) {
+function getRenderedComment(id = null, declaredName = null, content, active = false, likes = 0) {
     return  `<li data-comment="` + (id == null ? 'null' : id) + `" ` + (active ? 'class="active"' : '') + `>
                 <div class="collapsible-header bg-dark-7 border-dark-8">
-                    ` + (declaredName == null ? 'Anónimo' : declaredName) + ` • <span class="thin add-space"> ` + dayjs().format('L LT') +` </span>
+                    <span class="collection-header-main full-width">
+                        ` + (declaredName == null ? 'Anónimo' : declaredName) + ` • <span class="thin add-space"> ` + dayjs().format('L LT') +` </span>
+                    </span>
+                    <span class="collection-header-extra-wrapper border-dark-8 border-light-10" onclick="toggleCommentLike(event, ` + id  + `);">
+                        <span class="collection-header-extra">
+                            <i class="material-icons small collection-icon force-inline no-select"> thumb_up </i>
+                            <span class="counter likesCount collection-counter no-select">` + likes + `</span>
+                        </span>
+                    </span>
                 </div>
                 <div class="collapsible-body bg-dark-7 border-dark-8">
                     <span class="thin word-wrap process-whitespaces overflow-ellipsis">` + 
@@ -741,7 +749,7 @@ function openCommentsModal(message, private) {
                     let renderedHTML = '';
 
                     response.result.forEach((comment) => {
-                        renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content']);
+                        renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content'], false, comment['likes']);
                     });
 
                     commentsCollapsible.append(renderedHTML);
@@ -1116,6 +1124,37 @@ function convertMDtoHTML(content) {
     newContent.find('p').addClass('light-4');
 
     return newContent.html();
+}
+
+function toggleCommentLike(event, commentId) {
+    event.stopPropagation();
+
+    run('commentsManager', 'toggleLike', { id: commentId, private: PRIVATE })
+    .done((response) => {
+        console.info(response);
+
+        if (response.status == OK) {
+            likesCountElement = $('[data-comment="' + commentId + '"]').find('.likesCount');
+
+            likesCount = parseInt(likesCountElement.html());
+
+            M.Toast.dismissAll();
+
+            if (response.result.wasLiked) {
+                toast('Ya no te gusta este comentario.');
+
+                likesCount--;
+            } else {
+                toast('Te gusta este comentario.');
+
+                likesCount++;
+            }
+
+            likesCountElement.html(likesCount);
+        } else {
+            toast('Algo anda mal, por favor probá otra vez.');
+        }
+    });
 }
 
 $(document).ready(() => {

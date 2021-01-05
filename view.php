@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Ver'; $js = 'view.min.js?v=3';
+$title = 'Ver'; $js = 'view.min.js?v=4';
 
 require_once 'includes/functions.php';
 require_once 'includes/main.php';

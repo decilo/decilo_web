@@ -86,7 +86,7 @@ $(document).ready(() => {
                     let renderedHTML = '';
 
                     response.result.forEach((comment) => {
-                        renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content'], true);
+                        renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content'], true, comment['likes']);
                     });
 
                     commentsCollapsible.append(renderedHTML);
