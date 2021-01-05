@@ -7,7 +7,7 @@ define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 $title = 'Facturación';
 
 $js = [
-    'billing.min.js?v=3',
+    'billing.min.js?v=4',
     'https://cdnjs.cloudflare.com/ajax/libs/card/2.5.0/jquery.card.min.js',
     'https://cdn.jsdelivr.net/npm/payform@1.4.0/dist/jquery.payform.min.js',
     'https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js'
@@ -24,7 +24,7 @@ if ($user == null) {
 }
 
 if (count($companies) > 0) {
-    $subscriptions = getSubscriptions($companies[0]['id']);
+    $subscriptions = getSubscriptions($companies[0]['id'], true);
 } else {
     redirect(SYSTEM_HOSTNAME);
 }

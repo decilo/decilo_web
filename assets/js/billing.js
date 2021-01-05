@@ -1,4 +1,6 @@
 $(document).ready(() => {
+    dayjs.locale('es');
+
     /*
      * This code should be based off constants and all that stuff, 
      * but let's face it, the author of this library will make it 100%
@@ -32,20 +34,30 @@ $(document).ready(() => {
 
     paymentMethodsContainer = $('#paymentMethodsContainer');
 
-    function getRenderedSubscription(internalId) {
+    function getRenderedSubscription(internalId, active = true, modified = null) {
+        if (!active && modified != null)  {
+            modified = dayjs(modified);
+        }
+
         return `
-        <li class="collection-item avatar bg-dark-12">
+        <li class="collection-item avatar bg-dark-12 ` + (active ? `` : `half-opacity`) + `">
             <i class="material-icons circle bg-dark-1 bg-light-1"> payment </i>
 
-            <span class="title"> <b> Subscripción activa </b> </span>
+            <span class="title"> <b> Subscripción ` + (active ? `activa` : `cancelada`) + ` </b> </span>
 
             <p>
-                Estás pagando ` + MERCADOPAGO_SUBSCRIPTION_COST + ` AR$ por mes. <br>
-                Podés darte de baja cuando quieras.                              <br>
+                ` + (active ? `Estás pagando` : `Pagabas`) + ` ` + MERCADOPAGO_SUBSCRIPTION_COST + ` AR$ por mes. <br>
+                ` + (active
+                        ? `Podés darte de baja cuando quieras`
+                        : (modified == null
+                                        ? `Pero te diste de baja` 
+                                        : `Cancelaste tu subscripción el ` + modified.format('LL') + ' a las ' + modified.format('HH:MM')
+                                    )
+                    ) + `.  <br>` + (active ? `
                 <br>
                 <a class="hand" data-subscription-id="` + internalId + `">
                     Cancelar subscripción
-                </a>
+                </a>` : ``) + `
             </p>
         </li>`;
     }
@@ -313,7 +325,11 @@ $(document).ready(() => {
         renderedHTML = '';
 
         SUBSCRIPTIONS.forEach((subscription) => {
-            renderedHTML += getRenderedSubscription(subscription['id']);
+            renderedHTML += getRenderedSubscription(
+                subscription['id'],
+                subscription['active'] == 1,
+                subscription['modified']
+            );
         });
 
         paymentMethodsContainer

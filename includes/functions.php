@@ -311,12 +311,12 @@ function isOwnerOf($company) {
     }
 }
 
-function getSubscriptions($company) {
+function getSubscriptions($company, $includeInactive = false) {
     $statement = $GLOBALS['database']->prepare(
         'SELECT *
          FROM   `d_subscriptions`
-         WHERE  `d_subscriptions`.`company` = :company
-         AND    `d_subscriptions`.`active`'
+         WHERE  `d_subscriptions`.`company` = :company' . ($includeInactive ? '' :
+        'AND    `d_subscriptions`.`active`')
     );
 
     $statement->execute([ 'company' => $company ]);

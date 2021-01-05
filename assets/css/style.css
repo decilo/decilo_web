@@ -186,7 +186,7 @@ input[type="file"] { display: none; }
 
 .add-space { margin-left: 0.3em; }
 
-.not-posted { opacity: 0.5; }
+.half-opacity, .not-posted { opacity: 0.5; }
 
 #removeFileBtn {
     width: 1em;
