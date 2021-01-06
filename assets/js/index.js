@@ -569,12 +569,18 @@ $(document).ready(() => {
 
                 console.info('setItem: saved "sortBy" (' + sortBy + ').');
 
-                $('.gridContainer').find('.message').remove();
+                gridContainer = $('.gridContainer');
+                
+                gridContainer.find('.row').fadeOut(() => {
+                    gridContainer.find('.message').remove();
 
-                canPullChunks   = true;
-                isPullingChunks = false;
+                    gridContainer.find('.preloader-container').fadeIn();
 
-                tryToPullChunks(false, reloadLayout);
+                    canPullChunks   = true;
+                    isPullingChunks = false;
+    
+                    tryToPullChunks(false, reloadLayout);
+                });
             }
         });
     };

@@ -1019,27 +1019,43 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                             );
                         });
 
-                        $('.gridContainer')
-                            .find('.row')
-                            .append(renderedHTML);
+                        gridContainer = $('.gridContainer');
 
-                        reloadLayout(renderedHTML);
+                        preloader = gridContainer.find('.preloader-container');
 
-                        if (
-                            $('.message').last().position()['top'] > document.documentElement.clientHeight
-                            &&
-                            deferredFetcher != null
-                        ) {
-                            clearInterval(deferredFetcher);
+                        row = gridContainer.find('.row');
 
-                            deferredFetcher = null;
+                        deferredActions = () => {
+                            row.append(renderedHTML).fadeIn();
+
+                            reloadLayout(renderedHTML);
+
+                            if (
+                                $('.message').last().position()['top'] > document.documentElement.clientHeight
+                                &&
+                                deferredFetcher != null
+                            ) {
+                                clearInterval(deferredFetcher);
+
+                                deferredFetcher = null;
+                            }
+
+                            console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
+
+                            then();
+
+                            tryToPushRandomAd();
+                        };
+
+                        if (preloader.is(':visible')) {
+                            preloader.fadeOut(() => {
+                                preloader.hide();
+
+                                deferredActions();
+                            });
+                        } else {
+                            deferredActions();
                         }
-
-                        console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
-
-                        then();
-
-                        tryToPushRandomAd();
                     } else {
                         isPullingChunks = true;
                         canPullChunks   = false;

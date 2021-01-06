@@ -370,3 +370,22 @@ strong {
 }
 
 .modal.bottom-sheet { max-height: 100%; }
+
+.preloader-container {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 56px; /* min-height of nav */
+    left: 0;
+    text-align: center;
+}
+
+.preloader-container
+.preloader-wrapper {
+    position: absolute;
+    top: 0;
+    margin: auto;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

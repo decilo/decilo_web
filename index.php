@@ -28,8 +28,51 @@ if (isset($_GET['to'])) {
         </p>
         <div class="divider"></div>
         <div id="recentsContainer" class="gridContainer">
+            <div class="preloader-container">
+                <div class="preloader-wrapper active">
+                    <div class="spinner-layer spinner-blue border-dark-5">
+                        <div class="circle-clipper left">
+                        <div class="circle"></div>
+                        </div><div class="gap-patch">
+                        <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                        </div>
+                    </div>
 
-            <div class="row">
+                    <div class="spinner-layer spinner-red border-dark-1">
+                        <div class="circle-clipper left">
+                        <div class="circle"></div>
+                        </div><div class="gap-patch">
+                        <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                        </div>
+                    </div>
+
+                    <div class="spinner-layer spinner-yellow border-dark-5">
+                        <div class="circle-clipper left">
+                        <div class="circle"></div>
+                        </div><div class="gap-patch">
+                        <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                        </div>
+                    </div>
+
+                    <div class="spinner-layer spinner-green border-dark-1">
+                        <div class="circle-clipper left">
+                        <div class="circle"></div>
+                        </div><div class="gap-patch">
+                        <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="opacity: 0;">
                 <!-- Messages container -->
             </div>
 
