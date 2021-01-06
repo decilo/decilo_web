@@ -961,7 +961,7 @@ function getRenderedAd(
             </div>`;
 }
 
-function tryToPushRandomAd() {
+function tryToPushRandomAd(then = () => {}) {
     run('adsManager', 'getRandomAd', {}, () => {}, true)
     .done((response) => {
         console.info(response);
@@ -988,10 +988,11 @@ function tryToPushRandomAd() {
     })
     .fail((error) => {
         console.error(error);
-    });
+    })
+    .always(then);
 }
 
-async function tryToPullChunks(firstCall = false) {
+async function tryToPullChunks(firstCall = false, then = () => {}) {
     if (canPullChunks) {
         if (isOnline) {
             if (isPullingChunks) {
@@ -1035,6 +1036,8 @@ async function tryToPullChunks(firstCall = false) {
                         }
 
                         console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
+
+                        then();
 
                         tryToPushRandomAd();
                     } else {

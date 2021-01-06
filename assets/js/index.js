@@ -574,7 +574,7 @@ $(document).ready(() => {
                 canPullChunks   = true;
                 isPullingChunks = false;
 
-                tryToPullChunks();
+                tryToPullChunks(false, reloadLayout);
             }
         });
     };
