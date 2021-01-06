@@ -447,8 +447,15 @@ function isElementInViewport(element) {
     return elementBottom > (viewportTop - viewportThreshold) && (elementTop - viewportThreshold) < viewportBottom;
 }
 
-function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false, likes = 0) {
-    return `<div class="col s12 ` + (PRIVATE ? `m12 l6` : `m6 l3`) + ` message ` + (id == null ? 'not-posted' : '') + `" ` + (display ? '' : 'style="display: none;"') + ` data-message="` + id + `">
+function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false, likes = 0, position = -1) {
+    content = content.toString();
+
+    return `<div
+                class="col s12 ` + (PRIVATE ? `m12 l6` : `m6 l3`) + ` message ` + (id == null ? 'not-posted' : '') + `"
+                ` + (display ? '' : 'style="display: none;"') + `
+                data-message="` + id + `"
+                data-position="` + position + `"
+            >
                 <div class="card bg-dark-3 card-box">` + (PRIVATE ? `
                     <button
                         type="button"
@@ -642,7 +649,7 @@ function openCommentsModal(message, private) {
                     content:        content,
                     declaredName:   declaredName,
                     message:        message,
-                    private:        private
+                    private:        private || (typeof(RECIPIENT) != 'undefined' && RECIPIENT != null)
                 }, () => {
                     disable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
                 })
@@ -990,10 +997,14 @@ async function tryToPullChunks(firstCall = false) {
             if (isPullingChunks) {
                 console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
             } else {
+                lastMessageData = getLastMessageData();
+ 
                 run('messagesManager', 'getRecent', {
-                    after:      getLastMessageId(),
+                    after:      typeof(lastMessageData) != 'undefined' ? lastMessageData.message : undefined,
+                    startArt:   typeof(lastMessageData) != 'undefined' ? lastMessageData.position : undefined,
                     recipient:  RECIPIENT,
-                    private:    PRIVATE
+                    private:    PRIVATE,
+                    sortBy:     sortBy
                 }, () => { isPullingChunks = true; })
                 .done((response) => {
                     console.log(response);
@@ -1003,7 +1014,7 @@ async function tryToPullChunks(firstCall = false) {
                         
                         response.result.forEach((message) => {
                             renderedHTML += getRenderedMessage(
-                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes']
+                                message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes'], message['position']
                             );
                         });
 
@@ -1053,10 +1064,10 @@ async function tryToPullChunks(firstCall = false) {
     }
 }
 
-function getLastMessageId() {
+function getLastMessageData() {
     return  $('*[data-message]')
                 .last()
-                .data('message');
+                .data();
 }
 
 function cum() {
@@ -1081,7 +1092,7 @@ function loadSnowfall() {
     script.onload   = () => {
         console.info('Snowfall: loaded successfully.');
 
-        $('nav').snowfall({
+        $('.nav-wrapper').snowfall({
             flakeCount  : SNOWFALL['FLAKE_COUNT'],
             maxSpeed    : SNOWFALL['MAX_SPEED']
         });

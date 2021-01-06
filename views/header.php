@@ -232,6 +232,27 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         </li>
                     </ul>
                 </div>
+
+                <?php
+                
+                if (isset($tabs) && is_array($tabs)) {
+                    print '
+                    <div class="nav-content">
+                        <ul class="tabs tabs-transparent">';
+
+                    foreach ($tabs as $id => $text) {
+                        print '
+                            <li class="tab">
+                                <a id="' . $id . '" class="no-select"> ' . $text . ' </a>
+                            </li>';
+                    }
+
+                    print '
+                        </ul>
+                    </div>';
+                }
+
+                ?>
             </nav>
 
             <ul class="sidenav bg-dark-3" id="mobile-nav">

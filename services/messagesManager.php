@@ -29,66 +29,116 @@ if ($request == null) {
                     ||
                     isset($values['recipient']);
 
+                $messagesTable = 'd_messages_' . ($private ? 'private' : 'public');
+
+                $position = 0;
+
+                if (isset($values['startAt']) && is_numeric($values['startAt'])) {
+                    $position = $values['startAt'];
+                }
+
+                $statement = $GLOBALS['database']->prepare('SET @position := :position');
+                $statement->bindValue(':position', $position, PDO::PARAM_INT);
+                $statement->execute();
+
+                $sortBy = null;
+
+                if (isset($values['sortBy'])) {
+                    switch ($values['sortBy']) {
+                        case SORTING_METHODS['BY_RELEVANCE']:
+                            $sortBy = 'score';
+
+                            break;
+                        case SORTING_METHODS['BY_DATE']:
+                            $sortBy = 'id';
+
+                            break;
+                        case SORTING_METHODS['BY_LIKES']:
+                            $sortBy = 'likes';
+
+                            break;
+                        case SORTING_METHODS['BY_COMMENTS']:
+                            $sortBy = 'comments';
+
+                            break;
+                    }
+                }
+
                 $query =  getParsedString(
-                    'SELECT     `{messagesTable}`.*, (
-                        SELECT  COUNT(*)
-                        FROM    `d_reports`
-                        WHERE   `d_reports`.`message`    = `{messagesTable}`.`id`
-                        AND     `d_reports`.`reportedBy` = :userId
-                        AND     `d_reports`.`private`    = :private
-                     ) > 0 AS reported, (
-                        SELECT  `d_images`.`url`
-                        FROM    `d_images`
-                        WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
-                        AND     `d_images`.`private`     = :private
-                     ) AS image,
-                     CASE WHEN (
-                        SELECT  COUNT(*)
-                        FROM    `d_images`
-                        WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
-                        AND     `d_images`.`private`     = :private
-                     ) > 0
-                     THEN (
-                        CASE WHEN (
-                            SELECT  COUNT(*)
-                            FROM    `d_images_analyzed`
-                            WHERE   `d_images_analyzed`.`image` = (
-                                SELECT  `d_images`.`id`
-                                FROM    `d_images`
-                                WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
-                                AND     `d_images`.`private`     = :private
-                            )
-                        ) > 0
-                        THEN true
-                        ELSE false
-                        END
-                     )
-                     ELSE true
-                     END AS verified,
-                     CASE WHEN CHARACTER_LENGTH(`{messagesTable}`.`content`) > :maxLength
-                     THEN
-                        CONCAT(
-                            SUBSTRING(
-                                    `{messagesTable}`.`content`,
-                                    1,
-                                    :maxLength
-                            ),
-                            \'…\'
-                        )
-                     ELSE `{messagesTable}`.`content`
-                     END AS content, (
-                        SELECT  COUNT(*)
-                        FROM    `d_comments`
-                        WHERE   `d_comments`.`message` = `{messagesTable}`.`id`
-                        AND     `d_comments`.`private` = :private
-                     ) AS comments
-                     FROM       `{messagesTable}`
-                     {usersJoint}
-                     WHERE 1 = 1
-                     {sortingParameters}
-                     {recipient}
-                     ORDER BY   `{messagesTable}`.`id` DESC
-                     LIMIT      :limit'
+                    'SELECT
+                        *,
+                        @position := @position + 1 AS position
+                     FROM (
+                        SELECT * {scoreCalculation}
+                        FROM (
+                            SELECT *
+                            FROM (
+                                SELECT
+                                    `{messagesTable}`.`id`,
+                                    `{messagesTable}`.`declaredName`,
+                                    {likesCount}
+                                    `{messagesTable}`.`created`, (
+                                    SELECT  COUNT(*)
+                                    FROM    `d_reports`
+                                    WHERE   `d_reports`.`message`    = `{messagesTable}`.`id`
+                                    AND     `d_reports`.`reportedBy` = :userId
+                                    AND     `d_reports`.`private`    = :private
+                                ) > 0 AS reported, (
+                                    SELECT  `d_images`.`url`
+                                    FROM    `d_images`
+                                    WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
+                                    AND     `d_images`.`private`     = :private
+                                ) AS image,
+                                CASE WHEN (
+                                    SELECT  COUNT(*)
+                                    FROM    `d_images`
+                                    WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
+                                    AND     `d_images`.`private`     = :private
+                                ) > 0
+                                THEN (
+                                    CASE WHEN (
+                                        SELECT  COUNT(*)
+                                        FROM    `d_images_analyzed`
+                                        WHERE   `d_images_analyzed`.`image` = (
+                                            SELECT  `d_images`.`id`
+                                            FROM    `d_images`
+                                            WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
+                                            AND     `d_images`.`private`     = :private
+                                        )
+                                    ) > 0
+                                    THEN true
+                                    ELSE false
+                                    END
+                                )
+                                ELSE true
+                                END AS verified,
+                                CASE WHEN CHARACTER_LENGTH(`{messagesTable}`.`content`) > :maxLength
+                                THEN
+                                    CONCAT(
+                                        SUBSTRING(
+                                                `{messagesTable}`.`content`,
+                                                1,
+                                                :maxLength
+                                        ),
+                                        \'…\'
+                                    )
+                                ELSE `{messagesTable}`.`content`
+                                END AS content, (
+                                    SELECT  COUNT(*)
+                                    FROM    `d_comments`
+                                    WHERE   `d_comments`.`message` = `{messagesTable}`.`id`
+                                    AND     `d_comments`.`private` = :private
+                                ) AS comments
+                                FROM       `{messagesTable}`
+                                {usersJoint}
+                                WHERE 1 = 1
+                                {recipient}
+                            ) AS messageSet
+                        ) AS scoringSet
+                     ) AS scoringResult
+                     {countFrom}
+                     ORDER BY {sortBy} DESC
+                     LIMIT :limit'
                 , [
                     'usersJoint'        => $private ?
                     'JOIN       `d_users`
@@ -96,11 +146,14 @@ if ($request == null) {
                      AND        `d_users`.`username`     = :recipient' : '',
                     'recipient'         => $private ?
                     'AND        `{messagesTable}`.`recipient` = :userId' : '',
-                    'sortingParameters' => isset($values['after']) ?
-                    'AND        `{messagesTable}`.`id` < :after' : ''
+                    'countFrom'         => isset($values['after']) ?
+                    'WHERE      `id` < :after' : '',
+                    'sortBy'            => $sortBy,
+                    'scoreCalculation'  => $private ? '' : ', ((comments + likes) / 2) AS score',
+                    'likesCount'        => $private ? '' : '`{messagesTable}`.`likes`, '
                 ]);
 
-                $query = getParsedString($query, [ 'messagesTable' => 'd_messages_' . ($private ? 'private' : 'public') ]);
+                $query = getParsedString($query, [ 'messagesTable' => $messagesTable ]);
 
                 $statement = $GLOBALS['database']->prepare($query);
 

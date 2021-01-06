@@ -36,10 +36,10 @@ if ($request == null) {
                              ORDER BY   `d_comments`.`id` DESC'
                         );
 
-                    $statement->execute([
-                        'message'   => $values['message'],
-                        'private'   => $values['private']
-                    ]);
+                    $statement->bindValue(':message', $values['message'], PDO::PARAM_INT );
+                    $statement->bindValue(':private', $values['private'], PDO::PARAM_BOOL);
+
+                    $statement->execute();
 
                     reply($statement->fetchAll());
                 } else {
@@ -74,12 +74,12 @@ if ($request == null) {
                              );'
                         );
 
-                    $statement->execute([
-                        'content'       => $values['content'],
-                        'declaredName'  => $values['declaredName'],
-                        'message'       => $values['message'],
-                        'private'       => $values['private'] ? 1 : 0
-                    ]);
+                    $statement->bindValue(':content'     , $values['content']                       );
+                    $statement->bindValue(':declaredName', $values['declaredName']                  );
+                    $statement->bindValue(':message'     , $values['message']                       );
+                    $statement->bindValue(':private'     , $values['private']      , PDO::PARAM_BOOL);
+
+                    $statement->execute();
 
                     reply(
                         [ 'id' => (int) $GLOBALS['database']->lastInsertId() ],

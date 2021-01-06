@@ -10,6 +10,14 @@ let toReport            = null;
 
 let fab                 = null;
 
+let sortBy              = parseInt(localStorage.getItem('sortBy'));
+
+if (RECIPIENT != null) {
+    sortBy = SORTING_METHODS['BY_DATE'];
+} else if (isNaN(sortBy)) {
+    sortBy = SORTING_METHODS['BY_RELEVANCE'];
+}
+
 function resetMessageInputs() {
     $('#messageInput, #declaredName')
         .removeClass('valid')
@@ -505,6 +513,68 @@ $(document).ready(() => {
                 });
             } else {
                 toast('Para enviar tu reporte, seleccioná una opción.');
+            }
+        });
+        
+
+        if (sortBy != SORTING_METHODS['BY_RELEVANCE']) {
+            tabs = $('.tabs');
+
+            switch (sortBy) {
+                case SORTING_METHODS['BY_RELEVANCE']:
+                    tabs.find('#sortByRelevance').addClass('active');
+
+                    break;
+                case SORTING_METHODS['BY_DATE']:
+                    tabs.find('#sortByDate').addClass('active');
+
+                    break;
+                case SORTING_METHODS['BY_LIKES']:
+                    tabs.find('#sortByLikes').addClass('active');
+
+                    break;
+                case SORTING_METHODS['BY_COMMENTS']:
+                    tabs.find('#sortByComments').addClass('active');
+
+                    break;
+            }
+        }
+
+        $('.tabs').tabs();
+
+        $('.tab').on('click', (event) => {
+            tab = $(event.currentTarget).find('a');
+
+            if (!tab.hasClass('active')) {
+                switch (tab.attr('id')) {
+                    case 'sortByRelevance':
+                        sortBy = SORTING_METHODS['BY_RELEVANCE'];
+    
+                        break;
+                    case 'sortByDate':
+                        sortBy = SORTING_METHODS['BY_DATE'];
+
+                        break;
+                    case 'sortByLikes':
+                        sortBy = SORTING_METHODS['BY_LIKES'];
+
+                        break;
+                    case 'sortByComments':
+                        sortBy = SORTING_METHODS['BY_COMMENTS'];
+
+                        break;
+                }
+
+                localStorage.setItem('sortBy', sortBy);
+
+                console.info('setItem: saved "sortBy" (' + sortBy + ').');
+
+                $('.gridContainer').find('.message').remove();
+
+                canPullChunks   = true;
+                isPullingChunks = false;
+
+                tryToPullChunks();
             }
         });
     };

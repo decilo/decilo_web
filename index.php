@@ -1,6 +1,15 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js?v=12';
+$title = 'Página principal'; $js = 'index.min.js?v=13';
+
+if (!isset($_GET['to'])) {
+    $tabs = [
+        'sortByRelevance'   => 'Por relevancia',
+        'sortByDate'        => 'Por fecha',
+        'sortByLikes'       => 'Por likes',
+        'sortByComments'    => 'Por comentarios'
+    ];
+}
 
 require_once 'includes/main.php'; 
 require_once 'views/header.php';

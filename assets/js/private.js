@@ -6,6 +6,8 @@ let isPullingChunks     = false;
 
 let toRemove = null;
 
+let sortBy = SORTING_METHODS['BY_DATE'];
+
 isPrivate = true;
 
 function requestRemoval(id) {
