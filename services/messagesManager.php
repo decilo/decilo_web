@@ -31,7 +31,7 @@ if ($request == null) {
 
                 $messagesTable = 'd_messages_' . ($private ? 'private' : 'public');
 
-                $position = 0;
+                $position = -1;
 
                 if (isset($values['startAt']) && is_numeric($values['startAt'])) {
                     $position = $values['startAt'];
@@ -43,10 +43,14 @@ if ($request == null) {
 
                 $sortBy = null;
 
+                $afterDirection = '<';
+
                 if (isset($values['sortBy'])) {
                     switch ($values['sortBy']) {
                         case SORTING_METHODS['BY_RELEVANCE']:
                             $sortBy = 'score';
+
+                            $afterDirection = '>';
 
                             break;
                         case SORTING_METHODS['BY_DATE']:
@@ -59,6 +63,8 @@ if ($request == null) {
                             break;
                         case SORTING_METHODS['BY_COMMENTS']:
                             $sortBy = 'comments';
+
+                            $afterDirection = '>';
 
                             break;
                     }
@@ -147,13 +153,16 @@ if ($request == null) {
                     'recipient'         => $private ?
                     'AND        `{messagesTable}`.`recipient` = :userId' : '',
                     'countFrom'         => isset($values['after']) ?
-                    'WHERE      `id` < :after' : '',
+                    'WHERE      `id` {afterDirection} :after' : '',
                     'sortBy'            => $sortBy,
                     'scoreCalculation'  => $private ? '' : ', ((comments + likes) / 2) AS score',
                     'likesCount'        => $private ? '' : '`{messagesTable}`.`likes`, '
                 ]);
 
-                $query = getParsedString($query, [ 'messagesTable' => $messagesTable ]);
+                $query = getParsedString($query, [
+                    'messagesTable'     => $messagesTable,
+                    'afterDirection'    => $afterDirection
+                ]);
 
                 $statement = $GLOBALS['database']->prepare($query);
 

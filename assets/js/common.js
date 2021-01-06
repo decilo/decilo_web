@@ -1001,8 +1001,8 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                 lastMessageData = getLastMessageData();
  
                 run('messagesManager', 'getRecent', {
-                    after:      typeof(lastMessageData) != 'undefined' ? lastMessageData.message : undefined,
-                    startArt:   typeof(lastMessageData) != 'undefined' ? lastMessageData.position : undefined,
+                    after:      typeof(lastMessageData) != 'undefined' ? lastMessageData.message  : undefined,
+                    startAt:    typeof(lastMessageData) != 'undefined' ? lastMessageData.position : undefined,
                     recipient:  RECIPIENT,
                     private:    PRIVATE,
                     sortBy:     sortBy
