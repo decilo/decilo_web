@@ -24,193 +24,102 @@ if ($request == null) {
 
         switch ($request['action']) {
             case 'getRecent':
-                if (isset($values['recipient']) && !empty($values['recipient'])) {
-                    $statement = $GLOBALS['database']
-                        ->prepare(
-                            'SELECT     `d_messages_private`.*, (
-                                SELECT  COUNT(*)
-                                FROM    `d_reports`
-                                WHERE   `d_reports`.`message`    = `d_messages_private`.`id`
-                                AND     `d_reports`.`reportedBy` = :userId
-                                AND     `d_reports`.`private`    = TRUE
-                             ) > 0 AS reported, (
-                                SELECT  `d_images`.`url`
+                $private =
+                    (isset($values['private']) && $values['private'] !== false)
+                    ||
+                    isset($values['recipient']);
+
+                $query =  getParsedString(
+                    'SELECT     `{messagesTable}`.*, (
+                        SELECT  COUNT(*)
+                        FROM    `d_reports`
+                        WHERE   `d_reports`.`message`    = `{messagesTable}`.`id`
+                        AND     `d_reports`.`reportedBy` = :userId
+                        AND     `d_reports`.`private`    = :private
+                     ) > 0 AS reported, (
+                        SELECT  `d_images`.`url`
+                        FROM    `d_images`
+                        WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
+                        AND     `d_images`.`private`     = :private
+                     ) AS image,
+                     CASE WHEN (
+                        SELECT  COUNT(*)
+                        FROM    `d_images`
+                        WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
+                        AND     `d_images`.`private`     = :private
+                     ) > 0
+                     THEN (
+                        CASE WHEN (
+                            SELECT  COUNT(*)
+                            FROM    `d_images_analyzed`
+                            WHERE   `d_images_analyzed`.`image` = (
+                                SELECT  `d_images`.`id`
                                 FROM    `d_images`
-                                WHERE   `d_images`.`message`     = `d_messages_private`.`id`
-                                AND     `d_images`.`private`     = TRUE
-                             ) AS image,
-                             CASE
-                                WHEN CHARACTER_LENGTH(`d_messages_private`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
-                                THEN
-                                    CONCAT(
-                                        SUBSTRING(
-                                                `d_messages_private`.`content`,
-                                                1,
-                                                ' . MESSAGES['MAX_LENGTH'] . '
-                                        ),
-                                        \'…\'
-                                    )
-                                ELSE
-                                    `d_messages_private`.`content`
-                             END AS content,
-                             (
-                                SELECT  COUNT(*)
-                                FROM    `d_comments`
-                                WHERE   `d_comments`.`message` = `d_messages_private`.`id`
-                                AND     `d_comments`.`private` = true
-                             ) AS comments
-                             FROM       `d_messages_private`
-                             JOIN       `d_users`
-                                ON      `d_users`.`id`           = `d_messages_private`.`recipient`
-                                AND     `d_users`.`username`     = :recipient
-                             WHERE 1 = 1 ' . (isset($values['after']) ? '
-                             AND        `d_messages_private`.`id` < :after' : '') . '
-                             AND        `d_messages_private`.`recipient` = :userId
-                             ORDER BY   `d_messages_private`.`id` DESC
-                             LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
-                        );
+                                WHERE   `d_images`.`message`     = `{messagesTable}`.`id`
+                                AND     `d_images`.`private`     = :private
+                            )
+                        ) > 0
+                        THEN true
+                        ELSE false
+                        END
+                     )
+                     ELSE true
+                     END AS verified,
+                     CASE WHEN CHARACTER_LENGTH(`{messagesTable}`.`content`) > :maxLength
+                     THEN
+                        CONCAT(
+                            SUBSTRING(
+                                    `{messagesTable}`.`content`,
+                                    1,
+                                    :maxLength
+                            ),
+                            \'…\'
+                        )
+                     ELSE `{messagesTable}`.`content`
+                     END AS content, (
+                        SELECT  COUNT(*)
+                        FROM    `d_comments`
+                        WHERE   `d_comments`.`message` = `{messagesTable}`.`id`
+                        AND     `d_comments`.`private` = :private
+                     ) AS comments
+                     FROM       `{messagesTable}`
+                     {usersJoint}
+                     WHERE 1 = 1
+                     {sortingParameters}
+                     {recipient}
+                     ORDER BY   `{messagesTable}`.`id` DESC
+                     LIMIT      :limit'
+                , [
+                    'usersJoint'        => $private ?
+                    'JOIN       `d_users`
+                     ON         `d_users`.`id`           = `{messagesTable}`.`recipient`
+                     AND        `d_users`.`username`     = :recipient' : '',
+                    'recipient'         => $private ?
+                    'AND        `{messagesTable}`.`recipient` = :userId' : '',
+                    'sortingParameters' => isset($values['after']) ?
+                    'AND        `{messagesTable}`.`id` < :after' : ''
+                ]);
 
-                    $params = [ 
-                        'userId'    => getUserByUsername($values['recipient'])['id'],
-                        'recipient' => $values['recipient']
-                    ];
+                $query = getParsedString($query, [ 'messagesTable' => 'd_messages_' . ($private ? 'private' : 'public') ]);
 
-                    if (isset($values['after'])) {
-                        $params['after'] = $values['after'];
-                    }
+                $statement = $GLOBALS['database']->prepare($query);
 
-                    $statement->execute($params);
-
-                    reply($statement->fetchAll());
-                } else if (isset($values['after']) && (!isset($values['private']) || $values['private'] === false)) {
-                    $statement = $GLOBALS['database']
-                        ->prepare(
-                            'SELECT     `d_messages_public`.*, (
-                                SELECT  COUNT(*)
-                                FROM    `d_reports`
-                                WHERE   `d_reports`.`message`    = `d_messages_public`.`id`
-                                AND     `d_reports`.`reportedBy` = :userId
-                                AND     `d_reports`.`private`    = FALSE
-                             ) > 0 AS reported, (
-                                SELECT  `d_images`.`url`
-                                FROM    `d_images`
-                                WHERE   `d_images`.`message`     = `d_messages_public`.`id`
-                                AND     `d_images`.`private`     = FALSE
-                             ) AS image,
-                             CASE
-                                WHEN CHARACTER_LENGTH(`d_messages_public`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
-                                THEN
-                                    CONCAT(
-                                        SUBSTRING(
-                                                `d_messages_public`.`content`,
-                                                1,
-                                                ' . MESSAGES['MAX_LENGTH'] . '
-                                        ),
-                                        \'…\'
-                                    )
-                                ELSE
-                                    `d_messages_public`.`content`
-                             END AS content,
-                             (
-                                SELECT  COUNT(*)
-                                FROM    `d_comments`
-                                WHERE   `d_comments`.`message` = `d_messages_public`.`id`
-                                AND     `d_comments`.`private` = false
-                             ) AS comments,
-                             CASE
-                                WHEN (
-                                    SELECT  COUNT(*)
-                                    FROM    `d_images`
-                                    WHERE   `d_images`.`message`     = `d_messages_public`.`id`
-                                    AND     `d_images`.`private`     = FALSE
-                                ) > 0
-                                THEN (
-                                    CASE
-                                        WHEN (
-                                            SELECT  COUNT(*)
-                                            FROM    `d_images_analyzed`
-                                            WHERE   `d_images_analyzed`.`image` = (
-                                                SELECT  `d_images`.`id`
-                                                FROM    `d_images`
-                                                WHERE   `d_images`.`message`     = `d_messages_public`.`id`
-                                                AND     `d_images`.`private`     = FALSE
-                                            )
-                                        ) > 0
-                                    THEN true
-                                    ELSE false
-                                    END
-                                )
-                                ELSE true
-                             END AS verified
-                             FROM       `d_messages_public`
-                             WHERE      `id` < :after
-                             ORDER BY   `id` DESC
-                             LIMIT      ' . INDEX['PUBLIC_MESSAGES_LIMIT']
-                        );
-
-                    $statement->execute([
-                        'after'     => $values['after'],
-                        'userId'    => getUserId()
-                    ]);
-
-                    reply($statement->fetchAll());
-                } else if (!isset($values['recipient']) && isset($values['private']) && $values['private']) {
-                    $statement = $GLOBALS['database']
-                        ->prepare(
-                            'SELECT     `d_messages_private`.*, (
-                                SELECT  COUNT(*)
-                                FROM    `d_reports`
-                                WHERE   `d_reports`.`message`    = `d_messages_private`.`id`
-                                AND     `d_reports`.`reportedBy` = :userId
-                                AND     `d_reports`.`private`    = FALSE
-                             ) > 0 AS reported, (
-                                SELECT  `d_images`.`url`
-                                FROM    `d_images`
-                                WHERE   `d_images`.`message` = `d_messages_private`.`id`
-                                AND     `d_images`.`private` = TRUE
-                             ) AS image,
-                             CASE
-                                WHEN CHARACTER_LENGTH(`d_messages_private`.`content`) > ' . MESSAGES['MAX_LENGTH'] . '
-                                THEN
-                                    CONCAT(
-                                        SUBSTRING(
-                                                `d_messages_private`.`content`,
-                                                1,
-                                                ' . MESSAGES['MAX_LENGTH'] . '
-                                        ),
-                                        \'…\'
-                                    )
-                                ELSE
-                                    `d_messages_private`.`content`
-                             END AS content,
-                             (
-                                SELECT  COUNT(*)
-                                FROM    `d_comments`
-                                WHERE   `d_comments`.`message` = `d_messages_private`.`id`
-                                AND     `d_comments`.`private` = true
-                             ) AS comments
-                             FROM       `d_messages_private`
-                             WHERE      TRUE' . (isset($values['after']) ? '
-                             AND        `d_messages_private`.`id` < :after' : '') . '
-                             AND        `d_messages_private`.`recipient` = :userId
-                             ORDER BY   `id` DESC
-                             LIMIT      ' . MESSAGES['PUBLIC_MESSAGES_LIMIT']
-                        );
-
-                    $params = [ 'userId' => getUserId() ];
-
-                    if (isset($values['after'])) {
-                        $params['after'] = $values['after'];
-                    }
-
-                    $statement->execute($params);
-
-                    reply($statement->fetchAll());
-                } else if (!isset($values['recipient']) || $values['recipient'] == null) {
-                    reply(getRecentMessages());
-                } else {
-                    reply($values, BAD_REQUEST);
+                if (isset($values['after'])) {
+                    $statement->bindValue(':after', $values['after'], PDO::PARAM_INT);
                 }
+
+                if ($private) {
+                    $statement->bindValue(':recipient', $values['recipient']);
+                }
+
+                $statement->bindValue(':userId'   , getUserId()                                      );
+                $statement->bindValue(':maxLength', MESSAGES['MAX_LENGTH']          , PDO::PARAM_INT );
+                $statement->bindValue(':limit'    , INDEX['PUBLIC_MESSAGES_LIMIT']  , PDO::PARAM_INT );
+                $statement->bindValue(':private'  , $private                        , PDO::PARAM_BOOL);
+
+                $statement->execute();
+
+                reply($statement->fetchAll());
 
                 break;
             case 'postMessage':
@@ -399,7 +308,7 @@ if ($request == null) {
                     } else {
                         $statement =
                             $GLOBALS['database']->prepare(
-                                'SELECT COUNT(*)
+                                'SELECT COUNT(*) AS count
                                  FROM   `d_reports`
                                  WHERE  `d_reports`.`message`    = :message
                                  AND    `d_reports`.`reportedBy` = :reportedBy
@@ -412,7 +321,7 @@ if ($request == null) {
                             'private'       => $values['private']
                         ]);
 
-                        if ($statement->fetch()[0] > 0) {
+                        if ($statement->fetch()['count'] > 0) {
                             reply(null, ALREADY_EXISTS);
                         } else {
                             $statement =

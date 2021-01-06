@@ -10,8 +10,6 @@ let toReport            = null;
 
 let fab                 = null;
 
-let deferredFetcher     = null;
-
 function resetMessageInputs() {
     $('#messageInput, #declaredName')
         .removeClass('valid')

@@ -20,7 +20,8 @@ let viewportThreshold = (VIEWPORT_VISIBLE_THRESHOLD * $(window).height()) / 100;
 let isOnline = navigator.onLine;
 let heartbeatLooper = null;
 
-let canPullChunks = true;
+let canPullChunks   = true;
+let deferredFetcher = null;
 
 let reportAdImpressions = true;
 
@@ -737,7 +738,7 @@ function openCommentsModal(message, private) {
     if (isOnline) {
         run('commentsManager', 'getComments', {
             message: message,
-            private: private
+            private: private || (typeof(RECIPIENT) != 'undefined' && RECIPIENT != null)
         })
         .done((response) => {
             console.info(response);
@@ -1129,7 +1130,9 @@ function convertMDtoHTML(content) {
 function toggleCommentLike(event, commentId) {
     event.stopPropagation();
 
-    run('commentsManager', 'toggleLike', { id: commentId, private: PRIVATE })
+    run('commentsManager', 'toggleLike', {
+        id: commentId, private: PRIVATE || (typeof(RECIPIENT) != 'undefined' && RECIPIENT != null)
+    })
     .done((response) => {
         console.info(response);
 
