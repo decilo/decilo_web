@@ -389,3 +389,9 @@ strong {
     bottom: 0;
     right: 0;
 }
+
+.tab a span {
+    position: relative;
+    bottom: 0.5em;
+    padding-left: 0.25em;
+}

@@ -1,13 +1,25 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js?v=14';
+$title = 'Página principal'; $js = 'index.min.js?v=15';
 
 if (!isset($_GET['to'])) {
     $tabs = [
-        'sortByRelevance'   => 'Por relevancia',
-        'sortByDate'        => 'Por fecha',
-        'sortByLikes'       => 'Por likes',
-        'sortByComments'    => 'Por comentarios'
+        'sortByRelevance'   => [
+            'icon'  => 'trending_up',
+            'text'  => 'por relevancia'
+        ],
+        'sortByDate'        => [
+            'icon'  => 'access_time',
+            'text'  => 'por fecha'
+        ],
+        'sortByLikes'       => [
+            'icon'  => 'thumb_up',
+            'text'  => 'por likes'
+        ],
+        'sortByComments'    => [
+            'icon'  => 'comment',
+            'text'  => 'por comentarios'
+        ]
     ];
 }
 

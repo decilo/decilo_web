@@ -72,7 +72,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
 
                 // Custom styles.
-                'assets/css/style.min.css?v=18'
+                'assets/css/style.min.css?v=19'
             ];
 
             $css = array_merge($css, $backupCSS);
@@ -240,10 +240,15 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     <div class="nav-content">
                         <ul class="tabs tabs-transparent">';
 
-                    foreach ($tabs as $id => $text) {
+                    foreach ($tabs as $id => $content) {
                         print '
                             <li class="tab">
-                                <a id="' . $id . '" class="no-select"> ' . $text . ' </a>
+                                <a id="' . $id . '" class="no-select"> ' . (
+                                    isset($content['icon'])
+                                        ? '<i class="material-icons force-inline"> ' . $content['icon'] . ' </i>'
+                                        : ''
+                                ) . '<span class="hide-on-small-and-down"> ' . $content['text'] . '</span>
+                                </a>
                             </li>';
                     }
 

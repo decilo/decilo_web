@@ -545,6 +545,14 @@ $(document).ready(() => {
         $('.tab').on('click', (event) => {
             tab = $(event.currentTarget).find('a');
 
+            tabHint = tab.find('span');
+
+            if (!tabHint.is(':visible')) {
+                M.Toast.dismissAll();
+
+                toast('Ordenando ' + tabHint.text());
+            }
+
             if (!tab.hasClass('active')) {
                 switch (tab.attr('id')) {
                     case 'sortByRelevance':
