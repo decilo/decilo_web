@@ -150,7 +150,7 @@ if ($request == null) {
                     'JOIN       `d_users`
                      ON         `d_users`.`id`           = `{messagesTable}`.`recipient`
                      AND        `d_users`.`username`     = :recipient' : '',
-                    'recipient'         => $private ?
+                    'recipient'         => $private && $values['recipient'] == null ? // TODO: Is this validation actually necessary? Review that.
                     'AND        `{messagesTable}`.`recipient` = :userId' : '',
                     'countFrom'         => isset($values['after']) ?
                     'WHERE      `id` {afterDirection} :after' : '',
