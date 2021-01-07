@@ -28,7 +28,7 @@ if ($request == null) {
                     !empty($values['message'])
                 ) {
                     $statement =
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'SELECT     *
                              FROM       `d_comments`
                              WHERE      `d_comments`.`message` = :message
@@ -60,7 +60,7 @@ if ($request == null) {
                     is_numeric($values['message'])
                 ) {
                     $statement =
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'INSERT INTO `d_comments` (
                                 `content`,
                                 `declaredName`,
@@ -82,7 +82,7 @@ if ($request == null) {
                     $statement->execute();
 
                     reply(
-                        [ 'id' => (int) $GLOBALS['database']->lastInsertId() ],
+                        [ 'id' => (int) $database->lastInsertId() ],
                         $statement->rowCount() > 0 ? OK : ERROR
                     );
                 } else {
@@ -108,7 +108,7 @@ if ($request == null) {
                         }
                     }
 
-                    $statement = $GLOBALS['database']->prepare(
+                    $statement = $database->prepare(
                         'UPDATE `d_comments`
                          SET    `d_comments`.`likes`    = `d_comments`.`likes` + (:likeCount)
                          WHERE  `d_comments`.`id`       = :id

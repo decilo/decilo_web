@@ -22,7 +22,7 @@ if ($request == null) {
 
         switch ($request['action']) {
             case 'getRandomAd':
-                $statement = $GLOBALS['database']->prepare(
+                $statement = $database->prepare(
                     'SELECT
                         d_ads.id,
                         d_ads.content,
@@ -44,7 +44,7 @@ if ($request == null) {
                 break;
             case 'reportImpression':
                 if (isset($values['id']) && !empty($values['id']) && is_numeric($values['id'])) {
-                    $statement = $GLOBALS['database']->prepare(
+                    $statement = $database->prepare(
                         'UPDATE `d_ads`
                          SET    `impressions` = `impressions` + 1
                          WHERE  `id` = :id'
@@ -67,7 +67,7 @@ if ($request == null) {
                     is_numeric($values['company'])
                 ) {
                     if (isOwnerOf($values['company'])) {
-                        $statement = $GLOBALS['database']->prepare(
+                        $statement = $database->prepare(
                             'INSERT INTO `d_ads` (
                                 `content`,
                                 `company`
@@ -83,7 +83,7 @@ if ($request == null) {
                         ]);
 
                         reply(
-                            [ 'id' => $GLOBALS['database']->lastInsertId() ],
+                            [ 'id' => $database->lastInsertId() ],
                             $statement->rowCount() > 0 ? OK : ERROR
                         );
                     } else {
@@ -102,7 +102,7 @@ if ($request == null) {
                         reply(null, NO_SUCH_ELEMENT);
                     } else {
                         if (isOwnerOf($ad['company'])) {
-                            $statement = $GLOBALS['database']->prepare(
+                            $statement = $database->prepare(
                                 'DELETE
                                  FROM   `d_ads`
                                  WHERE  `d_ads`.`id` = :id'

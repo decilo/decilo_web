@@ -35,7 +35,7 @@ if ($request == null) {
                         reply(null, NOT_ALLOWED);
                     } else {
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'UPDATE `d_companies`
                                  SET
                                     `name`          = :name,
@@ -61,7 +61,7 @@ if ($request == null) {
                     }
                 } else {
                     $statement =
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'SELECT COUNT(*) AS count
                              FROM   `d_companies`
                              WHERE
@@ -91,7 +91,7 @@ if ($request == null) {
                                     )
                                 ) {
                                     $statement =
-                                        $GLOBALS['database']->prepare(
+                                        $database->prepare(
                                             'INSERT INTO `d_companies` (
                                                 `name`,
                                                 `legalName`,
@@ -171,7 +171,7 @@ if ($request == null) {
                                 $subscription = json_decode(curl_exec($request), true);
 
                                 if ($subscription['status'] == 'authorized') {
-                                    $statement = $GLOBALS['database']->prepare(
+                                    $statement = $database->prepare(
                                         'INSERT INTO `d_subscriptions` (
                                             `company`,
                                             `token`
@@ -187,7 +187,7 @@ if ($request == null) {
                                     ]);
 
                                     if ($statement->rowCount() > 0) {
-                                        $subscription['internalId'] = $GLOBALS['database']->lastInsertId();
+                                        $subscription['internalId'] = $database->lastInsertId();
 
                                         reply([ 'subscription' => $subscription ]);
                                     } else {
@@ -232,7 +232,7 @@ if ($request == null) {
                                 $result = json_decode(curl_exec($request), true);
 
                                 if ($result['status'] == 'cancelled' || $result['status'] == 400) {
-                                    $statement = $GLOBALS['database']->prepare(
+                                    $statement = $database->prepare(
                                         'UPDATE `d_subscriptions`
                                          SET    `d_subscriptions`.`active`  = FALSE
                                          WHERE  `d_subscriptions`.`id`      = :subscription'
@@ -274,7 +274,7 @@ if ($request == null) {
                                 reply(null, NOT_READY);
                             } else {
                                 // BEGIN: ADs block
-                                $statement = $GLOBALS['database']->prepare(
+                                $statement = $database->prepare(
                                     'DELETE
                                     FROM   `d_ads`
                                     WHERE  `d_ads`.`company` = :company'
@@ -284,7 +284,7 @@ if ($request == null) {
                                 // END: ADs block
 
                                 // BEGIN: Subscriptions block
-                                $statement = $GLOBALS['database']->prepare(
+                                $statement = $database->prepare(
                                     'DELETE
                                      FROM   `d_subscriptions`
                                      WHERE  `d_subscriptions`.`company` = :company'
@@ -294,7 +294,7 @@ if ($request == null) {
                                 // END: Subscriptions block
 
                                 // BEGIN: Company block
-                                $statement = $GLOBALS['database']->prepare(
+                                $statement = $database->prepare(
                                     'DELETE
                                      FROM   `d_companies`
                                      WHERE  `d_companies`.`id` = :company'

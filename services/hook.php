@@ -17,7 +17,7 @@ if (empty($request)) {
 
     redirect(SYSTEM_HOSTNAME . 'exceptions/bad_request');
 } else {
-    $statement = $GLOBALS['database']->prepare(
+    $statement = $database->prepare(
         'INSERT INTO `d_received_hooks` (
             `body`
          ) VALUES (
@@ -64,7 +64,7 @@ if (empty($request)) {
                     $subscription = &$subscriptions['results'][0];
 
                     if ($subscription['status'] == 'cancelled') {
-                        $statement = $GLOBALS['database']->prepare(
+                        $statement = $database->prepare(
                             'UPDATE `d_subscriptions`
                              SET    `d_subscriptions`.`active`  = FALSE
                              WHERE  `d_subscriptions`.`token`   = :token'

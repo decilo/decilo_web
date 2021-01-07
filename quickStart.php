@@ -4,7 +4,7 @@ require_once 'includes/main.php';
 
 if (isset($_GET['token']) && isset($_GET['from'])) {
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT *
              FROM   `d_users`
              WHERE  `d_users`.`mailAddress`     = :mailAddress
@@ -32,7 +32,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                 $match = getUserByMailAddress($decoded['mailAddress']);
 
                 $statement =
-                    $GLOBALS['database']->prepare(
+                    $database->prepare(
                         'UPDATE `d_users`
                          SET    `d_users`.`quickStartToken` = NULL
                          WHERE  `d_users`.`id`              = :id'
@@ -49,7 +49,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                 if (isset($_GET['changeTo'])) {
                     if (filter_var($_GET['changeTo'], FILTER_VALIDATE_EMAIL)) {
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'UPDATE `d_users`
                                  SET    `d_users`.`mailAddress` = :mailAddress
                                  WHERE  `d_users`.`id`          = :id'
@@ -74,7 +74,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                     }
 
                     $statement =
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'DELETE
                              FROM   `d_users`
                              WHERE  `d_users`.`id` = :id'
@@ -83,7 +83,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                     $statement->execute([ 'id' => $match['id'] ]);
 
                     $statement =
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'DELETE
                              FROM   `d_challenges`
                              WHERE  `d_challenges`.`ip` = :ip'
@@ -92,7 +92,7 @@ if (isset($_GET['token']) && isset($_GET['from'])) {
                     $statement->execute([ 'ip' => $_SERVER['REMOTE_ADDR'] ]);
 
                     $statement =
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'DELETE
                              FROM   `d_messages_private`
                              WHERE  `d_messages_private`.`recipient` = :recipient'

@@ -14,6 +14,12 @@ foreach (GOOGLE_CRAWLER_UAS as $userAgent) {
     }
 }
 
+if (!$isCrawling && class_exists('Database')) {
+    $wallpaper = getRandomWallpaper();
+} else {
+    $wallpaper = FALLBACK_WALLPAPER;
+}
+
 if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < MIN_ACCESS_LEVEL)) {
     redirect(SYSTEM_HOSTNAME);
 }
@@ -117,7 +123,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
 
         if ($isCrawling) {
             $messages =
-                $GLOBALS['database']->prepare(
+                $database->prepare(
                     'SELECT
                         content, (
                             SELECT  `url`
@@ -263,7 +269,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             <ul class="sidenav bg-dark-3" id="mobile-nav">
                 <li>
                     <div class="user-view">
-                        <div class="background" data-background-url="<?= getRandomWallpaper() ?>" style="filter: blur(1px);"></div>
+                        <div class="background" data-background-url="<?= $wallpaper ?>" style="filter: blur(1px);"></div>
                         <a href="profile" class="custom-link">
                             <span class="white-text name">
                                 <?=

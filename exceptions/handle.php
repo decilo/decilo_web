@@ -1,7 +1,8 @@
 <?php 
 
+define('MAINTENANCE', true);
+
 $css = 'maintenance.min.css';
-$maintenance = true;
 
 chdir('..');
 

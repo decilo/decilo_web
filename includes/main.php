@@ -1,40 +1,71 @@
 <?php
 
-// Enforce HTTPS requests.
-header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+class Main {
+    private ?PDO $database = null;
 
-// Enforce declared content-type on requests.
-header('X-Content-Type-Options: nosniff');
+    private function loadDependencies() {
+        // Include Composer modules.
+        require_once 'vendor/autoload.php';
+        
+        require_once 'includes/settings.php';
+        require_once 'includes/functions.php';
+    }
 
-// Block iframes.
-header('X-Frame-Options: DENY');
+    private function loadHeaders() {
+        // Enforce HTTPS requests.
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 
-// Set up CSP to allow all origins.
-header('Content-Security-Policy: default-src * \'unsafe-inline\' \'unsafe-eval\'; script-src * \'unsafe-inline\' \'unsafe-eval\'; connect-src * \'unsafe-inline\'; img-src * data: blob: \'unsafe-inline\'; frame-src *; style-src * \'unsafe-inline\';');
+        // Enforce declared content-type on requests.
+        header('X-Content-Type-Options: nosniff');
 
-// Enforce XSS protection to be enabled.
-header('X-XSS-Protection: 1');
+        // Block iframes.
+        header('X-Frame-Options: DENY');
 
-// Include Composer modules.
-require_once 'vendor/autoload.php';
+        // Set up CSP to allow all origins.
+        header('Content-Security-Policy: default-src * \'unsafe-inline\' \'unsafe-eval\'; script-src * \'unsafe-inline\' \'unsafe-eval\'; connect-src * \'unsafe-inline\'; img-src * data: blob: \'unsafe-inline\'; frame-src *; style-src * \'unsafe-inline\';');
 
-require_once 'includes/settings.php';
+        // Enforce XSS protection to be enabled.
+        header('X-XSS-Protection: 1');
+    }
 
-if (!isset($maintenance) || !$maintenance) {
-    require_once 'includes/database.php';
-}
+    private function connectDatabase() {
+        if (!defined('MAINTENANCE') || !MAINTENANCE) {
+            require_once 'includes/database.php';
 
-require_once 'includes/functions.php';
+            $this->database = new Database();
+        }
+    }
 
-if (session_status() != PHP_SESSION_ACTIVE) {
-    session_start();
-}
+    private function refreshSession() {
+        if (session_status() != PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+    }
 
-// Backend constants.
-foreach ([SHARED_VALUES, ALLOWANCE_LEVEL] as $constantArray) {
-    foreach ($constantArray as $const => $value) {
-        define($const, $value);
+    private function buildConstants() {
+        // Backend constants.
+        foreach ([SHARED_VALUES, ALLOWANCE_LEVEL] as $constantArray) {
+            foreach ($constantArray as $const => $value) {
+                define($const, $value);
+            }
+        }
+    }
+
+    public function __construct() {
+        $this->loadDependencies();
+        $this->loadHeaders();
+        $this->connectDatabase();
+        $this->refreshSession();
+        $this->buildConstants();
+    }
+
+    public function getDatabase() {
+        return $this->database;
     }
 }
+
+$main = new Main();
+
+$database = $main->getDatabase();
 
 ?>

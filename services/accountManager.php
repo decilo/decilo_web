@@ -30,7 +30,7 @@ if ($request == null) {
                     filter_var($values['mailAddress'], FILTER_VALIDATE_EMAIL)
                 ) {
                     $statement = 
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'SELECT *
                              FROM   `d_users`
                              WHERE  `d_users`.`mailAddress` = :mailAddress'
@@ -58,7 +58,7 @@ if ($request == null) {
 
                         if ($match == null) {
                             $statement =
-                                $GLOBALS['database']->prepare(
+                                $database->prepare(
                                     'INSERT INTO `d_users` (
                                         `mailAddress`,
                                         `allowance`,
@@ -79,7 +79,7 @@ if ($request == null) {
                             );
                         } else {
                             $statement =
-                                $GLOBALS['database']->prepare(
+                                $database->prepare(
                                     'UPDATE `d_users`
                                      SET    `d_users`.`quickStartToken`     = :quickStartToken
                                      WHERE  `d_users`.`id`                  = :id'
@@ -141,7 +141,7 @@ if ($request == null) {
                 if (isset($values['token'])) {
                     if (verifyCaptcha($values['token'])) {
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'SELECT *
                                  FROM   `d_users`
                                  WHERE  LOWER(`d_users`.`mailAddress`) = LOWER(:mailAddress)'
@@ -187,7 +187,7 @@ if ($request == null) {
             case 'signUpTry':
                 if (isset($values['username']) && isset($values['password']) && isset($values['mailAddress'])) {
                     $statement = 
-                        $GLOBALS['database']->prepare(
+                        $database->prepare(
                             'SELECT COUNT(*) 
                              FROM   `tf_users`
                              WHERE  UPER(username)      = UPPER(:username)
@@ -216,7 +216,7 @@ if ($request == null) {
                         }
 
                         $statement =
-                            $GLOBALS['database']
+                            $database
                                 ->prepare(
                                     'INSERT INTO `tf_users` (
                                         `username`, 
@@ -244,7 +244,7 @@ if ($request == null) {
 
                         reply(
                             [
-                                'userId'    => $GLOBALS['database']->lastInsertId(),
+                                'userId'    => $database->lastInsertId(),
                             ],
                             $didSucceed ? OK : ERROR
                         );
@@ -293,7 +293,7 @@ if ($request == null) {
                                 );
 
                                 $statement =
-                                    $GLOBALS['database']->prepare(
+                                    $database->prepare(
                                         'UPDATE `d_users`
                                          SET    `d_users`.`quickStartToken`     = :quickStartToken
                                          WHERE  `d_users`.`id`                  = :id'
@@ -346,7 +346,7 @@ if ($request == null) {
                         }
 
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'UPDATE `d_users`
                                  SET
                                     `d_users`.`username` = :username,
@@ -398,7 +398,7 @@ if ($request == null) {
                         );
 
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'UPDATE `d_users`
                                  SET    `d_users`.`quickStartToken`     = :quickStartToken
                                  WHERE  `d_users`.`id`                  = :id'
@@ -462,7 +462,7 @@ if ($request == null) {
                 } else {
                     if (isset($values['theme']) || $values['theme'] == null) {
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'UPDATE `d_users`
                                 SET    `d_users`.`theme` = :theme
                                 WHERE  `d_users`.`id`    = :id'
@@ -526,7 +526,7 @@ if ($request == null) {
 
                     $writer->writeSheet(
                         getExcelSheet(
-                            getColumnNames('d_messages_private', [ 'recipient' ], [ 'image' ]),
+                            getColumnNames('d_messages_private', [ 'recipient' ]),
                             getPrivateMessages($user['id'], false, false)
                         ),
                         'Mensajes privados'

@@ -35,6 +35,8 @@ function setUserQR($url) {
 }
 
 function getUserQR() {
+    global $database;
+
     if (!isset($_SESSION[USER_QR_STORE]) || $_SESSION[USER_QR_STORE] == null) {
         $options = new QROptions();
 
@@ -60,7 +62,7 @@ function getUserQR() {
         setUserQR($url);
 
         $statement =
-            $GLOBALS['database']->prepare(
+            $database->prepare(
                 'UPDATE `d_users`
                     SET `qr` = :qr
                  WHERE `id` = :id'
@@ -163,13 +165,15 @@ function getMonthsInBetween($target) {
 }
 
 function getCurrentUser() {
+    global $database;
+
     $user = getUserId();
 
     if ($user == null) {
         return null;
     } else {
         $statement =
-            $GLOBALS['database']
+            $database
                 ->prepare(
                     'SELECT *
                      FROM   `d_users`
@@ -194,6 +198,8 @@ function getCurrentUser() {
 }
 
 function getCompaniesForUser($user = null) {
+    global $database;
+
     if ($user == null) {
         $user = getCurrentUser();
     } else {
@@ -204,7 +210,7 @@ function getCompaniesForUser($user = null) {
         return null;
     } else {
         $statement =
-            $GLOBALS['database']->prepare(
+            $database->prepare(
                 'SELECT
                     *,
                     CONCAT(
@@ -230,8 +236,10 @@ function getCompaniesForUser($user = null) {
 }
 
 function getCompany($company) {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT
                 *,
                 CONCAT(
@@ -256,6 +264,8 @@ function getCompany($company) {
 }
 
 function getAdsForUser($user = null) {
+    global $database;
+
     if ($user == null) {
         $user = getCurrentUser();
     } else {
@@ -266,7 +276,7 @@ function getAdsForUser($user = null) {
         return null;
     } else {
         $statement =
-            $GLOBALS['database']->prepare(
+            $database->prepare(
                 'SELECT
                     *,
                     `d_ads`.`id`         AS id,
@@ -285,8 +295,10 @@ function getAdsForUser($user = null) {
 }
 
 function getAd($id) {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT
                 *,
                 `d_ads`.`id`         AS id,
@@ -302,12 +314,14 @@ function getAd($id) {
 }
 
 function isOwnerOf($company) {
+    global $database;
+
     $userId = getUserId();
 
     if ($userId == null) {
         return null;
     } else {
-        $statement = $GLOBALS['database']->prepare(
+        $statement = $database->prepare(
             'SELECT COUNT(*) AS count
              FROM   `d_companies`
              WHERE  `d_companies`.`id`      = :company
@@ -324,7 +338,9 @@ function isOwnerOf($company) {
 }
 
 function getSubscriptions($company, $includeInactive = false) {
-    $statement = $GLOBALS['database']->prepare(
+    global $database;
+
+    $statement = $database->prepare(
         'SELECT *
          FROM   `d_subscriptions`
          WHERE  `d_subscriptions`.`company` = :company' . ($includeInactive ? '' :
@@ -337,7 +353,9 @@ function getSubscriptions($company, $includeInactive = false) {
 }
 
 function getSubscription($subscription) {
-    $statement = $GLOBALS['database']->prepare(
+    global $database;
+
+    $statement = $database->prepare(
         'SELECT *
          FROM   `d_subscriptions`
          WHERE  `d_subscriptions`.`id` = :subscription'
@@ -349,8 +367,10 @@ function getSubscription($subscription) {
 }
 
 function getRecipientUsername($username) {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT `username`
              FROM   `d_users`
              WHERE  `d_users`.`username` = :username'
@@ -368,6 +388,8 @@ function getUserLink() {
 }
 
 function verifyCaptcha($token) {
+    global $database;
+
     $request = curl_init('https://www.google.com/recaptcha/api/siteverify');
 
     curl_setopt_array($request, [
@@ -382,7 +404,7 @@ function verifyCaptcha($token) {
     $response = json_decode(curl_exec($request));
 
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'INSERT INTO `d_challenges` (
                 `ip`,
                 `token`,
@@ -413,8 +435,10 @@ function getJWT() {
 }
 
 function getUserByUsername($username) {
+    global $database;
+
     $statement = 
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT *
              FROM   `d_users`
              WHERE  `d_users`.`username` = :username'
@@ -426,8 +450,10 @@ function getUserByUsername($username) {
 }
 
 function getUserById($id) {
+    global $database;
+
     $statement = 
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT *
              FROM   `d_users`
              WHERE  `d_users`.`id` = :id'
@@ -439,8 +465,10 @@ function getUserById($id) {
 }
 
 function getUserByMailAddress($mailAddress) {
+    global $database;
+
     $statement = 
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT *
              FROM   `d_users`
              WHERE  `d_users`.`mailAddress` = :mailAddress'
@@ -512,8 +540,10 @@ function getExcelSheet($header, $body) {
 }
 
 function getChallenges($ip, $includeId = true) {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT 
                 ' . ($includeId ? 'id, ' : '') . '
                 ip,
@@ -561,8 +591,10 @@ function getRenderedMail($heading, $content, $buttonAction = null, $buttonLabel 
 }
 
 function getReportReasons() {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT     *
              FROM       `d_report_reasons`
              ORDER BY   `d_report_reasons`.`score`'
@@ -574,10 +606,12 @@ function getReportReasons() {
 }
 
 function getMessage($id, $private = false) {
+    global $database;
+
     $messagesTableSuffix = $private ? 'private' : 'public';
 
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT *, (
                 SELECT  `url`
                 FROM    `d_images`
@@ -593,8 +627,10 @@ function getMessage($id, $private = false) {
 }
 
 function isReportReasonValid($id) {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT COUNT(*) AS count
              FROM   `d_report_reasons`
              WHERE  `d_report_reasons`.`id` = :id'
@@ -614,9 +650,11 @@ function getParsedString(string $string, Array $replacements) {
 }
 
 function getRecentMessages($recipient = null) {
+    global $database;
+
     $messagesTableSuffix = $recipient == null ? 'public' : 'private';
 
-    $statement = $GLOBALS['database']
+    $statement = $database
         ->prepare(
             'SELECT     `d_messages_' . $messagesTableSuffix . '`.*, (
                 SELECT  COUNT(*)
@@ -754,8 +792,10 @@ function getParsedDatetime($datetime) {
 }
 
 function getReportedMessages() {
+    global $database;
+
     $statement =
-        $GLOBALS['database']->prepare(
+        $database->prepare(
             'SELECT
                 d_messages_public.id AS message,
 		        SUBSTR( d_messages_public.content, 1, 48 ) AS content,
@@ -817,11 +857,13 @@ function getReportedMessages() {
 }
 
 function getRandomWallpaper() {
+    global $database;
+
     $url = FALLBACK_WALLPAPER;
 
-    if (isset($GLOBALS['database'])) {
+    if ($database != null) {
         $statement =
-            $GLOBALS['database']->prepare(
+            $database->prepare(
                 'SELECT
                     d_wallpapers.id, d_wallpapers.url
                 FROM

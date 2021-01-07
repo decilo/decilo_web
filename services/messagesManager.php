@@ -37,7 +37,7 @@ if ($request == null) {
                     $position = $values['startAt'];
                 }
 
-                $statement = $GLOBALS['database']->prepare('SET @position := :position');
+                $statement = $database->prepare('SET @position := :position');
                 $statement->bindValue(':position', $position, PDO::PARAM_INT);
                 $statement->execute();
 
@@ -164,7 +164,7 @@ if ($request == null) {
                     'afterDirection'    => $afterDirection
                 ]);
 
-                $statement = $GLOBALS['database']->prepare($query);
+                $statement = $database->prepare($query);
 
                 if (isset($values['after'])) {
                     $statement->bindValue(':after', $values['after'], PDO::PARAM_INT);
@@ -192,7 +192,7 @@ if ($request == null) {
                 ) {
                     if (verifyCaptcha($values['token'])) {
                         if (isset($values['recipient'])) {
-                            $statement = $GLOBALS['database']
+                            $statement = $database
                                 ->prepare(
                                     'INSERT INTO `d_messages_private` (
                                         `content`,
@@ -217,7 +217,7 @@ if ($request == null) {
                                 ]
                             );
                         } else {
-                            $statement = $GLOBALS['database']
+                            $statement = $database
                                 ->prepare(
                                     'INSERT INTO `d_messages_public` (
                                         `content`,
@@ -239,14 +239,14 @@ if ($request == null) {
                         if ($values['image'] == null) {
                             reply(
                                 [
-                                    'id'    => (int) $GLOBALS['database']->lastInsertId(),
+                                    'id'    => (int) $database->lastInsertId(),
                                     'image' => null
                                 ]
                             );
                         } else {
                             if (strpos($values['image'], 'image') !== false) {
                                 try {
-                                    $messageId = (int) $GLOBALS['database']->lastInsertId();
+                                    $messageId = (int) $database->lastInsertId();
 
                                     $values['image'] = explode(',', $values['image'])[1];
 
@@ -272,7 +272,7 @@ if ($request == null) {
                                     unlink($filePath);
 
                                     $statement =
-                                        $GLOBALS['database']->prepare(
+                                        $database->prepare(
                                             'INSERT INTO `d_images` (
                                                 `url`,
                                                 `message`,
@@ -294,14 +294,14 @@ if ($request == null) {
 
                                     reply(
                                         [
-                                            'id'    => (int) $GLOBALS['database']->lastInsertId(),
+                                            'id'    => (int) $database->lastInsertId(),
                                             'image' => $url
                                         ]
                                     );
                                 } catch (Exception $exception) {
                                     reply(
                                         [
-                                            'id'    => (int) $GLOBALS['database']->lastInsertId(),
+                                            'id'    => (int) $database->lastInsertId(),
                                             'image' => null,
                                             'error' => $exception->getMessage()
                                         ]
@@ -327,7 +327,7 @@ if ($request == null) {
                 } else {
                     if (isset($values['id'])) {
                         $statement = 
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'DELETE
                                  FROM   `d_messages_private`
                                  WHERE  `d_messages_private`.`id`        = :id
@@ -369,7 +369,7 @@ if ($request == null) {
                         reply(null, NOT_ALLOWED);
                     } else {
                         $statement =
-                            $GLOBALS['database']->prepare(
+                            $database->prepare(
                                 'SELECT COUNT(*) AS count
                                  FROM   `d_reports`
                                  WHERE  `d_reports`.`message`    = :message
@@ -387,7 +387,7 @@ if ($request == null) {
                             reply(null, ALREADY_EXISTS);
                         } else {
                             $statement =
-                                $GLOBALS['database']->prepare(
+                                $database->prepare(
                                     'INSERT INTO `d_reports` (
                                         `message`,
                                         `reason`,
@@ -430,7 +430,7 @@ if ($request == null) {
                         }
                     }
 
-                    $statement = $GLOBALS['database']->prepare(
+                    $statement = $database->prepare(
                         'UPDATE `d_messages_public`
                          SET    `d_messages_public`.`likes` = `d_messages_public`.`likes` + (:likeCount)
                          WHERE  `d_messages_public`.`id`    = :id'

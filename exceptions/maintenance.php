@@ -1,8 +1,9 @@
-<?php 
+<?php
+
+define('MAINTENANCE', true);
 
 $title = 'Mantenimiento';
-$css = 'maintenance.min.css'; $js = 'maintenance.min.js';
-$maintenance = true;
+$css = 'maintenance.min.css'; $js = 'maintenance.min.js?v=2';
 
 chdir('..');
 
@@ -21,7 +22,7 @@ require_once 'views/header.php';
       <p class="center">
         <span class="real-text roboto medium dark-5" style="display: none;">
             <span class="lato thin">
-                ¡Uh! Algo salió mal.
+              ¡Uh! Algo salió mal.
             </span>
         </span>
 

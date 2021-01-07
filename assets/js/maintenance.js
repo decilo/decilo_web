@@ -19,12 +19,12 @@ $(document).ready(() => {
 
     progressBar
         .removeClass('red')
-        .addClass('bg-dark-7');
+        .addClass('bg-dark-7 bg-light-10');
 
     progressBar
         .find('.indeterminate')
         .removeClass('red')
-        .addClass('bg-dark-1')
+        .addClass('bg-dark-1 bg-light-1')
 
     isRetrying = false;
 
