@@ -31,6 +31,8 @@ let loginTarget = null;
 
 let gotHistoryPushState = false;
 
+let userNavBackground = null;
+
 const FONTS = [
     {
         family:  'Lato',
@@ -1859,6 +1861,28 @@ $(document).ready(() => {
                 hover: false
             });
         });
+
+        userNavBackground = $('.sidenav .user-view .background');
+
+        $(window).on('resize', () => {
+            if (
+                userNavBackground != null
+                &&
+                Object.keys(userNavBackground.data()).includes('backgroundUrl')
+                &&
+                window.innerWidth < 993 // MaterializeCSS' tablet or smaller
+            ) {
+                userNavBackground.css({
+                    'background': 'url(' + userNavBackground.data('background-url') + ')'
+                });
+
+                userNavBackground.removeData('backgroundUrl');
+
+                console.log('setupNav: small screen detected, loading user-view background.');
+            }
+        });
+
+        $(window).trigger('resize');
     }
 
     if (document.readyState == 'complete') {

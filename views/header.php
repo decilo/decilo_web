@@ -263,7 +263,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             <ul class="sidenav bg-dark-3" id="mobile-nav">
                 <li>
                     <div class="user-view">
-                        <div class="background" style="background: url('<?= getRandomWallpaper() ?>');" style="filter: blur(1px);"></div>
+                        <div class="background" data-background-url="<?= getRandomWallpaper() ?>" style="filter: blur(1px);"></div>
                         <a href="profile" class="custom-link">
                             <span class="white-text name">
                                 <?=
