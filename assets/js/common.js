@@ -29,6 +29,8 @@ let markdownConverter = null;
 
 let loginTarget = null;
 
+let gotHistoryPushState = false;
+
 const FONTS = [
     {
         family:  'Lato',
@@ -168,6 +170,14 @@ jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
 
         callback();
     }, MATERIALIZE_TRANSITION_TIME);
+}
+
+function pushFakeHistory() {
+    if (!gotHistoryPushState) {
+        history.pushState(null, document.title, location.href);
+
+        gotHistoryPushState = true;
+    }
 }
 
 function displayNoInternetFAB() {
@@ -1455,7 +1465,8 @@ $(document).ready(() => {
             } catch (exception) {
                 console.warn('modal/onOpenStart: unable to close tooltips due to the following reason: \n\n', exception);
             }
-        }
+        },
+        onOpenEnd: pushFakeHistory
     });
 
     $('#commentsModal').modal({
@@ -1463,6 +1474,8 @@ $(document).ready(() => {
             $('#commentsModal')
                 .find('.modal-content')
                 .scrollTop(0);
+
+            pushFakeHistory();
         }
     });
 
@@ -1474,6 +1487,8 @@ $(document).ready(() => {
             $('#loginMailAddress')
                 .focus()
                 .click();
+
+            pushFakeHistory();
         },
         onCloseEnd: () => {
             $('#loginModal')
@@ -1664,6 +1679,25 @@ $(document).ready(() => {
                 tooltip.close();
             }
         });
+    });
+
+    window.addEventListener('popstate', function (event)
+    {
+        areModalsOpen = false;
+
+        $('.modal').each(function () {
+            if ($(this).is(':visible')) {
+                areModalsOpen = true;
+            }
+        });
+
+        if (areModalsOpen) {
+            $('.modal').modal('close');
+
+            gotHistoryPushState = false;
+        } else {
+            history.back();
+        }
     });
 
     window.addEventListener('online', () => {
