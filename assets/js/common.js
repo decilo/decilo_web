@@ -1015,6 +1015,10 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                 console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
             } else {
                 lastMessageData = getLastMessageData();
+
+                gridContainer = $('.gridContainer');
+
+                preloader = gridContainer.find('.preloader-container');
  
                 run('messagesManager', 'getRecent', {
                     after:      typeof(lastMessageData) != 'undefined' ? lastMessageData.message  : undefined,
@@ -1034,10 +1038,6 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                                 message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes'], message['position']
                             );
                         });
-
-                        gridContainer = $('.gridContainer');
-
-                        preloader = gridContainer.find('.preloader-container');
 
                         row = gridContainer.find('.row');
 
@@ -1078,8 +1078,20 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
 
                         console.info('tryToPullChunks: nothing to pull, shutting down...');
 
-                        if (firstCall) {
+                        deferredActions = () => {
                             displayRemovableWarning('¡Nada por acá, publicá primero!');
+                        }
+
+                        if (firstCall) {
+                            if (preloader.is(':visible')) {
+                                preloader.fadeOut(() => {
+                                    preloader.hide();
+
+                                    deferredActions();
+                                });
+                            } else {
+                                deferredActions();
+                            }
                         }
 
                         return;

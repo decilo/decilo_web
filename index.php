@@ -84,7 +84,7 @@ if (isset($_GET['to'])) {
                 </div>
             </div>
 
-            <div class="row" style="opacity: 0;">
+            <div class="row">
                 <!-- Messages container -->
             </div>
 
