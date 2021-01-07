@@ -1683,7 +1683,7 @@ $(document).ready(() => {
 
     window.addEventListener('popstate', function (event)
     {
-        areModalsOpen = false;
+        let areModalsOpen = false;
 
         $('.modal').each(function () {
             if ($(this).is(':visible')) {
