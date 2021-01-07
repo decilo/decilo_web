@@ -68,7 +68,7 @@ require_once 'views/header.php';
 <div id="notReadyWrapper" class="valign-wrapper">
   <div class="row">
     <div class="col s12 center">
-        <i class="material-icons large dark-1"><?= $icon ?></i>
+        <i class="material-icons deferred-icon large dark-1"><?= $icon ?></i>
     </div>
 
     <div class="col s12">

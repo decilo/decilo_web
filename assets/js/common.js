@@ -142,6 +142,10 @@ FONTS.forEach((font) => {
 
                 loadedFonts.forEach((loadedFont) => {
                     document.fonts.add(loadedFont);
+
+                    if (loadedFont.family = 'Material Icons') {
+                        $('.material-icons').removeClass('deferred-icon');
+                    }
                 });
             }
         });

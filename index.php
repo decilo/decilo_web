@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js?v=15';
+$title = 'Página principal'; $js = 'index.min.js?v=16';
 
 if (!isset($_GET['to'])) {
     $tabs = [
@@ -152,17 +152,17 @@ if (isset($_GET['to'])) {
 
                     <button id="createPostBtn" class="btn waves-effect waves-light col s5 m5 l3 right mr-1 btn-block bg-light-1 bg-dark-1 dark-5 fixed-height-btn" type="button" disabled>
                         Publicar
-                        <i class="material-icons right"> send </i>
+                        <i class="material-icons deferred-icon right"> send </i>
                     </button>
 
                     <div id="postProgressBar"></div>
 
                     <label for="imageInput" class="btn waves-effect waves-light bg-light-1 bg-dark-1 fixed-height-btn hand right mr-1">
-                        <i class="material-icons special-file-btn-icon dark-5"> add_a_photo </i> 
+                        <i class="material-icons deferred-icon special-file-btn-icon dark-5"> add_a_photo </i> 
                     </label>
 
                     <button id="removeFileBtn" class="btn waves-effect waves-light red fixed-height-btn hand right tooltipped" type="button" data-tooltip="Eliminar archivo" data-position="bottom">
-                        <i class="material-icons"> delete_forever </i>
+                        <i class="material-icons deferred-icon"> delete_forever </i>
                     </button>
                 </div>
             </form>
@@ -185,7 +185,7 @@ if (isset($_GET['to'])) {
             </div>
         </div>
 
-        <i class="material-icons"> message </i>
+        <i class="material-icons deferred-icon"> message </i>
     </button>
 </div>
 

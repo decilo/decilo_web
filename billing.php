@@ -7,7 +7,7 @@ define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 $title = 'Facturación';
 
 $js = [
-    'billing.min.js?v=5',
+    'billing.min.js?v=6',
     'https://cdnjs.cloudflare.com/ajax/libs/card/2.5.0/jquery.card.min.js',
     'https://cdn.jsdelivr.net/npm/payform@1.4.0/dist/jquery.payform.min.js',
     'https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js'
@@ -44,7 +44,7 @@ if (count($companies) > 0) {
 
             <ul class="collection">
                 <li id="trialInformationCollection" class="collection-item avatar bg-dark-12" style="display: none;">
-                    <i class="material-icons circle bg-dark-1 bg-light-1"> free_breakfast </i>
+                    <i class="material-icons deferred-icon circle bg-dark-1 bg-light-1"> free_breakfast </i>
 
                     <span class="title"> <b> Publicá gratis por 30 días </b> </span>
 
@@ -55,7 +55,7 @@ if (count($companies) > 0) {
                 </li>
 
                 <li id="tariffsInformationCollection" class="collection-item avatar bg-dark-12" style="display: none;">
-                    <i class="material-icons circle bg-dark-1 bg-light-1"> attach_money </i>
+                    <i class="material-icons deferred-icon circle bg-dark-1 bg-light-1"> attach_money </i>
 
                     <span class="title"> <b> Tarifas y cobranzas </b> </span>
 
@@ -70,7 +70,7 @@ if (count($companies) > 0) {
                 </li>
 
                 <li id="alreadySubscribedCollection" class="collection-item avatar bg-dark-12" style="display: none;">
-                    <i class="material-icons circle bg-dark-1 bg-light-1"> money_off </i>
+                    <i class="material-icons deferred-icon circle bg-dark-1 bg-light-1"> money_off </i>
 
                     <span class="title"> <b> No podés agregar más tarjetas </b> </span>
 

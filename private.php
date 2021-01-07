@@ -46,7 +46,7 @@ require_once 'views/header.php';
                         style="display: none;"
                     >
                         Compartir
-                        <i class="material-icons right">share</i>
+                        <i class="material-icons deferred-icon right">share</i>
                     </button>
                 </div>';
             }

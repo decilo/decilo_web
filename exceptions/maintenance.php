@@ -14,7 +14,7 @@ require_once 'views/header.php';
 <div id="notReadyWrapper" class="valign-wrapper" style="display: none;">
   <div class="row">
     <div class="col s12 center">
-        <i class="material-icons large dark-1">error</i>
+        <i class="material-icons deferred-icon large dark-1">error</i>
     </div>
 
     <div class="col s12">

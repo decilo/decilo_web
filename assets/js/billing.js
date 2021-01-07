@@ -41,7 +41,7 @@ $(document).ready(() => {
 
         return `
         <li class="collection-item avatar bg-dark-12 ` + (active ? `` : `half-opacity`) + `">
-            <i class="material-icons circle bg-dark-1 bg-light-1"> payment </i>
+            <i class="material-icons deferred-icon circle bg-dark-1 bg-light-1"> payment </i>
 
             <span class="title"> <b> Subscripción ` + (active ? `activa` : `cancelada`) + ` </b> </span>
 

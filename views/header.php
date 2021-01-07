@@ -169,7 +169,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         <?= SYSTEM_TITLE ?>
                     </a>
                     <a href="#" data-target="mobile-nav" class="sidenav-trigger" style="display: none; opacity: 0;">
-                        <i class="material-icons">menu</i>
+                        <i class="material-icons deferred-icon">menu</i>
                     </a>
                     <ul id="nav-mobile" class="right hide-on-med-and-down" style="display: none; opacity: 0;">
                         <?= $userId == null ? '
@@ -227,7 +227,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                         </ul>
                         <li>
                             <a class="lato center dropdown-button tooltipped" href="#!" data-tooltip="Más opciones" data-position="left" data-target="nav-options-dropdown">
-                                <i class="material-icons"> settings </i>
+                                <i class="material-icons deferred-icon"> settings </i>
                             </a>
                         </li>
                     </ul>
@@ -245,9 +245,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             <li class="tab">
                                 <a id="' . $id . '" class="no-select"> ' . (
                                     isset($content['icon'])
-                                        ? '<i class="material-icons force-inline"> ' . $content['icon'] . ' </i>'
+                                        ? '<i class="material-icons deferred-icon force-inline"> ' . $content['icon'] . ' </i>'
                                         : ''
-                                ) . '<span class="hide-on-small-and-down"> ' . $content['text'] . '</span>
+                                ) . '<span class="hide-on-small-and-down hide"> ' . $content['text'] . '</span>
                                 </a>
                             </li>';
                     }

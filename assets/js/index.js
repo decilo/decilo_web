@@ -540,7 +540,10 @@ $(document).ready(() => {
             }
         }
 
-        $('.tabs').tabs();
+        $('.tabs')
+            .tabs()
+            .find('span')
+            .removeClass('hide');
 
         $('.tab').on('click', (event) => {
             tab = $(event.currentTarget).find('a');

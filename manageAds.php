@@ -35,7 +35,7 @@ require_once 'views/header.php';
 
             <ul class="collection" style="display: none;">
                 <li id="pausedWarningCollection" class="collection-item avatar bg-dark-12" style="display: none;">
-                    <i class="material-icons circle bg-dark-1 bg-light-1"> credit_card </i>
+                    <i class="material-icons deferred-icon circle bg-dark-1 bg-light-1"> credit_card </i>
 
                     <span class="title">
                         <b>
@@ -54,7 +54,7 @@ require_once 'views/header.php';
                 </li>
 
                 <li id="reviewingWarningCollection" class="collection-item avatar bg-dark-12" style="display: none;">
-                    <i class="material-icons circle bg-dark-1 bg-light-1"> free_breakfast </i>
+                    <i class="material-icons deferred-icon circle bg-dark-1 bg-light-1"> free_breakfast </i>
 
                     <span class="title"> <b> Tenés <span class="reviewingHint"> un </span> anuncio<span class="plurals">s</span> en revisión </b> </span>
 
