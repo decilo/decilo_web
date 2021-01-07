@@ -1681,8 +1681,7 @@ $(document).ready(() => {
         });
     });
 
-    window.addEventListener('popstate', function (event)
-    {
+    window.addEventListener('popstate', function (event) {
         let areModalsOpen = false;
 
         $('.modal').each(function () {
