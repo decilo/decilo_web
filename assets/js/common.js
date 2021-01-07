@@ -1093,8 +1093,6 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                                 deferredActions();
                             }
                         }
-
-                        return;
                     }
 
                     isPullingChunks = false;

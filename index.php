@@ -42,7 +42,7 @@ if (isset($_GET['to'])) {
         <div id="recentsContainer" class="gridContainer">
             <div class="preloader-container">
                 <div class="preloader-wrapper active">
-                    <div class="spinner-layer spinner-blue border-dark-5">
+                    <div class="spinner-layer spinner-blue border-dark-5 border-light-3">
                         <div class="circle-clipper left">
                         <div class="circle"></div>
                         </div><div class="gap-patch">
@@ -52,7 +52,7 @@ if (isset($_GET['to'])) {
                         </div>
                     </div>
 
-                    <div class="spinner-layer spinner-red border-dark-1">
+                    <div class="spinner-layer spinner-red border-dark-1 border-light-1">
                         <div class="circle-clipper left">
                         <div class="circle"></div>
                         </div><div class="gap-patch">
@@ -62,7 +62,7 @@ if (isset($_GET['to'])) {
                         </div>
                     </div>
 
-                    <div class="spinner-layer spinner-yellow border-dark-5">
+                    <div class="spinner-layer spinner-yellow border-dark-5 border-light-3">
                         <div class="circle-clipper left">
                         <div class="circle"></div>
                         </div><div class="gap-patch">
@@ -72,7 +72,7 @@ if (isset($_GET['to'])) {
                         </div>
                     </div>
 
-                    <div class="spinner-layer spinner-green border-dark-1">
+                    <div class="spinner-layer spinner-green border-dark-1 border-light-1">
                         <div class="circle-clipper left">
                         <div class="circle"></div>
                         </div><div class="gap-patch">
