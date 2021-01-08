@@ -38,7 +38,9 @@ require_once 'views/header.php';
 
     <div class="col s12 center">
         <br>
-        <span id="retryCountdown" class="roboto thin dark-5">Reintentando en <span id="remainingTime" class="medium">5</span> segundos...</span>
+        <span id="retryCountdown" class="roboto thin dark-5">
+          Reintentando en <span id="remainingTime" class="medium"><?= round(FAILURE_RETRY_INTERVAL / 1000) ?></span> segundos...
+        </span>
         <span id="retryingHint" class="roboto thin dark-5" style="display: none;">Reintentando...</span>
     </div>
   </div>
