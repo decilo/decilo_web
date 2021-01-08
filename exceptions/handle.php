@@ -76,6 +76,17 @@ if (isset($_GET['e'])) {
       ];
 
       break;
+    case 501:
+      $exception = [
+        'title' => 'No implementado',
+        'icon'  => 'watch_later',
+        'info'  =>
+          '<span class="roboto thin dark-5"> Por ahora, esa característica no está disponible. <br>
+           <br>
+           Si querés, <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">volvé a la página anterior</a> y probá más tarde.</span>'
+      ];
+
+      break;
   }
 }
 

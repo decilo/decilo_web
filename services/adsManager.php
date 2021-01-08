@@ -59,64 +59,72 @@ if ($request == null) {
 
                 break;
             case 'createAd':
-                if (
-                    isset($values['company'])  && isset($values['content'])
-                    &&
-                    !empty($values['company']) && !empty($values['content'])
-                    &&
-                    is_numeric($values['company'])
-                ) {
-                    if (isOwnerOf($values['company'])) {
-                        $statement = $database->prepare(
-                            'INSERT INTO `d_ads` (
-                                `content`,
-                                `company`
-                             ) VALUES (
-                                :content,
-                                :company
-                             )'
-                        );
+                if (COMPANY['ENABLE']) {
+                    if (
+                        isset($values['company'])  && isset($values['content'])
+                        &&
+                        !empty($values['company']) && !empty($values['content'])
+                        &&
+                        is_numeric($values['company'])
+                    ) {
+                        if (isOwnerOf($values['company'])) {
+                            $statement = $database->prepare(
+                                'INSERT INTO `d_ads` (
+                                    `content`,
+                                    `company`
+                                 ) VALUES (
+                                    :content,
+                                    :company
+                                 )'
+                            );
 
-                        $statement->execute([
-                            'content'   => $values['content'],
-                            'company'   => $values['company']
-                        ]);
+                            $statement->execute([
+                                'content'   => $values['content'],
+                                'company'   => $values['company']
+                            ]);
 
-                        reply(
-                            [ 'id' => $database->lastInsertId() ],
-                            $statement->rowCount() > 0 ? OK : ERROR
-                        );
+                            reply(
+                                [ 'id' => $database->lastInsertId() ],
+                                $statement->rowCount() > 0 ? OK : ERROR
+                            );
+                        } else {
+                            reply(null, NO_SUCH_ELEMENT);
+                        }
                     } else {
-                        reply(null, NO_SUCH_ELEMENT);
+                        reply(null, BAD_REQUEST);
                     }
                 } else {
-                    reply(null, BAD_REQUEST);
+                    reply(null, ERROR);
                 }
 
                 break;
             case 'tryToRemoveAd':
-                if (isset($values['id']) && is_numeric($values['id'])) {
-                    $ad = getAd($values['id']);
+                if (COMPANY['ENABLE']) {
+                    if (isset($values['id']) && is_numeric($values['id'])) {
+                        $ad = getAd($values['id']);
 
-                    if ($ad == null) {
-                        reply(null, NO_SUCH_ELEMENT);
-                    } else {
-                        if (isOwnerOf($ad['company'])) {
-                            $statement = $database->prepare(
-                                'DELETE
-                                 FROM   `d_ads`
-                                 WHERE  `d_ads`.`id` = :id'
-                            );
-
-                            $statement->execute([ 'id' => $values['id'] ]);
-
-                            reply(null, $statement->rowCount() > 0 ? OK : ERROR);
+                        if ($ad == null) {
+                            reply(null, NO_SUCH_ELEMENT);
                         } else {
-                            reply(null, NOT_ALLOWED);
+                            if (isOwnerOf($ad['company'])) {
+                                $statement = $database->prepare(
+                                    'DELETE
+                                     FROM   `d_ads`
+                                     WHERE  `d_ads`.`id` = :id'
+                                );
+
+                                $statement->execute([ 'id' => $values['id'] ]);
+
+                                reply(null, $statement->rowCount() > 0 ? OK : ERROR);
+                            } else {
+                                reply(null, NOT_ALLOWED);
+                            }
                         }
+                    } else {
+                        reply(null, BAD_REQUEST);
                     }
                 } else {
-                    reply(null, BAD_REQUEST);
+                    reply(null, ERROR);
                 }
 
                 break;

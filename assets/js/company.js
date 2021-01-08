@@ -31,6 +31,10 @@ $(document).ready(() => {
                             animateRedirect('/?e=' + COMPANY['REMOVAL_SUCCEEDED']);
 
                             break;
+                        case ERROR:
+                            toast('Algo salió mal, por favor probá otra vez.');
+
+                            break;
                         case NOT_READY:
                             toast('Antes de eliminar tu empresa, tenés que cancelar tus subscripciones.');
 
@@ -143,6 +147,10 @@ $(document).ready(() => {
 
                             $('#companyIdentifier').addClass('invalid');
                         }
+
+                        break;
+                    case ERROR:
+                        toast('Algo salió mal, por favor probá otra vez.');
 
                         break;
                     case NO_SUCH_ELEMENT:

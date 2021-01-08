@@ -3,7 +3,7 @@
 $userId             = getUserId();
 $userName           = getUserName();
 $userMailAddress    = getUserMailAddress();
-$hasCompanies       = getUserHasCompanies();
+$hasCompanies       = getUserHasCompanies() && COMPANY['ENABLE'];
 
 $isCrawling = false;
 foreach (GOOGLE_CRAWLER_UAS as $userAgent) {
@@ -212,7 +212,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                             <li class="bg-dark-12">
                                 <a href="<?= WHATSAPP_LINK ?>" class="lato center hand custom-link light-4 dark-5"> Reportar un problema </a>
                             </li>
-                            <?= $userId == null ? '' : '
+                            <?= !COMPANY['ENABLE'] || $userId == null ? '' : '
                             <li class="divider"></li>
                             <li class="bg-dark-12">
                                 <a href="' . SYSTEM_HOSTNAME . 'company" class="lato center hand custom-link light-4 dark-5"> Empresas </a>
@@ -303,7 +303,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
                 <li>
                     <a id="logoutBtnMobile" class="dark-5 hand"> Salir </a>
-                </li>
+                </li>' . (COMPANY['ENABLE'] ? '
                 <li>
                     <div class="divider bg-dark-8"></div>
                 </li>
@@ -314,7 +314,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 </li>
                 <li>
                     <a href="' . SYSTEM_HOSTNAME . 'company" class="dark-5 hand custom-link"> Empresas </a>
-                </li>'
+                </li>' : '')
                 ?>
                 <li class="ads-menu <?= $hasCompanies ? '' : 'hide' ?>">
                     <a href="<?= SYSTEM_HOSTNAME . 'company/ads/manage' ?>" class="dark-5 hand custom-link"> Anuncios </a>

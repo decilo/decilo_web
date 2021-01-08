@@ -22,29 +22,31 @@ AddOutputFilterByType DEFLATE application/x-javascript
 
 RewriteEngine On
 
-RewriteRule ^profile$ /profile.php [L]
-RewriteRule ^private$ /private.php [L]
-RewriteRule ^privacy$ /privacy.php [L]
-RewriteRule ^about$   /about.php   [L]
-RewriteRule ^company$            /company.php   [L]
-RewriteRule ^company/ads/manage$ /manageAds.php [L]
-RewriteRule ^company/billing$    /billing.php [L]
-RewriteRule ^view/(\d+)$ /view.php?message=$1 [L]
-RewriteRule ^view/private/(\d+)$ /view.php?message=$1&private [L]
-RewriteRule ^to/(.*)$ /?to=$1 [L]
+RewriteRule ^profile$               /profile.php [L]
+RewriteRule ^private$               /private.php [L]
+RewriteRule ^privacy$               /privacy.php [L]
+RewriteRule ^about$                 /about.php   [L]
+RewriteRule ^company$               /company.php   [L]
+RewriteRule ^company/ads/manage$    /manageAds.php [L]
+RewriteRule ^company/billing$       /billing.php [L]
+RewriteRule ^view/(\d+)$            /view.php?message=$1 [L]
+RewriteRule ^view/private/(\d+)$    /view.php?message=$1&private [L]
+RewriteRule ^to/(.*)$               /?to=$1 [L]
 
-RewriteRule ^exceptions/maintenance$ /exceptions/maintenance.php [L]
-RewriteRule ^exceptions/not_found$ /exceptions/handle.php?e=404.php [L]
-RewriteRule ^exceptions/bad_request$ /exceptions/handle.php?e=400.php [L]
-RewriteRule ^exceptions/forbidden$ /exceptions/handle.php?e=403.php [L]
-RewriteRule ^exceptions/im_a_teapot$ /exceptions/handle.php?e=418.php [L]
-RewriteRule ^exceptions/failed_dependency$ /exceptions/handle.php?e=424.php [L]
-RewriteRule ^exceptions/internal_server_error$ /exceptions/handle.php?e=500.php [L]
-RewriteRule ^exceptions/service_unavailable$ /exceptions/handle.php?e=503.php [L]
+RewriteRule ^exceptions/maintenance$            /exceptions/maintenance.php [L]
+RewriteRule ^exceptions/not_found$              /exceptions/handle.php?e=404.php [L]
+RewriteRule ^exceptions/bad_request$            /exceptions/handle.php?e=400.php [L]
+RewriteRule ^exceptions/forbidden$              /exceptions/handle.php?e=403.php [L]
+RewriteRule ^exceptions/im_a_teapot$            /exceptions/handle.php?e=418.php [L]
+RewriteRule ^exceptions/failed_dependency$      /exceptions/handle.php?e=424.php [L]
+RewriteRule ^exceptions/internal_server_error$  /exceptions/handle.php?e=500.php [L]
+RewriteRule ^exceptions/not_implemented$        /exceptions/handle.php?e=501.php [L]
+RewriteRule ^exceptions/service_unavailable$    /exceptions/handle.php?e=503.php [L]
 
 ErrorDocument 404 /exceptions/not_found
 ErrorDocument 400 /exceptions/bad_request
 ErrorDocument 403 /exceptions/forbidden
 ErrorDocument 424 /exceptions/failed_dependency
 ErrorDocument 500 /exceptions/internal_server_error
+ErrorDocument 501 /exceptions/not_implemented
 ErrorDocument 503 /exceptions/maintenance
