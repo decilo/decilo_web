@@ -8,58 +8,75 @@ chdir('..');
 
 require_once 'includes/main.php'; 
 
+$exception = [
+  'title' => 'Algo anda mal',
+  'icon'  => 'error',
+  'info'  =>
+    '<span class="roboto thin dark-5"> No sabemos qué pasó, pero algo falló. <br>
+     <br>
+     Si querés, por ahora, <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">volvé a la página anterior</a>.</span>'
+];
+
 if (isset($_GET['e'])) {
   switch ($_GET['e']) {
     case 404:
-      $title = 'No encontramos eso';
-      $icon  = 'link';
-      $info  = 
-        '<span class="roboto thin dark-5">La página que visitaste ya no existe (o nunca existió), ¿quién sabe?</span>
-         <br>
-         <br>
-         <span class="roboto thin dark-5">No te preocupes, hay mucho más que ver, <a href="' . SYSTEM_HOSTNAME . '" class="custom-link">tocá acá</a>.';
+      $exception = [
+        'title' => 'No encontramos eso',
+        'icon'  => 'link',
+        'info'  =>
+          '<span class="roboto thin dark-5">La página que visitaste ya no existe (o nunca existió), ¿quién sabe?</span>
+           <br>
+           <br>
+           <span class="roboto thin dark-5">No te preocupes, hay mucho más que ver, <a href="' . SYSTEM_HOSTNAME . '" class="custom-link">tocá acá</a>.'
+      ];
 
       break;
     case 400:
-      $title = 'Tenemos que hablar';
-      $icon  = 'broken_image';
-      $info  = '<span class="roboto thin dark-5">No fue posible procesar tu solicitud porque no coincide con ninguna de las esperadas.</span>';
+      $exception = [
+        'title' => 'Tenemos que hablar',
+        'icon'  => 'broken_image',
+        'info'  => '<span class="roboto thin dark-5">No fue posible procesar tu solicitud porque no coincide con ninguna de las esperadas.</span>'
+      ];
 
       break;
     case 403:
-      $title = 'No podés hacer eso';
-      $icon  = 'block';
-      $info  = '<span class="roboto thin dark-5">No tenés permitido acceder a esa página.</span>';
+      $exception = [
+        'title' => 'No podés hacer eso',
+        'icon'  => 'block',
+        'info'  => '<span class="roboto thin dark-5">No tenés permitido acceder a esa página.</span>'
+      ];
 
       break;
     case 418:
-      $title = 'No tenemos teteras';
-      $icon  = 'free_breakfast';
-      $info  = '<span class="roboto thin dark-5">Lo sentimos, pero no hay teteras disponibles para procesar la solicitud, sólo cafeteras.</span>';
+      $exception = [
+        'title' => 'No tenemos teteras',
+        'icon'  => 'free_breakfast',
+        'info'  => '<span class="roboto thin dark-5">Lo sentimos, pero no hay teteras disponibles para procesar la solicitud, sólo cafeteras.</span>'
+      ];
 
       break;
     case 500:
-      $title = 'Algo anda muy mal';
-      $icon  = 'cloud_off';
-      $info  = '<span class="roboto thin dark-5">Un problema interno del servidor previene que puedas usar esta página, esperá un rato y <span class="hand soft-link" onclick="window.history.back();">probá otra vez</span>.</span>';
+      $exception = [
+        'title' => 'Algo anda muy mal',
+        'icon'  => 'cloud_off',
+        'info'  => '<span class="roboto thin dark-5">Un problema interno del servidor previene que puedas usar esta página, esperá un rato y <span class="hand soft-link" onclick="window.history.back();">probá otra vez</span>.</span>'
+      ];
 
       break;
     case 424:
-      $title = 'No tenés internet';
-      $icon  = 'signal_wifi_off';
-      $info  =
-        '<span class="roboto thin dark-5">No tenés una copia almacenada de esta página. <br>
-         <br>
-         Cuando te conectes, podés <span class="hand soft-link" onclick="window.location.reload();">probar otra vez</span>. <br>
-         <br>
-         Si querés, por ahora, <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">volvé a la página anterior</a>.</span>';
+      $exception = [
+        'title' => 'No tenés internet',
+        'icon'  => 'signal_wifi_off',
+        'info'  =>
+          '<span class="roboto thin dark-5">No tenés una copia almacenada de esta página. <br>
+           <br>
+           Cuando te conectes, podés <span class="hand soft-link" onclick="window.location.reload();">probar otra vez</span>. <br>
+           <br>
+           Si querés, por ahora, <a href="/" onclick="(e) => { e.preventDefault(); window.history.back(); }">volvé a la página anterior</a>.</span>'
+      ];
 
       break;
-    default:
-      exit();
   }
-} else {
-  exit();
 }
 
 require_once 'views/header.php';
@@ -69,14 +86,14 @@ require_once 'views/header.php';
 <div id="notReadyWrapper" class="valign-wrapper">
   <div class="row">
     <div class="col s12 center">
-        <i class="material-icons deferred-icon large dark-1"><?= $icon ?></i>
+        <i class="material-icons deferred-icon large dark-1"><?= $exception['icon'] ?></i>
     </div>
 
     <div class="col s12">
       <p class="center">
         <span class="real-text roboto medium dark-5">
             <h5 class="large thin dark-5 center">
-              <?= $title ?>
+              <?= $exception['title'] ?>
             </h5>
         </span>
       </p>
@@ -84,7 +101,7 @@ require_once 'views/header.php';
 
     <div class="col s12 center">
         <br>
-        <?= $info ?>
+        <?= $exception['info'] ?>
     </div>
   </div>
 </div>
