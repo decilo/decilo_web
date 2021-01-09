@@ -36,6 +36,18 @@
                 </div>
             </div>
 
+            <!-- No password login modal -->
+            <div id="noPasswordLoginModal" class="modal bg-dark-4 dark-5">
+                <div class="modal-content center">
+                    <p class="flow-text roboto"> Revisá tu bandeja de entrada </p>
+                    <i class="material-icons large"> email </i>
+                    <p class="lato thin"> En unos segundos vas a recibir un mail en <strong class="mailAddress"></strong> para continuar. </p>
+                </div>
+                <div class="modal-footer bg-dark-4 dark-5">
+                    <a href="#!" target="_blank" class="waves-effect waves-light btn-flat dark-5"> Ver mail </a>
+                </div>
+            </div>
+
             <!-- Comments modal -->
             <div id="commentsModal" class="modal modal-fixed-footer bg-dark-4 dark-5">
                 <div class="modal-content">
@@ -101,7 +113,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js" integrity="sha512-L03kznCrNOfVxOUovR6ESfCz9Gfny7gihUX/huVbQB9zjODtYpxaVtIaAkpetoiyV2eqWbvxMH9fiSv5enX7bw==" crossorigin="anonymous" onload="console.info('Showdown: loaded successfully.');"></script>
 
         <!-- Common script -->
-        <script src="assets/js/common.min.js?v=38"></script>
+        <script src="assets/js/common.min.js?v=39"></script>
 
         <?php
 

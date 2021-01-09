@@ -1335,7 +1335,7 @@ $(document).ready(() => {
                 grecaptcha.ready(() => {
                     grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
                         run('accountManager', 'tryLogin', {
-                            'mailAddress'   : $('#loginMailAddress').val(),
+                            'mailAddress'   : loginMailAddress,
                             'password'      : $('#loginPassword').val(),
                             'token'         : token
                         }, () => {
@@ -1419,34 +1419,18 @@ $(document).ready(() => {
 
                             break;
                         case OK:
-                            $('#loginForm').fadeOut(() => {
-                                loginModal = $('#loginModal');
+                            $('#loginModal').modal('close');
 
-                                loginModal
-                                    .find('.input-field')
-                                    .first()
-                                    .animate({ height: 0 });
+                            loginMailAddress = $('#loginMailAddress').val();
 
-                                loginModal.animate(
-                                    { bottom : -1 * loginModal.find('.modal-footer').outerHeight() },
-                                    MATERIALIZE_TRANSITION_TIME,
-                                    () => {
-                                        loginStatus = $('#loginStatus');
+                            noPasswordLoginModal = $('#noPasswordLoginModal');
+                            noPasswordLoginModal.find('.mailAddress').html(loginMailAddress);
+                            noPasswordLoginModal.find('.modal-footer a').attr(
+                                'href',
+                                'https://' + loginMailAddress.split('@')[1]
+                            );
 
-                                        loginStatus
-                                            .html('¡Listo! En un rato vas a recibir un mail para continuar.')
-                                            .fadeIn(() => {
-                                                setTimeout(() => {
-                                                    loginModal.animate(
-                                                        { bottom : -1 * loginModal.outerHeight() },
-                                                        MATERIALIZE_TRANSITION_TIME,
-                                                        () => { loginModal.modal('close'); }
-                                                    )
-                                                }, INFORMATION_MODAL_TIMEOUT);
-                                            });
-                                    }
-                                );
-                            });
+                            noPasswordLoginModal.modal('open');
 
                             break;
                         case ERROR:
@@ -1520,11 +1504,11 @@ $(document).ready(() => {
 
             loginMailAddress = $('#loginMailAddress');
             loginMailAddress.val('');
-            loginMailAddress.removeClass('valid');
+            loginMailAddress.removeClass('valid invalid');
 
             loginPassword = $('#loginPassword');
             loginPassword.val('');
-            loginPassword.removeClass('valid');
+            loginPassword.removeClass('valid invalid');
             loginPassword.parent().hide();
 
             $('#tryAccountRecoveryBtn').hide();
