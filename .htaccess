@@ -5,9 +5,9 @@ Header always edit Set-Cookie "(?i)^((?:(?!;\s?HttpOnly).)+)$" "$1; HttpOnly"
 Header always edit Set-Cookie "(?i)^((?:(?!;\s?secure).)+)$" "$1; secure"
 
 <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf|manifest)$">
-    Header set Cache-Control "max-age=84600, public"
+    Header set Cache-Control "max-age=31536000, public"
     ExpiresActive On
-    ExpiresDefault "access plus 1 day"
+    ExpiresDefault "access plus 1 year"
 </FilesMatch>
 
 AddOutputFilterByType DEFLATE text/plain
