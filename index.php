@@ -137,7 +137,7 @@ if (isset($_GET['to'])) {
                         <span class="helper-text" data-error="Tenés que escribir un mensaje" data-success="Ya podés publicar">Escribí tu mensaje público</span>
                     </div>
 
-                    <div class="input-field col s12 l5">
+                    <div class="input-field col s12">
                         <input id="declaredName" type="text" placeholder="Anónimo" class="validate dark-5">
                         <label for="declaredName"> Tu nombre </label>
                     </div>
