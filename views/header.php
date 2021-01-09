@@ -271,6 +271,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     <div class="user-view">
                         <div class="background" data-background-url="<?= $wallpaper ?>" style="filter: blur(1px);"></div>
                         <a href="profile" class="custom-link">
+                            <span class="hide">Tu perfil</span>
                             <span class="white-text name">
                                 <?=
                                     $userId == null
@@ -283,11 +284,11 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                                 ?>
                             </span>
                         </a>
-                        <a href="#email">
+                        <span>
                             <span class="white-text email">
                                 <?= $userId == null ? '' : $userMailAddress ?>
                             </span>
-                        </a>
+                        </span>
                     </div>
                 </li>
 
