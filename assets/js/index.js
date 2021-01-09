@@ -581,16 +581,20 @@ $(document).ready(() => {
                 console.info('setItem: saved "sortBy" (' + sortBy + ').');
 
                 gridContainer = $('.gridContainer');
+
+                messagesRow = gridContainer.find('.row');
                 
-                gridContainer.find('.row').fadeOut(() => {
-                    gridContainer.find('.message').remove();
+                messagesRow.fadeOut(() => {
+                    messagesRow.html('');
 
                     gridContainer.find('.preloader-container').fadeIn();
 
                     canPullChunks   = true;
                     isPullingChunks = false;
-    
-                    tryToPullChunks(false, reloadLayout);
+
+                    setTimeout(() => {
+                        tryToPullChunks(false, reloadLayout);
+                    }, MATERIALIZE_TRANSITION_TIME);
                 });
             }
         });
