@@ -1079,7 +1079,11 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                         console.info('tryToPullChunks: nothing to pull, shutting down...');
 
                         deferredActions = () => {
-                            displayRemovableWarning('¡Nada por acá, publicá primero!');
+                            displayRemovableWarning(
+                                PRIVATE
+                                    ? NO_MESSAGES_HINT
+                                    : '¡Nada por acá, publicá primero!'
+                            );
                         }
 
                         if (firstCall) {
@@ -1749,9 +1753,11 @@ $(document).ready(() => {
     function loadModulesAfterGDPR() {
         if ($('#recentsContainer').length > 0) {
             if (document.readyState == 'complete') {
-                tryToPullChunks();
+                tryToPullChunks(true);
             } else {
-                $(window).on('load', tryToPullChunks);
+                $(window).on('load', () => {
+                    tryToPullChunks(true);
+                });
             }
         }
 
