@@ -424,14 +424,16 @@ $(document).ready(() => {
                         .html('check');
 
                     $('#removeFileBtn')
-                        .css({ 'display' : 'block' })
+                        .css({ 'display' : 'block', 'opacity' : 1 })
                         .animate({ 'right' : '-0.3em' });
 
                     if ($('.toast').length < 1) {
                         toast('Listo, agregaste ' + files[0].name + '.');
                     }
                 } else {
-                    resetMessageInputs();
+                    $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
+                        $('#removeFileBtn').fadeOut();
+                    });
 
                     toast('El archivo seleccionado no es una imagen');
                 }
@@ -443,11 +445,19 @@ $(document).ready(() => {
                 $('label[for="imageInput"]')
                     .find('.material-icons')
                     .html('add_a_photo');
+
+                $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
+                    $('#removeFileBtn').fadeOut();
+                });
             }
         });
 
         $('#removeFileBtn').on('click', function () {
-            $('.tooltipped').tooltip('close');
+            try {
+                $('.tooltipped').tooltip('close');
+            } catch (exception) {
+                console.warn('removeFileBtn/click: unable to close tooltips due to the following reason: \n\n', exception);
+            }
 
             $(this).animate({ 'right' : '-3.4em' }, () => {
                 $(this).fadeOut();
