@@ -2,10 +2,10 @@
 
 TOP=$(git rev-parse --show-toplevel);
 
-find {$TOP/assets/css,$TOP/assets/js} -name '*.min.*' -exec git rm -rf {} \;;
+find {$TOP/assets/css,$TOP/assets/js} -name '*.min.*' -not -path 'vendor' -exec git rm -rf {} \;;
 
 php $TOP/util/minifyAssets.php;
 
-find {$TOP/assets/css,$TOP/assets/js} -name '*.min.*' -exec git add {} \;;
+find {$TOP/assets/css,$TOP/assets/js} -name '*.min.*' -not -path 'vendor' -exec git add {} \;;
 
 exit 0;
