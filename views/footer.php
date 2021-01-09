@@ -88,31 +88,19 @@
             const DISPLAY_GDPR_MODAL    = <?= json_encode($_SERVER['REQUEST_URI'] != '/privacy');   ?>;
         </script>
 
-        <!-- Default passive events -->
-        <script type="text/javascript" src="https://unpkg.com/default-passive-events@2.0.0/dist/index.umd.js"></script>
-
-        <!-- jQuery -->
-        <script src="https://unpkg.com/jquery@3.5.1/dist/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" onload="console.info('jQuery: loaded successfully.');"></script>
-
-        <!-- Day.js -->
-        <script src="https://unpkg.com/dayjs@1.8.35/dayjs.min.js" onload="console.info('Day.js: loaded successfully.');"></script>
-        <script src="https://unpkg.com/dayjs@1.8.35/plugin/localizedFormat.js" onload="console.info('Day.js/localizedFormat: loaded successfully.');"></script>
-        <script src="https://unpkg.com/dayjs@1.8.35/locale/es.js" onload="console.info('Day.js/localizedFormat/es: loaded successfully.');"></script>
-        <script src="https://unpkg.com/dayjs@1.8.35/locale/en.js" onload="console.info('Day.js/localizedFormat/en: loaded successfully.');"></script>
-
-        <!-- MaterializeCSS - custom build -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" onload="console.info('Materialize: loaded successfully.');" defer></script>
-
-        <!-- Masonry -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js" integrity="sha512-JRlcvSZAXT8+5SQQAvklXGJuxXTouyq8oIMaYERZQasB8SBDHZaUbeASsJWpk0UUrf89DP3/aefPPrlMR1h1yQ==" crossorigin="anonymous" onload="console.info('Masonry: loaded successfully.');" defer></script>
-
-        <!-- Showdown -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js" integrity="sha512-L03kznCrNOfVxOUovR6ESfCz9Gfny7gihUX/huVbQB9zjODtYpxaVtIaAkpetoiyV2eqWbvxMH9fiSv5enX7bw==" crossorigin="anonymous" onload="console.info('Showdown: loaded successfully.');"></script>
-
-        <!-- Common script -->
-        <script src="assets/js/common.min.js?v=43"></script>
-
         <?php
+
+        if (USE_BUNDLE) {
+            print '
+            <!-- Bundle -->
+            <script type="text/javascript" src="assets/js/bundle.min.js?v=' . BUNDLE_VERSION . '" onload="console.info(\'Bundle: loaded successfully.\');"></script>';
+        } else {
+            foreach (CORE_SCRIPTS as $name => $src) {
+                print '
+                <!-- ' . $name . ' -->
+                <script type="text/javascript" src="' . $src . '" onload="console.info(\'' . $name . ': loaded successfully.\');"></script>';
+            }
+        }
 
         if (isset($js)) {
             if (is_array($js)) {
