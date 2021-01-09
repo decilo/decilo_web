@@ -1330,8 +1330,12 @@ $(document).ready(() => {
             if (loginPassword.val().length > 0) {
                 deferLoginPreloader();
 
+                disable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
+
                 if (typeof(grecaptcha) == 'undefined') {
                     toast('No podemos validar tu sesión, parece que hay problemas con tu conexión.');
+
+                    enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
 
                     return;
                 }
@@ -1342,8 +1346,6 @@ $(document).ready(() => {
                             'mailAddress'   : $('#loginMailAddress').val(),
                             'password'      : $('#loginPassword').val(),
                             'token'         : token
-                        }, () => {
-                            disable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
                         })
                         .done((response) => {
                             console.log(response);
@@ -1380,6 +1382,13 @@ $(document).ready(() => {
 
                             stopPreloader();
                         });
+                    })
+                    .catch((error) => {
+                        console.warn('Failed to complete login due to a reCaptcha v3 server error.\n\nThe following information may help investigate the issue: \n\n' + error);
+
+                        enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
+
+                        stopPreloader();
                     });
                 });
             } else {
