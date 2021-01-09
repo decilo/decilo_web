@@ -113,7 +113,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js" integrity="sha512-L03kznCrNOfVxOUovR6ESfCz9Gfny7gihUX/huVbQB9zjODtYpxaVtIaAkpetoiyV2eqWbvxMH9fiSv5enX7bw==" crossorigin="anonymous" onload="console.info('Showdown: loaded successfully.');"></script>
 
         <!-- Common script -->
-        <script src="assets/js/common.min.js?v=39"></script>
+        <script src="assets/js/common.min.js?v=40"></script>
 
         <?php
 

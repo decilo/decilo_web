@@ -147,7 +147,7 @@ if ($request == null) {
                                  WHERE  LOWER(`d_users`.`mailAddress`) = LOWER(:mailAddress)'
                             );
 
-                        $statement->execute([ 'mailAddress' => $values['mailAddress' ]]);
+                        $statement->execute([ 'mailAddress' => $values['mailAddress'] ]);
 
                         $match = $statement->fetch();
 

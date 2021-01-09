@@ -1335,7 +1335,7 @@ $(document).ready(() => {
                 grecaptcha.ready(() => {
                     grecaptcha.execute(RECAPTCHA_PUBLIC_KEY, {action: 'submit'}).then((token) => {
                         run('accountManager', 'tryLogin', {
-                            'mailAddress'   : loginMailAddress,
+                            'mailAddress'   : $('#loginMailAddress').val(),
                             'password'      : $('#loginPassword').val(),
                             'token'         : token
                         }, () => {
