@@ -182,4 +182,19 @@ $(document).ready(() => {
 
         $('#requestRemovalModal').modal();
     };
+
+    let searchParams = new URL(window.location).searchParams;
+
+    if (searchParams.has('fromLogin')) {
+        toast('Iniciaste sesión');
+
+        newURL = window.location.href.split('?')[0]; // get the current URL without parameters
+
+        // Quick workaround to drop the parameter once loaded.
+        window.history.replaceState(
+            null, // no additional data for this state
+            document.getElementsByTagName('title')[0].innerHTML.trim(), // get the <title>
+            newURL.substr(0, newURL.length - 1) // get the new URL without the trailing slash
+        );
+    }
 });

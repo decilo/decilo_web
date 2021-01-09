@@ -1364,7 +1364,7 @@ $(document).ready(() => {
 
                                     animateRedirect(
                                         loginTarget == null
-                                            ? window.location.href
+                                            ? SYSTEM_HOSTNAME + 'private/?fromLogin'
                                             : loginTarget
                                     );
 
