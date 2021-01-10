@@ -663,11 +663,7 @@ $(document).ready(() => {
         $('#createMessageBtn')
             .addClass('pulse')
             .on('click', function () {
-                if (
-                    $(this).hasClass('pulse')
-                    &&
-                    localStorage.getItem('hasTriedFAB') == null
-                ) {
+                if ($(this).hasClass('pulse')) {
                     localStorage.setItem('hasTriedFAB', true);
 
                     $(this).removeClass('pulse');
