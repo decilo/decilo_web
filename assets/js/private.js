@@ -177,6 +177,27 @@ $(document).ready(() => {
 
     console.info('document: success fetching critical assets.');
 
+    $('[data-src]').each(function () {
+        $(this)
+            .attr('src', $(this).data('src'))
+            .prev()
+            .css({
+                width:  $(this).parent().width(),
+                height: $(this).parent().width()
+            });
+    });
+
+    $(window).on('resize', () => {
+        $('[data-src]').each(function () {
+            $(this)
+                .prev()
+                    .css({
+                    width:  $(this).parent().width(),
+                    height: $(this).parent().width()
+                });
+        });
+    });
+
     loader = () => {
         console.info('index/window: success loading assets.');
 

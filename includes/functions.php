@@ -73,7 +73,7 @@ function getUserQR() {
             'id' => getUserId()
         ]);
     }
-    
+
     return $_SESSION[USER_QR_STORE];
 }
 
