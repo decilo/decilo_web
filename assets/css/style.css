@@ -216,7 +216,12 @@ input[type="file"] { display: none; }
 
 .fixed-action-btn .btn-large i { transition: transform 0.3s ease-in-out; }
 
-#recentsContainer { overflow: hidden; }
+#recentsContainer {
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+#recentsContainer * { touch-action: pan-y; }
 
 .background {
     width: 100%; height: 96px;

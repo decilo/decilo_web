@@ -525,52 +525,36 @@ $(document).ready(() => {
                 toast('Para enviar tu reporte, seleccioná una opción.');
             }
         });
-        
 
-        if (sortBy != SORTING_METHODS['BY_RELEVANCE']) {
-            tabs = $('.tabs');
+        if (RECIPIENT == null) {
+            if (sortBy != SORTING_METHODS['BY_RELEVANCE']) {
+                tabs = $('.tabs');
 
-            switch (sortBy) {
-                case SORTING_METHODS['BY_RELEVANCE']:
-                    tabs.find('#sortByRelevance').addClass('active');
+                switch (sortBy) {
+                    case SORTING_METHODS['BY_RELEVANCE']:
+                        tabs.find('#sortByRelevance').addClass('active');
 
-                    break;
-                case SORTING_METHODS['BY_DATE']:
-                    tabs.find('#sortByDate').addClass('active');
+                        break;
+                    case SORTING_METHODS['BY_DATE']:
+                        tabs.find('#sortByDate').addClass('active');
 
-                    break;
-                case SORTING_METHODS['BY_LIKES']:
-                    tabs.find('#sortByLikes').addClass('active');
+                        break;
+                    case SORTING_METHODS['BY_LIKES']:
+                        tabs.find('#sortByLikes').addClass('active');
 
-                    break;
-                case SORTING_METHODS['BY_COMMENTS']:
-                    tabs.find('#sortByComments').addClass('active');
+                        break;
+                    case SORTING_METHODS['BY_COMMENTS']:
+                        tabs.find('#sortByComments').addClass('active');
 
-                    break;
-            }
-        }
-
-        $('.tabs')
-            .tabs()
-            .find('span')
-            .removeClass('hide');
-
-        $('.tab').on('click', (event) => {
-            tab = $(event.currentTarget).find('a');
-
-            tabHint = tab.find('span');
-
-            if (!tabHint.is(':visible')) {
-                M.Toast.dismissAll();
-
-                toast('Ordenando ' + tabHint.text());
+                        break;
+                }
             }
 
-            if (!tab.hasClass('active')) {
+            function sortByFromTab(tab) {
                 switch (tab.attr('id')) {
                     case 'sortByRelevance':
                         sortBy = SORTING_METHODS['BY_RELEVANCE'];
-    
+
                         break;
                     case 'sortByDate':
                         sortBy = SORTING_METHODS['BY_DATE'];
@@ -607,7 +591,72 @@ $(document).ready(() => {
                     }, MATERIALIZE_TRANSITION_TIME);
                 });
             }
-        });
+
+            $('.tabs')
+                .tabs()
+                .find('span')
+                .removeClass('hide');
+
+            $('.tab').on('click', (event) => {
+                tab = $(event.currentTarget).find('a');
+
+                tabHint = tab.find('span');
+
+                if (!tabHint.is(':visible')) {
+                    M.Toast.dismissAll();
+
+                    toast('Ordenando ' + tabHint.text());
+                }
+
+                if (!tab.hasClass('active')) {
+                    sortByFromTab(tab);
+                }
+            });
+
+            $('.gridContainer').on('swipeleft', () => {
+                if (window.innerWidth <= 600) {
+                    activeTab = $('.tab .active');
+
+                    if (activeTab.parent().next().find('a').length > 0) {
+                        targetTab = activeTab
+                                        .removeClass('active')
+                                        .parent()
+                                        .next()
+                                        .find('a');
+
+                            targetTab.addClass('active');
+
+                            tabs = M.Tabs.getInstance($('.tabs'));
+                            tabs.$activeTabLink[0] = document.getElementById(targetTab.attr('id'));
+                            tabs.updateTabIndicator();
+
+                            sortByFromTab(targetTab);
+                    }
+                }
+            });
+
+            $('.gridContainer').on('swiperight', () => {
+                if (window.innerWidth <= 600) {
+                    activeTab = $('.tab .active');
+
+                    if (activeTab.parent().prev().find('a').length > 0) {
+                        targetTab = activeTab
+                                        .removeClass('active')
+                                        .parent()
+                                        .prev()
+                                        .find('a');
+
+                        targetTab.addClass('active');
+
+                        tabs = M.Tabs.getInstance($('.tabs'));
+                        tabs.$activeTabLink[0] = document.getElementById(targetTab.attr('id'));
+                        tabs.updateTabIndicator();
+
+                        sortByFromTab(targetTab);
+                    }
+                }
+            });
+        }
     };
 
     if (localStorage.getItem('hasTriedFAB') == null) {
