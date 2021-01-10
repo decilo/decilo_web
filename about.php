@@ -254,6 +254,18 @@ require_once 'views/header.php';
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col s12 m6">
+                <h5> jquery.events.swipe </h5>
+                <p>
+                    Una biblioteca para jQuery capaz de proveer eventos personalizados para detectar swipes horizontales (hacia la izquierda o hacia la derecha).
+                </p>
+                <div>
+                    <a href="https://github.com/andreszs/jquery.events.swipe/" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
+        </div>
     </p>
 
     <p class="flow-text center"> Contenido </p>
