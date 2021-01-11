@@ -146,10 +146,6 @@ FONTS.forEach((font) => {
 
                 loadedFonts.forEach((loadedFont) => {
                     document.fonts.add(loadedFont);
-
-                    if (loadedFont.family = 'Material Icons') {
-                        $('.material-icons').removeClass('deferred-icon');
-                    }
                 });
             }
         });
@@ -1143,24 +1139,6 @@ function tryToDeferAutoTooltip() {
     });
 }
 
-function loadSnowfall() {
-    script          = document.createElement('script');
-    script.src      = 'https://rawcdn.githack.com/loktar00/JQuery-Snowfall/d22ba78f76804e21404bc000142c019d6c10973d/dist/snowfall.jquery.min.js';
-    script.defer    = true;
-    script.onload   = () => {
-        console.info('Snowfall: loaded successfully.');
-
-        $('.nav-wrapper').snowfall({
-            flakeCount  : SNOWFALL['FLAKE_COUNT'],
-            maxSpeed    : SNOWFALL['MAX_SPEED']
-        });
-    }
-
-    document
-        .getElementsByTagName('body')[0]
-        .appendChild(script);
-}
-
 let idleRunner = null;
 function initializeIdleRunner() {
     if (idleRunner != null) {
@@ -1640,6 +1618,8 @@ $(document).ready(() => {
         wallpaper = $('.wallpaper');
         wallpaper.attr('src', wallpaper.attr('data-src'));
 
+        $('.material-icons').removeClass('deferred-icon');
+
         loader();
 
         setTimeout(() => {
@@ -1780,7 +1760,13 @@ $(document).ready(() => {
         }
 
         if (IS_XMAS) {
-            loadSnowfall();
+            script          = document.createElement('script');
+            script.src      = SYSTEM_HOSTNAME + 'assets/js/xmas.min.js';
+            script.onload   = () => {
+                loadSnowfall();
+            }
+
+            document.getElementsByTagName('body')[0].appendChild(script);
         }
 
         registerServiceWorker();

@@ -85,6 +85,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 ];
             }
 
+            if (IS_XMAS) {
+                $css[] = 'assets/css/xmas.min.css';
+            }
+
             $css = array_merge($css, $backupCSS);
         ?>
 

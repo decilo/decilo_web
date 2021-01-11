@@ -10,6 +10,8 @@ define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 
 $title = 'Facturación';
 
+$css = 'billing.min.css';
+
 $js = [
     'billing.min.js?v=6',
     'https://cdnjs.cloudflare.com/ajax/libs/card/2.5.0/jquery.card.min.js',
