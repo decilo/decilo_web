@@ -219,6 +219,7 @@ input[type="file"] { display: none; }
 #recentsContainer {
     overflow: hidden;
     touch-action: pan-y;
+    min-height: 100vh;
 }
 
 #recentsContainer * { touch-action: pan-y; }
