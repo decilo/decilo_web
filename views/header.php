@@ -74,7 +74,7 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             }
 
             if (USE_BUNDLE) {
-                $css = [ 'assets/css/bundle.min.css' ];
+                $css = [ 'assets/css/bundle.min.css?v=' . BUNDLE_VERSION ];
             } else {
                 $css = [
                     // Import MaterializeCSS
