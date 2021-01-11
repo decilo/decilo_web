@@ -178,9 +178,10 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         <header>
             <nav class="nav-extended bg-light-1 bg-dark-1">
                 <div class="nav-wrapper">
-                    <a class="brand-logo thin hand no-select">
+                    <a class="brand-logo thin hand no-select left">
                         <?= IS_XMAS ? '<div id="santaHatOverlayImg" style="background: url(\'assets/icons/santa_hat.webp\');"></div>' : '' ?>
                         <?= SYSTEM_TITLE ?>
+                        <span class="small nsfw-logo badge red darken-4 light-11 dark-5 hide-on-med-and-down" style="display: none;"> +18 </span>
                     </a>
                     <a href="#" data-target="mobile-nav" class="sidenav-trigger" style="display: none; opacity: 0;">
                         <i class="material-icons deferred-icon">menu</i>
@@ -267,6 +268,14 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                     }
 
                     print '
+                            <!-- Switch -->
+                            <div class="switch right">
+                                <label class="light-11 dark-5">
+                                    <span> NSFW +18 </span>
+                                    <input id="nsfwSwitch" type="checkbox">
+                                    <span class="lever"></span>
+                                </label>
+                            </div>
                         </ul>
                     </div>';
                 }

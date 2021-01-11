@@ -29,6 +29,13 @@ if ($request == null) {
                     ||
                     isset($values['recipient']);
 
+                if (!$private) {
+                    $nsfw =
+                        isset($values['nsfw'])
+                            ? $values['nsfw']
+                            : false;
+                }
+
                 $messagesTable = 'd_messages_' . ($private ? 'private' : 'public');
 
                 $position = -1;
@@ -82,6 +89,7 @@ if ($request == null) {
                                 SELECT
                                     `{messagesTable}`.`id`,
                                     `{messagesTable}`.`declaredName`,
+                                    `{messagesTable}`.`nsfw`,
                                     {likesCount}
                                     `{messagesTable}`.`created`, (
                                     SELECT  COUNT(*)
@@ -142,7 +150,9 @@ if ($request == null) {
                             ) AS messageSet
                         ) AS scoringSet
                      ) AS scoringResult
+                     WHERE 1 = 1
                      {countFrom}
+                     {nsfwMode}
                      ORDER BY {sortBy} DESC
                      LIMIT :limit'
                 , [
@@ -153,7 +163,9 @@ if ($request == null) {
                     'recipient'         => $private && $values['recipient'] == null ? // TODO: Is this validation actually necessary? Review that.
                     'AND        `{messagesTable}`.`recipient` = :userId' : '',
                     'countFrom'         => isset($values['after']) ?
-                    'WHERE      `id` {afterDirection} :after' : '',
+                    'AND        `id` {afterDirection} :after' : '',
+                    'nsfwMode'          => $private ? '' :
+                    'AND        `nsfw`  =  :nsfw',
                     'sortBy'            => $sortBy,
                     'scoreCalculation'  => $private ? '' : ', ((comments + likes) / 2) AS score',
                     'likesCount'        => $private ? '' : '`{messagesTable}`.`likes`, '
@@ -178,6 +190,10 @@ if ($request == null) {
                 $statement->bindValue(':maxLength', MESSAGES['MAX_LENGTH']          , PDO::PARAM_INT );
                 $statement->bindValue(':limit'    , INDEX['PUBLIC_MESSAGES_LIMIT']  , PDO::PARAM_INT );
                 $statement->bindValue(':private'  , $private                        , PDO::PARAM_BOOL);
+
+                if (!$private) {
+                    $statement->bindValue(':nsfw', $nsfw, PDO::PARAM_BOOL);
+                }
 
                 $statement->execute();
 
@@ -217,23 +233,29 @@ if ($request == null) {
                                 ]
                             );
                         } else {
+                            $nsfw =
+                                isset($values['nsfw'])
+                                    ? $values['nsfw']
+                                    : false;
+
                             $statement = $database
                                 ->prepare(
                                     'INSERT INTO `d_messages_public` (
                                         `content`,
-                                        `declaredName`
+                                        `declaredName`,
+                                        `nsfw`
                                      ) VALUES (
                                         :content,
-                                        :declaredName
+                                        :declaredName,
+                                        :nsfw
                                      )'
                                 );
 
-                            $statement->execute(
-                                [
-                                    'content'       => trim(strip_tags($values['content'])),
-                                    'declaredName'  => $values['declaredName']
-                                ]
-                            );
+                            $statement->bindValue('content'     ,   trim(strip_tags($values['content']))                 );
+                            $statement->bindValue('declaredName',   $values['declaredName']                              );
+                            $statement->bindValue('nsfw'        ,   $nsfw                               , PDO::PARAM_BOOL);
+
+                            $statement->execute();
                         }
 
                         if ($values['image'] == null) {

@@ -18,6 +18,9 @@ if (RECIPIENT != null) {
     sortBy = SORTING_METHODS['BY_RELEVANCE'];
 }
 
+let nsfwMode            = false;
+let readyForNSFW        = localStorage.getItem('canSeeNSFW') != null;
+
 function resetMessageInputs() {
     $('#messageInput, #declaredName')
         .removeClass('valid')
@@ -103,10 +106,11 @@ function postMessage(messageContent, declaredName, token, image = null) {
             'declaredName'  : declaredName,
             'recipient'     : RECIPIENT,
             'image'         : image,
-            'token'         : token
+            'token'         : token,
+            'nsfw'          : (RECIPIENT == null && typeof(nsfwMode) != 'undefined') ? nsfwMode : undefined
         }, () => {
             disable($('#messageInput, #declaredName, label[for="imageInput"]'));
-            
+
             createPostBtn
                 .removeClass('waves-effect waves-light')
                 .html('Publicando');
@@ -227,6 +231,19 @@ function attachProgressBar() {
         'left'   : createPostBtn.position()['left'],
         'height' : createPostBtn.height()
     });
+}
+
+function switchToNSFW() {
+    nsfwMode     = true;
+    readyForNSFW = true;
+
+    localStorage.setItem('canSeeNSFW', true);
+
+    $('#nsfwSwitch')
+        .prop('checked', true)
+        .change();
+
+    $('#nsfwSwitchModal').modal('close');
 }
 
 $(document).ready(() => {
@@ -656,6 +673,50 @@ $(document).ready(() => {
                     }
                 }
             });
+
+            $('#nsfwSwitch').on('change', (event) => {
+                nsfwMode = $(event.currentTarget).is(':checked');
+
+                if (nsfwMode) {
+                    $(`
+                        nav,
+                        #createMessageBtn,
+                        label[for="imageInput"],
+                        #createPostBtn
+                    `).addClass('bg-nsfw');
+
+                    $('.nsfw-logo').fadeIn();
+
+                    if (localStorage.getItem('canSeeNSFW') == null) {
+                        $('#nsfwSwitchModal').modal('open');
+                    } else {
+                        sortByFromTab($('.tab .active'));
+                    }
+                } else {
+                    $(`
+                        nav,
+                        #createMessageBtn,
+                        label[for="imageInput"],
+                        #createPostBtn
+                    `).removeClass('bg-nsfw');
+
+                    $('.nsfw-logo').fadeOut();
+
+                    if (readyForNSFW) {
+                        sortByFromTab($('.tab .active'));
+                    }
+                }
+            });
+
+            $('#nsfwSwitchModal').modal({
+                onCloseStart: () => {
+                    if (!nsfwMode || !readyForNSFW) {
+                        $('#nsfwSwitch')
+                            .prop('checked', false)
+                            .change();
+                    }
+                }
+            })
         }
     };
 

@@ -587,6 +587,8 @@ function openCommentsModal(message, private) {
     let card = $('.message[data-message="' + message + '"]');
     let image = card.find('img');
 
+    nsfwMode = (RECIPIENT == null && typeof(nsfwMode) != 'undefined') ? nsfwMode : false;
+
     $('#commentsMessageWrapper').html(
         `<ul class="collection border-dark-8">
             <li class="collection-item avatar ` + (image.length > 0 ? '' : 'no-avatar') + ` bg-dark-7">` + (image.length > 0 ? `
@@ -623,7 +625,7 @@ function openCommentsModal(message, private) {
             </div>
 
             <div class="col s6 offset-s6 m3">
-                <button id="sendCommentBtn" type="button" class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn">
+                <button id="sendCommentBtn" type="button" class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn ` + (nsfwMode ? `bg-nsfw` : ``) + `">
                     Enviar
                 </button>
             </div>
@@ -1021,7 +1023,8 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                     startAt:    typeof(lastMessageData) != 'undefined' ? lastMessageData.position : undefined,
                     recipient:  RECIPIENT,
                     private:    PRIVATE,
-                    sortBy:     sortBy
+                    sortBy:     sortBy,
+                    nsfw:       (RECIPIENT == null && typeof(nsfwMode) != 'undefined') ? nsfwMode : undefined
                 }, () => { isPullingChunks = true; })
                 .done((response) => {
                     console.log(response);

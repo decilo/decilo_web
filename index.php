@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js?v=20';
+$title = 'Página principal'; $js = 'index.min.js?v=21';
 
 if (!isset($_GET['to'])) {
     $tabs = [
@@ -167,6 +167,23 @@ if (isset($_GET['to'])) {
                 </div>
             </form>
         </div>
+    </div>
+</div>
+
+<!-- NSFW switch modal -->
+<div id="nsfwSwitchModal" class="modal">
+    <div class="modal-content bg-dark-4 dark-5">
+        <p class="flow-text roboto thin"> ¿Querés entrar al modo NSFW? </h4>
+        <p class="lato thin">
+            Los mensajes que veas en este modo pueden no ser aptos para todo público, contener lenguaje vulgar y sexual, y otras ofensas. <br>
+            <br>
+            Si sos mayor de 18 años, tocá <span class="hand soft-link" onclick="switchToNSFW();">continuar</span>.
+        </p>
+    </div>
+    <div class="divider"></div>
+    <div class="modal-footer bg-dark-4">
+        <button href="#!" class="modal-close waves-effect waves-light btn-flat dark-5"> Cancelar </button>
+        <button onclick="switchToNSFW();" class="waves-effect waves-light btn-flat dark-5"> Continuar </button>
     </div>
 </div>
 

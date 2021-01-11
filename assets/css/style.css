@@ -338,3 +338,45 @@ strong {
     bottom: 0.5em;
     padding-left: 0.25em;
 }
+
+.tabs .switch {
+    position: absolute;
+    bottom: 1em;
+    right: 8px;
+}
+
+.tabs .switch label input[type=checkbox]+.lever { right: -0.5em; }
+
+.tabs .switch label input[type=checkbox]:checked+.lever,
+.tabs .switch label input[type=checkbox]:checked+.lever:after { background-color: #fafafa; }
+
+input[type=checkbox]:checked:not(:disabled) ~ .lever:active::before,
+input[type=checkbox]:checked:not(:disabled).tabbed:focus ~ .lever::before { background-color: #d5d5d526; }
+
+.tabs .switch label span {
+    right: -0.5em;
+    position: relative;
+}
+
+@media only screen and (max-width: 992px) {
+    .tabs .switch {
+        position: fixed;
+        top: 1.5em;
+        display: block;
+    }
+
+    .tabs .switch label span {
+        right: -1em;
+    }
+
+    .brand-logo { margin-left: 1.25em; }
+}
+
+span.small.nsfw-logo.badge {
+    opacity: 0;
+    position: absolute;
+    top: 0.5em;
+    left: 100%;
+    margin-left: 0.50em;
+    min-width: auto;
+}
