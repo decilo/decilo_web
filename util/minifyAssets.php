@@ -10,7 +10,8 @@ define('SETTINGS_PATH', 'includes/settings.php');
 define('ASSETS_PATH', 'assets/');
 define('CSS_PATH', ASSETS_PATH . 'css/');
 define('JS_PATH', ASSETS_PATH . 'js/');
-define('BUNDLE_PATH', JS_PATH . 'bundle.min.js');
+define('CSS_BUNDLE_PATH', CSS_PATH . 'bundle.min.css');
+define('JS_BUNDLE_PATH', JS_PATH . 'bundle.min.js');
 
 print '-> Minifying CSS files...' . PHP_EOL;
 foreach (scandir(CSS_PATH) as $css) {
@@ -31,9 +32,46 @@ foreach (scandir(JS_PATH) as $js) {
 }
 
 if (USE_BUNDLE) {
-    print '-> Rendering bundle...' . PHP_EOL;
-    if (file_exists(BUNDLE_PATH)) {
-        unlink(BUNDLE_PATH);
+    print '-> Rendering CSS bundle...' . PHP_EOL;
+    if (file_exists(CSS_BUNDLE_PATH)) {
+        unlink(CSS_BUNDLE_PATH);
+    }
+
+    $bundleContent = '';
+
+    foreach (CORE_STYLESHEETS as $name => $src) {
+        $curlOptions = [
+            CURLOPT_FOLLOWLOCATION  => true,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_SSL_VERIFYHOST  => false,
+            CURLOPT_SSL_VERIFYPEER  => false
+        ];
+
+        if (strpos($src, 'http') === false) {
+            $src = SHARED_VALUES['SYSTEM_HOSTNAME'] . $src;
+
+            $curlOptions[CURLOPT_SSL_VERIFYHOST] = false;
+            $curlOptions[CURLOPT_SSL_VERIFYPEER] = false;
+        }
+
+        $curlOptions[CURLOPT_URL] = $src;
+
+        print ' > Downloading and appending from: ' . $src . PHP_EOL;
+
+        $request = curl_init();
+
+        curl_setopt_array($request, $curlOptions);
+
+        $bundleContent .= curl_exec($request);
+    }
+
+    file_put_contents(CSS_BUNDLE_PATH, $bundleContent, FILE_APPEND);
+
+    $fullBundle = $bundleContent;
+
+    print '-> Rendering JS bundle...' . PHP_EOL;
+    if (file_exists(JS_BUNDLE_PATH)) {
+        unlink(JS_BUNDLE_PATH);
     }
 
     $bundleContent = '';
@@ -64,9 +102,11 @@ if (USE_BUNDLE) {
         $bundleContent .= curl_exec($request);
     }
 
-    file_put_contents(BUNDLE_PATH, $bundleContent, FILE_APPEND);
+    file_put_contents(JS_BUNDLE_PATH, $bundleContent, FILE_APPEND);
 
-    print '-> Updating bundle version...';
+    $fullBundle .= $bundleContent;
+
+    print '-> Updating bundle version...' . PHP_EOL;
 
     $settings = explode(PHP_EOL, file_get_contents(SETTINGS_PATH));
 
@@ -79,7 +119,7 @@ if (USE_BUNDLE) {
             SETTINGS_PATH,
             (
                 strpos($line, 'BUNDLE_VERSION') !== false
-                    ? explode(',', $line)[0] . ', \'' . hash(BUNDLE_HASH_ALGO, $bundleContent) . '\');'
+                    ? explode(',', $line)[0] . ', \'' . hash(BUNDLE_HASH_ALGO, $fullBundle) . '\');'
                     : $line
             ) . ($index < $lineCount - 1 ? PHP_EOL : ''),
             FILE_APPEND

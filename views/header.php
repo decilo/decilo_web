@@ -73,13 +73,17 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
                 }
             }
 
-            $css = [
-                // Import MaterializeCSS
-                'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
+            if (USE_BUNDLE) {
+                $css = [ 'assets/css/bundle.min.css' ];
+            } else {
+                $css = [
+                    // Import MaterializeCSS
+                    'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
 
-                // Custom styles.
-                'assets/css/style.min.css?v=20'
-            ];
+                    // Custom styles.
+                    'assets/css/style.min.css?v=20'
+                ];
+            }
 
             $css = array_merge($css, $backupCSS);
         ?>
