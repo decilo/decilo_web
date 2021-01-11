@@ -33,8 +33,6 @@ let gotHistoryPushState = false;
 
 let userNavBackground = null;
 
-let chunkPuller = null;
-
 const FONTS = [
     {
         family:  'Lato',
@@ -1012,17 +1010,13 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
             if (isPullingChunks) {
                 console.info('tryToPullChunks: cannot pull now, there\'s a pending request.');
             } else {
-                if (chunkPuller != null) {
-                    chunkPuller.abort();
-                }
-
                 lastMessageData = getLastMessageData();
 
                 gridContainer = $('.gridContainer');
 
                 preloader = gridContainer.find('.preloader-container');
  
-                chunkPuller = run('messagesManager', 'getRecent', {
+                run('messagesManager', 'getRecent', {
                     after:      typeof(lastMessageData) != 'undefined' ? lastMessageData.message  : undefined,
                     startAt:    typeof(lastMessageData) != 'undefined' ? lastMessageData.position : undefined,
                     recipient:  RECIPIENT,
@@ -1107,9 +1101,6 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                     isPullingChunks = false;
 
                     console.error(error);
-                })
-                .always(() => {
-                    chunkPuller = null;
                 });
             }
         } else {
