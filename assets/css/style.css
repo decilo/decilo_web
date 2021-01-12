@@ -362,6 +362,7 @@ input[type=checkbox]:checked:not(:disabled).tabbed:focus ~ .lever::before { back
     .tabs .switch {
         position: fixed;
         top: 1.5em;
+        height: 0;
         display: block;
     }
 
@@ -380,5 +381,3 @@ span.small.nsfw-logo.badge {
     margin-left: 0.50em;
     min-width: auto;
 }
-
-.fixed-action-btn.direction-top { z-index: 99999999; }
