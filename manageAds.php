@@ -8,7 +8,7 @@ if (!COMPANY['ENABLE']) {
 
 define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 
-$title = 'Anuncios'; $css = 'manageAds.min.css'; $js = 'manageAds.min.js?v=2';
+$title = 'Anuncios'; $css = 'manageAds.min.css'; $js = 'manageAds.min.js';
 
 $userId = getUserId();
 

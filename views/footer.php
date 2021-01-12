@@ -98,17 +98,26 @@
             foreach (CORE_SCRIPTS as $name => $src) {
                 print '
                 <!-- ' . $name . ' -->
-                <script type="text/javascript" src="' . $src . '" onload="console.info(\'' . $name . ': loaded successfully.\');"></script>';
+                <script
+                    type="text/javascript"
+                    src="' . $src . (
+                        strpos($src, 'http') === false
+                            ? '?v=' . getVersionFromPath($src)
+                            : ''
+                    ) . '"
+                    onload="console.info(\'' . $name . ': loaded successfully.\');"
+                >
+                </script>';
             }
         }
 
         if (isset($js)) {
             if (is_array($js)) {
                 foreach ($js as $src) {
-                    print '<script src="' . (strpos($src, 'http') !== false ? $src : 'assets/js/' . $src) . '"></script>';
+                    print '<script src="' . (strpos($src, 'http') !== false ? $src : 'assets/js/' . $src . '?v=' . getVersionFromPath('assets/js/' . $src)) . '"></script>';
                 }
             } else {
-                print '<script src="' . (strpos($js, 'http') !== false ? $js : 'assets/js/' . $js) . '"></script>';
+                print '<script src="' . (strpos($js, 'http') !== false ? $js : 'assets/js/' . $js . '?v=' . getVersionFromPath('assets/js/' . $js)) . '"></script>';
             }
         }
 

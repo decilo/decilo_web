@@ -74,19 +74,19 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
             }
 
             if (USE_BUNDLE) {
-                $css = [ 'assets/css/bundle.min.css?v=' . BUNDLE_VERSION ];
+                $css = [ 'bundle.min.css' ];
             } else {
                 $css = [
                     // Import MaterializeCSS
                     'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
 
                     // Custom styles.
-                    'assets/css/style.min.css?v=20'
+                    'style.min.css'
                 ];
             }
 
             if (IS_XMAS) {
-                $css[] = 'assets/css/xmas.min.css';
+                $css[] = 'xmas.min.css';
             }
 
             $css = array_merge($css, $backupCSS);
@@ -106,10 +106,28 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         if (isset($css)) {
             if (is_array($css)) {
                 foreach ($css as $href) {
-                    print '<link rel="preload" as="style" href="' . $href . '">';
+                    print
+                        '<link
+                            rel="preload"
+                            as="style"
+                            href="' . (
+                                strpos($href, 'http') === false
+                                    ? 'assets/css/' . $href . '?v=' . getVersionFromPath('assets/css/' . $href) 
+                                    : $href
+                            ) . '"
+                         >';
                 }
             } else {
-                print '<link rel="preload" as="style" href="assets/css/' . $css . '">';
+                print
+                    '<link
+                        rel="preload"
+                        as="style"
+                        href="' . (
+                            strpos($css, 'http') === false
+                                ? 'assets/css/' . $css . '?v=' . getVersionFromPath('assets/css/' . $css) 
+                                : $css
+                        ) . '"
+                     >';
             }
         }
 

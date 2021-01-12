@@ -893,4 +893,10 @@ function isNSFW() {
     return isset($_GET['nsfw']);
 }
 
+function getVersionFromPath($path) {
+    return USE_BUNDLE
+        ? BUNDLE_VERSION
+        : hash('crc32', file_get_contents($path));
+}
+
 ?>

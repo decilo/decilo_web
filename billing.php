@@ -13,7 +13,7 @@ $title = 'Facturación';
 $css = 'billing.min.css';
 
 $js = [
-    'billing.min.js?v=6',
+    'billing.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/card/2.5.0/jquery.card.min.js',
     'https://cdn.jsdelivr.net/npm/payform@1.4.0/dist/jquery.payform.min.js',
     'https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js'

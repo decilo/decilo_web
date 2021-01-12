@@ -3,7 +3,7 @@
 define('MAINTENANCE', true);
 
 $title = 'Mantenimiento';
-$css = 'maintenance.min.css'; $js = 'maintenance.min.js?v=2';
+$css = 'maintenance.min.css'; $js = 'maintenance.min.js';
 
 chdir('..');
 

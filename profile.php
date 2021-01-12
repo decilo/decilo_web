@@ -4,7 +4,7 @@ require_once 'includes/main.php';
 
 define('MIN_ACCESS_LEVEL', USER_LEVEL_CUSTOMER);
 
-$css = 'profile.min.css'; $js = 'profile.min.js?v=1';
+$css = 'profile.min.css'; $js = 'profile.min.js';
 
 require_once 'views/header.php';
 

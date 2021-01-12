@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Mis mensajes'; $js = 'private.min.js?v=5';
+$title = 'Mis mensajes'; $js = 'private.min.js';
 
 require_once 'includes/main.php'; 
 
