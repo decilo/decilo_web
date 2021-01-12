@@ -22,6 +22,7 @@ AddOutputFilterByType DEFLATE application/x-javascript
 
 RewriteEngine On
 
+RewriteRule ^nsfw/?$                  /index.php?nsfw               [L]
 RewriteRule ^profile/?$               /profile.php                  [L]
 RewriteRule ^private/?$               /private.php?=$1              [L]
 RewriteRule ^privacy/?$               /privacy.php                  [L]
@@ -30,6 +31,7 @@ RewriteRule ^company/?$               /company.php                  [L]
 RewriteRule ^company/ads/manage/?$    /manageAds.php                [L]
 RewriteRule ^company/billing/?$       /billing.php                  [L]
 RewriteRule ^view/(\d+)$              /view.php?message=$1          [L]
+RewriteRule ^view/nsfw/(\d+)$         /view.php?message=$1&nsfw     [L]
 RewriteRule ^view/private/(\d+)$      /view.php?message=$1&private  [L]
 RewriteRule ^to/(.*)$                 /?to=$1                       [L]
 

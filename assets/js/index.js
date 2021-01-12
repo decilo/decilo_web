@@ -18,7 +18,7 @@ if (RECIPIENT != null) {
     sortBy = SORTING_METHODS['BY_RELEVANCE'];
 }
 
-let nsfwMode            = false;
+let nsfwMode            = typeof(NSFW) == 'undefined' ? false : NSFW;
 let readyForNSFW        = localStorage.getItem('canSeeNSFW') != null;
 
 function resetMessageInputs() {
@@ -259,6 +259,10 @@ $(document).ready(() => {
             attachProgressBar();
         }
     });
+
+    if (getStatusForNSFW() && localStorage.getItem('canSeeNSFW') == null) {
+        animateRedirect(SYSTEM_HOSTNAME + 'exceptions/forbidden');
+    }
 
     let fabDOM = $('.fixed-action-btn');
 
@@ -630,16 +634,42 @@ $(document).ready(() => {
                 }
             });
 
-            $('.gridContainer').on('swipeleft', () => {
-                if (window.innerWidth <= 600) {
-                    activeTab = $('.tab .active');
+            if (INDEX['SWIPE_ENABLE']) {
+                $.detectSwipe.threshold         = INDEX['SWIPE_THRESHOLD'];
+                $.detectSwipe.preventDefault    = false;
 
-                    if (activeTab.parent().next().find('a').length > 0) {
-                        targetTab = activeTab
-                                        .removeClass('active')
-                                        .parent()
-                                        .next()
-                                        .find('a');
+                $('.gridContainer').on('swipeleft', () => {
+                    if (window.innerWidth <= 600) {
+                        activeTab = $('.tab .active');
+
+                        if (activeTab.parent().next().find('a').length > 0) {
+                            targetTab = activeTab
+                                            .removeClass('active')
+                                            .parent()
+                                            .next()
+                                            .find('a');
+
+                                targetTab.addClass('active');
+
+                                tabs = M.Tabs.getInstance($('.tabs'));
+                                tabs.$activeTabLink[0] = document.getElementById(targetTab.attr('id'));
+                                tabs.updateTabIndicator();
+
+                                sortByFromTab(targetTab);
+                        }
+                    }
+                });
+
+                $('.gridContainer').on('swiperight', () => {
+                    if (window.innerWidth <= 600) {
+                        activeTab = $('.tab .active');
+
+                        if (activeTab.parent().prev().find('a').length > 0) {
+                            targetTab = activeTab
+                                            .removeClass('active')
+                                            .parent()
+                                            .prev()
+                                            .find('a');
 
                             targetTab.addClass('active');
 
@@ -648,31 +678,10 @@ $(document).ready(() => {
                             tabs.updateTabIndicator();
 
                             sortByFromTab(targetTab);
+                        }
                     }
-                }
-            });
-
-            $('.gridContainer').on('swiperight', () => {
-                if (window.innerWidth <= 600) {
-                    activeTab = $('.tab .active');
-
-                    if (activeTab.parent().prev().find('a').length > 0) {
-                        targetTab = activeTab
-                                        .removeClass('active')
-                                        .parent()
-                                        .prev()
-                                        .find('a');
-
-                        targetTab.addClass('active');
-
-                        tabs = M.Tabs.getInstance($('.tabs'));
-                        tabs.$activeTabLink[0] = document.getElementById(targetTab.attr('id'));
-                        tabs.updateTabIndicator();
-
-                        sortByFromTab(targetTab);
-                    }
-                }
-            });
+                });
+            }
 
             $('#nsfwSwitch').on('change', (event) => {
                 nsfwMode = $(event.currentTarget).is(':checked');
@@ -690,6 +699,12 @@ $(document).ready(() => {
                     if (localStorage.getItem('canSeeNSFW') == null) {
                         $('#nsfwSwitchModal').modal('open');
                     } else {
+                        window.history.replaceState(
+                            null,
+                            $('title').html().trim(),
+                            SYSTEM_HOSTNAME + 'nsfw'
+                        );
+
                         sortByFromTab($('.tab .active'));
                     }
                 } else {
@@ -705,6 +720,12 @@ $(document).ready(() => {
                     if (readyForNSFW) {
                         sortByFromTab($('.tab .active'));
                     }
+
+                    window.history.replaceState(
+                        null,
+                        $('title').html().trim(),
+                        SYSTEM_HOSTNAME.substr(0, SYSTEM_HOSTNAME.length - 1)
+                    );
                 }
             });
 

@@ -347,8 +347,8 @@ strong {
 
 .tabs .switch label input[type=checkbox]+.lever { right: -0.5em; }
 
-.tabs .switch label input[type=checkbox]:checked+.lever,
-.tabs .switch label input[type=checkbox]:checked+.lever:after { background-color: #fafafa; }
+.tabs .switch label input[type=checkbox]:checked+.lever       { background-color: #d8d8d8; }
+.tabs .switch label input[type=checkbox]:checked+.lever:after { background-color: #f2eeee; }
 
 input[type=checkbox]:checked:not(:disabled) ~ .lever:active::before,
 input[type=checkbox]:checked:not(:disabled).tabbed:focus ~ .lever::before { background-color: #d5d5d526; }
@@ -380,3 +380,5 @@ span.small.nsfw-logo.badge {
     margin-left: 0.50em;
     min-width: auto;
 }
+
+.fixed-action-btn.direction-top { z-index: 99999999; }

@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js?v=21';
+$title = 'Página principal'; $js = 'index.min.js?v=23';
 
 if (!isset($_GET['to'])) {
     $tabs = [
@@ -209,6 +209,7 @@ if (isset($_GET['to'])) {
 <script>
     const RECIPIENT = <?= json_encode($recipientUsername)        ?>;
     const LOGGED_IN = <?= json_encode(getUserId() != null)       ?>;
+    const NSFW      = <?= json_encode(isset($_GET['nsfw']))      ?>;
     const PRIVATE   = false;
 </script>
 

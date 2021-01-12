@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Ver'; $js = 'view.min.js?v=4';
+$title = 'Ver'; $js = 'view.min.js?v=5';
 
 require_once 'includes/functions.php';
 require_once 'includes/main.php';
@@ -78,7 +78,11 @@ require_once 'views/header.php';
         </div>
 
         <div class="col s6 offset-s6 m3">
-            <button id="sendCommentBtn" type="button" class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn">
+            <button
+                id="sendCommentBtn"
+                type="button"
+                class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn <?= isset($_GET['nsfw']) ? 'bg-nsfw' : '' ?>"
+            >
                 Enviar
             </button>
         </div>
@@ -97,8 +101,9 @@ require_once 'views/header.php';
 </div>
 
 <script>
-    const MESSAGE = <?= json_encode($_GET['message'])               ?>;
-    const PRIVATE = <?= json_encode(isset($message['recipient']))   ?>;
+    const MESSAGE   = <?= json_encode($_GET['message'])               ?>;
+    const PRIVATE   = <?= json_encode(isset($message['recipient']))   ?>;
+    const NSFW      = <?= json_encode(isset($_GET['nsfw']))           ?>;
 </script>
 
 <?php require_once 'views/footer.php'; ?>

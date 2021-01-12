@@ -1,4 +1,8 @@
 $(document).ready(() => {
+    if (getStatusForNSFW() && localStorage.getItem('canSeeNSFW') == null) {
+        animateRedirect(SYSTEM_HOSTNAME + 'exceptions/forbidden');
+    }
+
     function bindAccordionDisabler() {
         $('.collapsible .collapsible-header').on('click', (event) => {
             console.log(event);
