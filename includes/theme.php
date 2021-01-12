@@ -122,4 +122,4 @@ body, main, nav, .material-icons, button, .btn {
         opacity          <?= UI_SETTINGS['MATERIALIZE_TRANSITION_TIME'] / 1000 ?>s linear;
 }
 
-.bg-nsfw { background-color: #272727 !important; }
+.bg-nsfw { background-color: #<?= getColorForNSFW() ?> !important; }

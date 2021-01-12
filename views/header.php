@@ -38,9 +38,9 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
         <meta name="keywords" content="secret, secreto, secretos, contar, contá, compartir, compartí, multimedia, contenido, fotos, imágenes, imagenes, comparti, conta, hablar, charlar, charlá, charla, di, deci, decí">
 
         <meta name="apple-mobile-web-app-title" content="<?= SYSTEM_TITLE ?>">
-        <meta name="msapplication-TileColor" content="#C121A7">
+        <meta name="msapplication-TileColor" content="#<?= isNSFW() ? getColorForNSFW() : 'C121A7' ?>">
         <meta name="msapplication-config" content="assets/misc/browserconfig.xml">
-        <meta name="theme-color" content="#C121A7">
+        <meta name="theme-color" content="#<?= isNSFW() ? getColorForNSFW() : 'C121A7' ?>">
 
         <script>
             <?php

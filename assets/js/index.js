@@ -694,6 +694,9 @@ $(document).ready(() => {
                         #createPostBtn
                     `).addClass('bg-nsfw');
 
+                    $('meta[name="msapplication-TileColor"], meta[name="theme-color"]')
+                        .attr('content', '#' + THEME_NSFW_COLOR);
+
                     $('.nsfw-logo').fadeIn();
 
                     if (localStorage.getItem('canSeeNSFW') == null) {
@@ -714,6 +717,9 @@ $(document).ready(() => {
                         label[for="imageInput"],
                         #createPostBtn
                     `).removeClass('bg-nsfw');
+
+                    $('meta[name="msapplication-TileColor"], meta[name="theme-color"]')
+                        .attr('content', '#' + THEME_COLOR);
 
                     $('.nsfw-logo').fadeOut();
 

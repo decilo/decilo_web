@@ -885,6 +885,10 @@ function getRandomWallpaper() {
     return $url;
 }
 
+function getColorForNSFW() {
+    return SHARED_VALUES['THEME_NSFW_COLOR'];
+}
+
 function isNSFW() {
     return isset($_GET['nsfw']);
 }
