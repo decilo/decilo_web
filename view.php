@@ -81,7 +81,7 @@ require_once 'views/header.php';
             <button
                 id="sendCommentBtn"
                 type="button"
-                class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn <?= isset($_GET['nsfw']) ? 'bg-nsfw' : '' ?>"
+                class="btn waves-effect waves-light col right btn-block bg-light-1 bg-dark-1 dark-5 fixed-width-btn fixed-height-btn <?= isNSFW() ? 'bg-nsfw' : '' ?>"
             >
                 Enviar
             </button>
@@ -101,9 +101,9 @@ require_once 'views/header.php';
 </div>
 
 <script>
-    const MESSAGE   = <?= json_encode($_GET['message'])               ?>;
-    const PRIVATE   = <?= json_encode(isset($message['recipient']))   ?>;
-    const NSFW      = <?= json_encode(isset($_GET['nsfw']))           ?>;
+    const MESSAGE   = <?= json_encode($_GET['message'])             ?>;
+    const PRIVATE   = <?= json_encode(isset($message['recipient'])) ?>;
+    const NSFW      = <?= json_encode(isNSFW())                     ?>;
 </script>
 
 <?php require_once 'views/footer.php'; ?>

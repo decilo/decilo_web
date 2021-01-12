@@ -885,4 +885,8 @@ function getRandomWallpaper() {
     return $url;
 }
 
+function isNSFW() {
+    return isset($_GET['nsfw']);
+}
+
 ?>
