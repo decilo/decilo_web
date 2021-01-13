@@ -511,64 +511,67 @@ if ($request == null) {
                 } else {
                     $user = getCurrentUser();
 
-                    $email = new \SendGrid\Mail\Mail();
+                    $main->getAsyncPool()
+                            ->add(function () use ($user) {
+                                $email = new \SendGrid\Mail\Mail();
 
-                    $email->setFrom(SENDGRID_NOREPLY_ADDRESS, SYSTEM_TITLE);
+                                $email->setFrom(SENDGRID_NOREPLY_ADDRESS, SYSTEM_TITLE);
 
-                    $email->setSubject('Te dejamos una copia de tus datos - ' . SYSTEM_TITLE);
+                                $email->setSubject('Te dejamos una copia de tus datos - ' . SYSTEM_TITLE);
 
-                    $email->addTo(
-                        $user['mailAddress'],
-                        $user['username'] == null ? $user['mailAddress'] : $user['username']
-                    );
+                                $email->addTo(
+                                    $user['mailAddress'],
+                                    $user['username'] == null ? $user['mailAddress'] : $user['username']
+                                );
 
-                    $writer = new XLSXWriter();
+                                $writer = new XLSXWriter();
 
-                    $writer->writeSheet(
-                        getExcelSheet(
-                            getColumnNames('d_messages_private', [ 'recipient' ]),
-                            getPrivateMessages($user['id'], false, false)
-                        ),
-                        'Mensajes privados'
-                    );
+                                $writer->writeSheet(
+                                    getExcelSheet(
+                                        getColumnNames('d_messages_private', [ 'recipient' ]),
+                                        getPrivateMessages($user['id'], false, false)
+                                    ),
+                                    'Mensajes privados'
+                                );
 
-                    $writer->writeSheet(
-                        getExcelSheet(
-                            getColumnNames('d_challenges'),
-                            getChallenges($_SERVER['REMOTE_ADDR'], false)
-                        ),
-                        'Desafíos de seguridad'
-                    );
+                                $writer->writeSheet(
+                                    getExcelSheet(
+                                        getColumnNames('d_challenges'),
+                                        getChallenges($_SERVER['REMOTE_ADDR'], false)
+                                    ),
+                                    'Desafíos de seguridad'
+                                );
 
-                    $email->addAttachment(
-                        base64_encode($writer->writeToString()),
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        'tus_datos.xlsx',
-                        'attachment'
-                    );
+                                $email->addAttachment(
+                                    base64_encode($writer->writeToString()),
+                                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                    'tus_datos.xlsx',
+                                    'attachment'
+                                );
 
-                    $email->addContent(
-                        'text/html',
-                        getRenderedMail(
-                            'Te dejamos una copia de tus datos',
-                            'Tenés un archivo adjunto disponible con una copia de lo que sabemos de vos.'
-                        )
-                    );
+                                $email->addContent(
+                                    'text/html',
+                                    getRenderedMail(
+                                        'Te dejamos una copia de tus datos',
+                                        'Tenés un archivo adjunto disponible con una copia de lo que sabemos de vos.'
+                                    )
+                                );
 
-                    $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
+                                $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
 
-                    try {
-                        $response = $sendgrid->send($email);
+                                $sendgrid->send($email);
 
-                        $statusCode = $response->statusCode();
+                                // TODO: Bring back exception handling.
+                                //
+                                // try {
+                                //     $response = $sendgrid->send($email);
+                                //     $statusCode = $response->statusCode();
+                                // } catch (Exception $exception) {
+                                //     reply($exception->getMessage(), ERROR);
+                                // }
+                            });
 
-                        reply(
-                            [ 'mailAddress' => $user['mailAddress'] ],
-                            $statusCode == 200 || $statusCode == 202 ? OK : ERROR
-                        );
-                    } catch (Exception $exception) {
-                        reply($exception->getMessage(), ERROR);
-                    }
+                    reply([ 'mailAddress' => $user['mailAddress'] ]);
                 }
 
                 break;
