@@ -100,15 +100,7 @@ if (isset($_GET['to'])) {
         </p>
 
         <?php
-        foreach (getReportReasons() as $reportReason) {
-            print '
-            <p>
-                <label>
-                    <input name="reportReason" type="radio" value="' . $reportReason['id'] . '" />
-                    <span class="' . ($reportReason['score'] < 0 ? 'red-text medium' : 'regular') . '"> ' . $reportReason['reason'] . ' </span>
-                </label>
-            </p>';
-        }
+            readfile('views/reportReasons.html');
         ?>
     </div>
     <div class="modal-footer bg-dark-4 dark-5">

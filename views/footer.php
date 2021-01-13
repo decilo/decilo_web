@@ -124,3 +124,5 @@
         ?>
     </body>
 </html>
+
+<?= preg_replace('/\s+/', ' ', ob_get_clean()) ?>

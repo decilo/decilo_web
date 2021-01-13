@@ -857,32 +857,47 @@ function getReportedMessages() {
 }
 
 function getRandomWallpaper() {
-    global $database;
+    if (isset($_SESSION[USER_WALLPAPER_STORE])) {
+        return $_SESSION[USER_WALLPAPER_STORE];
+    } else {
+        global $main; global $database;
 
-    $url = FALLBACK_WALLPAPER;
+        $url = FALLBACK_WALLPAPER;
 
-    if ($database != null) {
-        $statement =
-            $database->prepare(
-                'SELECT
-                    d_wallpapers.id, d_wallpapers.url
-                FROM
-                    d_wallpapers,
-                    (
-                        SELECT      id
-                        FROM        d_wallpapers
-                        ORDER BY    RAND()
-                        LIMIT       1
-                    ) AS randomizer
-                WHERE d_wallpapers.id = randomizer.id'
-            );
-        
-        $statement->execute();
+        if ($database != null) {
+            $main->getAsyncPool()
+                    ->add(function () use ($database) {
+                        $statement =
+                            $database->prepare(
+                                'SELECT
+                                    d_wallpapers.id, d_wallpapers.url
+                                 FROM
+                                    d_wallpapers,
+                                    (
+                                        SELECT      id
+                                        FROM        d_wallpapers
+                                        ORDER BY    RAND()
+                                        LIMIT       1
+                                    ) AS randomizer
+                                 WHERE d_wallpapers.id = randomizer.id'
+                            );
+                        
+                        $statement->execute();
 
-        $url = $statement->fetch()['url'];
+                        return $statement->fetch()['url'];
+                    })
+                    ->then(function ($output) {
+                        $_SESSION[USER_WALLPAPER_STORE] = $output;
+                    })
+                    ->catch(function () {
+                        redirect('exceptions/maintenance');
+                    });
+        }
+
+        $_SESSION[USER_WALLPAPER_STORE] = $url;
+
+        return $_SESSION[USER_WALLPAPER_STORE];
     }
-
-    return $url;
 }
 
 function getColorForNSFW() {

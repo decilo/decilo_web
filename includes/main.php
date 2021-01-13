@@ -1,7 +1,10 @@
 <?php
 
+use Spatie\Async\Pool;
+
 class Main {
-    private ?PDO $database = null;
+    private ?PDO  $database  = null;
+    private ?Pool $asyncPool = null;
 
     private function loadDependencies() {
         // Include Composer modules.
@@ -51,16 +54,29 @@ class Main {
         }
     }
 
+    private function initializeAsyncPool() {
+        $this->asyncPool = Pool::create();
+    }
+
     public function __construct() {
         $this->loadDependencies();
         $this->loadHeaders();
         $this->connectDatabase();
         $this->refreshSession();
         $this->buildConstants();
+        $this->initializeAsyncPool();
     }
 
     public function getDatabase() {
         return $this->database;
+    }
+
+    public function getAsyncPool() {
+        if ($this->asyncPool == null) {
+            throw new Exception('Failed to create the main async pool.');
+        }
+
+        return $this->asyncPool;
     }
 }
 

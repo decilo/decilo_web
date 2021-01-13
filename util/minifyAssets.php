@@ -4,14 +4,17 @@ use MatthiasMullie\Minify;
 
 require_once 'vendor/autoload.php';
 
-require_once 'includes/settings.php';
+require_once 'includes/main.php';
 
 define('SETTINGS_PATH', 'includes/settings.php');
 define('ASSETS_PATH', 'assets/');
+define('VIEWS_PATH', 'views/');
+
 define('CSS_PATH', ASSETS_PATH . 'css/');
 define('JS_PATH', ASSETS_PATH . 'js/');
 define('CSS_BUNDLE_PATH', CSS_PATH . 'bundle.min.css');
 define('JS_BUNDLE_PATH', JS_PATH . 'bundle.min.js');
+define('REPORT_REASONS_CACHE_PATH', VIEWS_PATH . 'reportReasons.html');
 
 print '-> Minifying CSS files...' . PHP_EOL;
 foreach (scandir(CSS_PATH) as $css) {
@@ -125,6 +128,27 @@ if (USE_BUNDLE) {
             FILE_APPEND
         );
     }
+
+    print '-> Building report reasons static cache...' . PHP_EOL;
+
+    $reportReasonsCache = '';
+    foreach (getReportReasons() as $reportReason) {
+        $reportReasonsCache .= trim(
+            preg_replace(
+                '/\s+/'
+                ,
+                ' ', '
+                <p>
+                    <label>
+                        <input name="reportReason" type="radio" value="' . $reportReason['id'] . '" />
+                        <span class="' . ($reportReason['score'] < 0 ? 'red-text medium' : 'regular') . '"> ' . $reportReason['reason'] . ' </span>
+                    </label>
+                </p>'
+            )
+        );
+    }
+
+    file_put_contents(REPORT_REASONS_CACHE_PATH, $reportReasonsCache);
 }
 
 ?>

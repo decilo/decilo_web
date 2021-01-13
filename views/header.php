@@ -24,6 +24,8 @@ if (defined('MIN_ACCESS_LEVEL') && (getAllowance() == null || getAllowance() < M
     redirect(SYSTEM_HOSTNAME);
 }
 
+$globalBuffer = ob_start();
+
 ?>
 
 <!DOCTYPE html>
