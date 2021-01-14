@@ -66,7 +66,9 @@ class Main {
     }
 
     public function getAsyncPool() {
-        return Pool::create();
+        return
+            Pool::create()
+                    ->forceSynchronous();
     }
 }
 

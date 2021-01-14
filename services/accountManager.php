@@ -559,8 +559,6 @@ if ($request == null) {
 
                                 $sendgrid = new \SendGrid(SENDGRID_NOREPLY_KEY);
 
-                                $sendgrid->send($email);
-
                                 // TODO: Bring back exception handling.
                                 //
                                 // try {
@@ -569,6 +567,8 @@ if ($request == null) {
                                 // } catch (Exception $exception) {
                                 //     reply($exception->getMessage(), ERROR);
                                 // }
+
+                                return $sendgrid->send($email);
                             });
 
                     reply([ 'mailAddress' => $user['mailAddress'] ]);
