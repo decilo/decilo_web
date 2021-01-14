@@ -68,10 +68,10 @@ $globalBuffer = ob_start();
             if (isset($css)) {
                 if (is_array($css)) {
                     foreach ($css as $preBackupCSS) {
-                        $backupCSS[] = strpos($css, 'http') !== false ? $css : 'assets/css/' . $css;
+                        $backupCSS[] = $preBackupCSS;
                     }
                 } else {
-                    $backupCSS = [ strpos($css, 'http') !== false ? $css : 'assets/css/' . $css ];
+                    $backupCSS = [ $css ];
                 }
             }
 
