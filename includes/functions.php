@@ -860,13 +860,15 @@ function getRandomWallpaper() {
     if (isset($_SESSION[USER_WALLPAPER_STORE])) {
         return $_SESSION[USER_WALLPAPER_STORE];
     } else {
-        global $main; global $database;
+        global $main;
 
         $url = FALLBACK_WALLPAPER;
 
-        if ($database != null) {
-            $main->getAsyncPool()
-                    ->add(function () use ($database) {
+        $main->getAsyncPool()
+                ->add(function () {
+                    global $database;
+
+                    if ($database != null) {
                         $statement =
                             $database->prepare(
                                 'SELECT
@@ -885,19 +887,21 @@ function getRandomWallpaper() {
                         $statement->execute();
 
                         return $statement->fetch()['url'];
-                    })
-                    ->then(function ($output) {
-                        $_SESSION[USER_WALLPAPER_STORE] = $output;
-                    })
-                    ->catch(function () {
-                        redirect('exceptions/maintenance');
-                    });
-        }
-
-        $_SESSION[USER_WALLPAPER_STORE] = $url;
-
-        return $_SESSION[USER_WALLPAPER_STORE];
+                    } else {
+                        return FALLBACK_WALLPAPER;
+                    }
+                })
+                ->then(function ($output) {
+                    $_SESSION[USER_WALLPAPER_STORE] = $output;
+                })
+                ->catch(function () {
+                    redirect('exceptions/maintenance');
+                });
     }
+
+    $_SESSION[USER_WALLPAPER_STORE] = $url;
+
+    return $_SESSION[USER_WALLPAPER_STORE];
 }
 
 function getColorForNSFW() {
