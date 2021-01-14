@@ -1630,18 +1630,29 @@ $(document).ready(() => {
 
         loader();
 
-        setTimeout(() => {
-            var script = null;
+        if (DO_NOT_TRACK) {
+            console.info('common/pushLoader: DNT header found, analytics tracking have been disabled for this session.');
+        } else {
+            console.info('common/pushLoader: Google Tag Manager will be injected in ' + (IDLE_TIMEOUT / 1000) + ' seconds.');
 
-            // Global Tag Manager (gtag.js)
-            script          = document.createElement('script');
-            script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
-            script.onload   = setupGoogleAnalytics;
+            setTimeout(() => {
+                console.info('common/pushLoader: trying to load Google Tag Manager.');
 
-            script.defer    = true;
+                var script = null;
 
-            document.getElementsByTagName('body')[0].appendChild(script);
-        }, IDLE_TIMEOUT);
+                // Global Tag Manager (gtag.js)
+                script          = document.createElement('script');
+                script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
+                script.onload   = setupGoogleAnalytics;
+                script.onerror  = () => {
+                    console.warn('common/pushLoader: cannot track this session, we couldn\'t download GTM. Is the user having strict privacy settings without exposing a DNT header?\n\nFor more information, please refer to the console error above.');
+                }
+
+                script.defer    = true;
+
+                document.getElementsByTagName('body')[0].appendChild(script);
+            }, IDLE_TIMEOUT);
+        }
     }
     
     if (document.readyState != 'complete') {
