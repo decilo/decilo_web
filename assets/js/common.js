@@ -37,17 +37,7 @@ const FONTS = [
     {
         family:  'Lato',
         weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh7USSwaPGR_p.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Lato',
-        weight:  300,
         src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh7USSwiPGQ.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Lato',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6uyw4BMUTPHjxAwXjeu.woff2) format(\'woff2\')'
     },
     {
         family:  'Lato',
@@ -57,42 +47,7 @@ const FONTS = [
     {
         family:  'Lato',
         weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh6UVSwaPGR_p.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Lato',
-        weight:  700,
         src:     'url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh6UVSwiPGQ.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  300,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format(\'woff2\')'
     },
     {
         family:  'Roboto',
@@ -100,19 +55,9 @@ const FONTS = [
         src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format(\'woff2\')'
     },
     {
-        family:  'Roboto',
-        weight:  400,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format(\'woff2\')'
-    },
-    {
         family:  'Robot',
         weight:  400,
         src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format(\'woff2\')'
-    },
-    {
-        family:  'Roboto',
-        weight:  700,
-        src:     'url(https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfCRc4EsA.woff2) format(\'woff2\')'
     },
     {
         family:  'Roboto',
