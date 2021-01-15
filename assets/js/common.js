@@ -1011,6 +1011,26 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                             then();
 
                             tryToPushRandomAd();
+
+                            let tryToFillViewport = false; let checked = 0;
+
+                            $(
+                                $('.message').get().reverse()
+                            ).each(function () {
+                                if (checked <= MESSAGES['VIEWPORT_CHECK_LENGTH']) {
+                                    tryToFillViewport = (
+                                        $(this).offset()['top'] + $(this).height() < window.innerHeight
+                                        &&
+                                        canPullChunks
+                                    );
+
+                                    checked++;
+                                }
+                            });
+
+                            if (tryToFillViewport) {
+                                tryToPullChunks();
+                            }
                         };
 
                         if (preloader.is(':visible')) {
