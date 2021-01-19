@@ -89,7 +89,7 @@ if ($request == null) {
                                 SELECT
                                     `{messagesTable}`.`id`,
                                     `{messagesTable}`.`declaredName`,
-                                    `{messagesTable}`.`nsfw`,
+                                    {nsfwBit}
                                     {likesCount}
                                     `{messagesTable}`.`created`, (
                                     SELECT  COUNT(*)
@@ -166,6 +166,8 @@ if ($request == null) {
                     'AND        `id` {afterDirection} :after' : '',
                     'nsfwMode'          => $private ? '' :
                     'AND        `nsfw`  =  :nsfw',
+                    'nsfwBit'           => $private ? '' : 
+                    '`{messagesTable}`.`nsfw`,',
                     'sortBy'            => $sortBy,
                     'scoreCalculation'  => $private ? '' : ', ((comments + likes) / 2) AS score',
                     'likesCount'        => $private ? '' : '`{messagesTable}`.`likes`, '
