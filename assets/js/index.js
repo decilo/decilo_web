@@ -652,7 +652,7 @@ $(document).ready(() => {
                     $('.nsfw-logo').fadeIn();
 
                     if (localStorage.getItem('canSeeNSFW') == null) {
-                        $('#nsfwSwitchModal').modal('open');
+                        M.Modal.getInstance($('#nsfwSwitchModal')[0]).open();
                     } else {
                         window.history.replaceState(
                             null,
@@ -687,7 +687,7 @@ $(document).ready(() => {
                 }
             });
 
-            $('#nsfwSwitchModal').modal({
+            M.Modal.init($('#nsfwSwitchModal')[0], {
                 onCloseStart: () => {
                     if (!nsfwMode || !readyForNSFW) {
                         $('#nsfwSwitch')
