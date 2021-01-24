@@ -343,7 +343,7 @@ function getSubscriptions($company, $includeInactive = false) {
     $statement = $database->prepare(
         'SELECT *
          FROM   `d_subscriptions`
-         WHERE  `d_subscriptions`.`company` = :company' . ($includeInactive ? '' :
+         WHERE  `d_subscriptions`.`company` = :company ' . ($includeInactive ? '' :
         'AND    `d_subscriptions`.`active`')
     );
 
