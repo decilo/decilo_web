@@ -121,6 +121,9 @@ $.fn.fadeOut = function(callback = () => {}, opacity = 0) {
     }, MATERIALIZE_TRANSITION_TIME);
 }
 
+// Workaround missing "bind" on cash-dom.
+$.fn.bind = $.fn.on;
+
 function pushFakeHistory() {
     if (!gotHistoryPushState) {
         history.pushState(null, document.title, location.href);
