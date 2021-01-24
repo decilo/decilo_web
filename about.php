@@ -161,12 +161,12 @@ require_once 'views/header.php';
                 </div>
             </div>
             <div class="col s12 m6">
-                <h5> jQuery </h5>
+                <h5> cash-dom </h5>
                 <p>
-                    Un framework que simplifica las tareas de manipulación del DOM con Javascript a través de una sintaxis más limpia y que, a su vez, permite encadenar llamadas.
+                    Un reemplazo más rápido, liviano y moderno a jQuery, pensado para navegadores actualizados.
                 </p>
                 <div>
-                    <a href="https://jquery.com/" rel="noreferrer" target="_blank"> Más información </a>
+                    <a href="https://github.com/fabiospampinato/cash/" rel="noreferrer" target="_blank"> Más información </a>
                 </div>
             </div>
         </div>
@@ -257,12 +257,12 @@ require_once 'views/header.php';
 
         <div class="row">
             <div class="col s12 m6">
-                <h5> jquery.events.swipe </h5>
+                <h5> Axios </h5>
                 <p>
-                    Una biblioteca para jQuery capaz de proveer eventos personalizados para detectar swipes horizontales (hacia la izquierda o hacia la derecha).
+                    Un reemplazo a Ajax compatible entre la mayoría de navegadores, mucho más flexible que la Fetch API.
                 </p>
                 <div>
-                    <a href="https://github.com/andreszs/jquery.events.swipe/" rel="noreferrer" target="_blank"> Más información </a>
+                    <a href="https://github.com/axios/axios/" rel="noreferrer" target="_blank"> Más información </a>
                 </div>
             </div>
         </div>
