@@ -240,7 +240,7 @@ function switchToNSFW() {
 
     $('#nsfwSwitch')
         .prop('checked', true)
-        .change();
+        .trigger('change');
 
     M.Modal.getInstance($('#nsfwSwitchModal')[0]).close();
 }
@@ -632,6 +632,68 @@ $(document).ready(() => {
 
                 if (!tab.hasClass('active')) {
                     sortByFromTab(tab);
+                }
+            });
+
+            $('#nsfwSwitch').on('change', (event) => {
+                nsfwMode = $(event.currentTarget).is(':checked');
+
+                if (nsfwMode) {
+                    $(`
+                        nav,
+                        #createMessageBtn,
+                        label[for="imageInput"],
+                        #createPostBtn
+                    `).addClass('bg-nsfw');
+
+                    $('meta[name="msapplication-TileColor"], meta[name="theme-color"]')
+                        .attr('content', '#' + THEME_NSFW_COLOR);
+
+                    $('.nsfw-logo').fadeIn();
+
+                    if (localStorage.getItem('canSeeNSFW') == null) {
+                        $('#nsfwSwitchModal').modal('open');
+                    } else {
+                        window.history.replaceState(
+                            null,
+                            $('title').html().trim(),
+                            SYSTEM_HOSTNAME + 'nsfw'
+                        );
+
+                        sortByFromTab($('.tab .active'));
+                    }
+                } else {
+                    $(`
+                        nav,
+                        #createMessageBtn,
+                        label[for="imageInput"],
+                        #createPostBtn
+                    `).removeClass('bg-nsfw');
+
+                    $('meta[name="msapplication-TileColor"], meta[name="theme-color"]')
+                        .attr('content', '#' + THEME_COLOR);
+
+                    $('.nsfw-logo').fadeOut();
+
+                    if (readyForNSFW) {
+                        sortByFromTab($('.tab .active'));
+                    }
+
+                    window.history.replaceState(
+                        null,
+                        $('title').html().trim(),
+                        SYSTEM_HOSTNAME.substr(0, SYSTEM_HOSTNAME.length - 1)
+                    );
+                }
+            });
+
+            $('#nsfwSwitchModal').modal({
+                onCloseStart: () => {
+                    if (!nsfwMode || !readyForNSFW) {
+                        $('#nsfwSwitch')
+                            .prop('checked', false)
+                            .trigger('change');
+                    }
                 }
             });
         }
