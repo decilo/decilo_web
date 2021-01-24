@@ -111,6 +111,20 @@ if (USE_BUNDLE) {
 
     $fullBundle .= $bundleContent;
 
+    print '-> Adding page-specific stylesheets and scripts to the CRC calculation pool...' . PHP_EOL;
+
+    foreach ([ scandir(CSS_PATH), scandir(JS_PATH) ] as $fileSet) {
+        foreach ($fileSet as $filename) {
+            if ($filename != '.' && $filename != '..') {
+                $path = (strpos($filename, '.js') !== false ? JS_PATH : CSS_PATH) . $filename;
+
+                print ' > Adding from: ' . $path . PHP_EOL;
+
+                $fullBundle .= file_get_contents($path) . PHP_EOL;
+            }
+        }
+    }
+
     print '-> Updating bundle version...' . PHP_EOL;
 
     $settings = explode(PHP_EOL, file_get_contents(SETTINGS_PATH));
