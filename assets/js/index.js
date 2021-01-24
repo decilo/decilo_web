@@ -28,18 +28,15 @@ function resetMessageInputs() {
 
     $('label[for="imageInput"]')
         .removeClass('green')
-        .addClass('bg-dark-1');
-
-    $('label[for="imageInput"]')
+        .addClass('bg-dark-1')
         .find('.material-icons')
         .html('add_a_photo');
 
-    $('.tooltipped').tooltip();
-    $('.tooltipped').tooltip('close');
-
-    $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
-        $('#removeFileBtn').fadeOut();
+    $('.tooltipped').each(function () {
+        M.Tooltip.init($(this)[0]).close();
     });
+
+    $('#removeFileBtn').css({ 'right' : '-3.4em', 'opacity': 0 });
 
     $('#imageInput').val(null);
 
@@ -48,17 +45,17 @@ function resetMessageInputs() {
 
 function toggleMessageLike(messageId) {
     run('messagesManager', 'toggleLike', { id: messageId })
-    .done((response) => {
+    .then((response) => {
         console.info(response);
 
-        if (response.status == OK) {
+        if (response.data.status == OK) {
             likesCountElement = $('[data-message="' + messageId + '"]').find('.likesCount');
 
             likesCount = parseInt(likesCountElement.html());
 
             M.Toast.dismissAll();
 
-            if (response.result.wasLiked) {
+            if (response.data.result.wasLiked) {
                 toast('Ya no te gusta esta publicación.');
 
                 likesCount--;
@@ -78,7 +75,7 @@ function toggleMessageLike(messageId) {
 function reportMessage(id) {
     toReport = id;
 
-    $('#reportMessageModal').modal('open');
+    M.Modal.getInstance($('#reportMessageModal')[0]).open();
 }
 
 function abortPost() {
@@ -90,14 +87,12 @@ function abortPost() {
 }
 
 function postMessage(messageContent, declaredName, token, image = null) {
-    let createMessageModal = M.Modal.getInstance($('#createMessageModal'));
+    let createMessageModal = M.Modal.getInstance($('#createMessageModal')[0]);
 
     if (!isPosting) {
         isPosting = true;
 
-        $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
-            $('#removeFileBtn').fadeOut();
-        });
+        $('#removeFileBtn').css({ 'right' : '-3.4em', 'opacity': 0 });
 
         let previousHtml = createPostBtn.html();
 
@@ -131,7 +126,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
                 .removeClass('valid')
                 .val('');
 
-            reloadLayout()
+            reloadLayout();
         }, false, () => {
             let xhr = $.ajaxSettings.xhr();
 
@@ -153,10 +148,10 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
             return xhr;
         })
-        .done((response) => {
+        .then((response) => {
             console.log(response);
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case SUSPICIOUS_OPERATION:
                     toast('Necesitamos que resuelvas un desafío.');
 
@@ -172,16 +167,16 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
                     $('.message[data-message="null"]').replaceWith(
                         getRenderedMessage(
-                            response.result.id, messageContent, declaredName, null, false, false, image, false
+                            response.data.result.id, messageContent, declaredName, null, false, false, image, false
                         )
                     );
 
                     isGoingTop = true;
-                    $('html, body').animate({
-                        'scrollTop' : $('.message[data-message="' + response.result.id + '"]').position()['top']
-                    }, SCROLLTOP_DURATION, () => {
-                        isGoingTop = false;
+                    $('html, body')[0].scrollTo({
+                        top: $('.message[data-message="' + response.data.result.id + '"]').position()['top']
                     });
+
+                    isGoingTop = false;
 
                     $('.message')
                         .first()
@@ -195,6 +190,8 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
                     createMessageModal.close();
 
+                    resetMessageInputs();
+
                     break;
                 case ERROR:
                     toast('Algo anda mal, probá otra vez.');
@@ -204,23 +201,25 @@ function postMessage(messageContent, declaredName, token, image = null) {
                     break;
             }
         })
-        .fail(abortPost)
-        .always(() => {
+        .catch(abortPost)
+        .then(() => {
             createPostBtn
                 .addClass('waves-effect waves-light')
                 .html(previousHtml);
 
-            postProgressBar.animate({ 'width' : createPostBtn.outerWidth() }, () => {
-                setTimeout(() => {
-                    isPosting = false;
+            postProgressBar = $(postProgressBar);
 
-                    enable($('#messageInput, #declaredName, label[for="imageInput"]'));
+            postProgressBar.css({ 'width' : createPostBtn.outerWidth() });
 
-                    postProgressBar.fadeOut();
-                    
-                    createMessageModal.options.dismissible = true;
-                }, MATERIALIZE_TRANSITION_TIME);
-            });
+            setTimeout(() => {
+                isPosting = false;
+
+                enable($('#messageInput, #declaredName, label[for="imageInput"]'));
+
+                postProgressBar.fadeOut();
+                
+                createMessageModal.options.dismissible = true;
+            }, MATERIALIZE_TRANSITION_TIME);
         });
     }
 }
@@ -243,18 +242,19 @@ function switchToNSFW() {
         .prop('checked', true)
         .change();
 
-    $('#nsfwSwitchModal').modal('close');
+    M.Modal.getInstance($('#nsfwSwitchModal')[0]).close();
 }
 
 $(document).ready(() => {
     createPostBtn   = $('#createPostBtn');
     imageInput      = $('#imageInput');
 
-    $('#createMessageModal').modal({
+    M.Modal.init($('#createMessageModal')[0], {
         onOpenEnd: () => {
-            $('#messageInput')
-                .focus()
-                .click();
+            messageInput = $('#messageInput')[0];
+
+            messageInput.focus();
+            messageInput.click();
 
             attachProgressBar();
         }
@@ -266,9 +266,7 @@ $(document).ready(() => {
 
     let fabDOM = $('.fixed-action-btn');
 
-    fabDOM.floatingActionButton({ hoverEnabled: false });
-
-    fab = M.FloatingActionButton.getInstance($('.fixed-action-btn'));
+    fab = M.FloatingActionButton.init(fabDOM, { hoverEnabled: false });
 
     createMessageBtn = fabDOM.find('#createMessageBtn');
 
@@ -282,17 +280,17 @@ $(document).ready(() => {
                         preloader.addClass('active');
 
                         loadRecaptcha(false, false, () => {
-                            $('#createMessageModal').modal('open');
+                            M.Modal.getInstance($('#createMessageModal')[0]).open();
 
                             preloader.fadeOut(() => {
                                 preloader.removeClass('active');
 
                                 icon.fadeIn();
 
-                                createMessageBtn
+                                $(createMessageBtn.el)
                                     .off('click')
                                     .on('click', () => {
-                                        $('#createMessageModal').modal('open');
+                                        M.Modal.getInstance($('#createMessageModal')[0]).open();
                                     });
                             });
                         });
@@ -308,7 +306,7 @@ $(document).ready(() => {
             $('.message').length > 0
             &&
             (
-                $(window).scrollTop() > (
+                document.scrollingElement.scrollTop > (
                     $('.message').last().offset()['top']
                     -
                     (
@@ -316,7 +314,7 @@ $(document).ready(() => {
                     )
                 )
                 ||
-                $(window).scrollTop() == document.documentElement.scrollHeight - document.documentElement.clientHeight
+                document.scrollingElement.scrollTop == document.documentElement.scrollHeight - document.documentElement.clientHeight
             )
         ) {
             tryToPullChunks();
@@ -396,7 +394,7 @@ $(document).ready(() => {
         disable($('#messageInput, #declaredName, label[for="imageInput"]'));
 
         M.Modal
-            .getInstance($('#createMessageModal'))
+            .getInstance($('#createMessageModal')[0])
             .options.dismissible = false;
 
         grecaptcha.ready(() => {
@@ -446,15 +444,13 @@ $(document).ready(() => {
 
                     $('#removeFileBtn')
                         .css({ 'display' : 'block', 'opacity' : 1 })
-                        .animate({ 'right' : '-0.3em' });
+                        .css({ 'right' : '-0.3em' });
 
                     if ($('.toast').length < 1) {
                         toast('Listo, agregaste ' + files[0].name + '.');
                     }
                 } else {
-                    $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
-                        $('#removeFileBtn').fadeOut();
-                    });
+                    $('#removeFileBtn').css({ 'right' : '-3.4em', 'opacity': 0 });
 
                     toast('El archivo seleccionado no es una imagen');
                 }
@@ -467,22 +463,24 @@ $(document).ready(() => {
                     .find('.material-icons')
                     .html('add_a_photo');
 
-                $('#removeFileBtn').animate({ 'right' : '-3.4em' }, () => {
-                    $('#removeFileBtn').fadeOut();
-                });
+                $('#removeFileBtn').css({ 'right' : '-3.4em', 'opacity': 0 });
             }
         });
 
         $('#removeFileBtn').on('click', function () {
             try {
-                $('.tooltipped').tooltip('close');
+                $('.tooltipped').each(function () {
+                    instance = M.Tooltip.getInstance($(this)[0]);
+
+                    if (instance != null) {
+                        instance.close();
+                    }
+                });
             } catch (exception) {
                 console.warn('removeFileBtn/click: unable to close tooltips due to the following reason: \n\n', exception);
             }
 
-            $(this).animate({ 'right' : '-3.4em' }, () => {
-                $(this).fadeOut();
-            });
+            $(this).css({ 'right' : '-3.4em', 'opacity': 0 });
 
             $('label[for="imageInput"]')
                 .removeClass('green')
@@ -495,7 +493,7 @@ $(document).ready(() => {
             $('#imageInput').val(null);
         });
 
-        $('#reportMessageModal').modal({
+        M.Modal.init($('#reportMessageModal')[0], {
             onCloseEnd: () => {
                 $('input[name="reportReason"]').prop('checked', false);
             }
@@ -512,14 +510,14 @@ $(document).ready(() => {
                 }, () => {
                     disable($('input[name="reportReason"], #sendReportBtn'));
                 })
-                .done((response) => {
+                .then((response) => {
                     console.log(response);
 
-                    switch (response.status) {
+                    switch (response.data.status) {
                         case OK:
                             toast('¡Gracias! Ya recibimos tu reporte.');
 
-                            $('.message[data-message=' + toReport + ']')
+                            $('.message[data-message="' + toReport + '"]')
                                 .find('.tooltipped')
                                 .removeClass('red')
                                 .addClass('grey')
@@ -537,10 +535,10 @@ $(document).ready(() => {
                             break;
                     }
                 })
-                .always(() => {
+                .then(() => {
                     enable($('input[name="reportReason"], #sendReportBtn'));
 
-                    $('#reportMessageModal').modal('close');
+                    M.Modal.getInstance($('#reportMessageModal')[0]).close();
                 });
             } else {
                 toast('Para enviar tu reporte, seleccioná una opción.');
@@ -613,8 +611,11 @@ $(document).ready(() => {
                 });
             }
 
-            $('.tabs')
-                .tabs()
+            tabs = $('.tabs');
+
+            M.Tabs.init(tabs[0]);
+
+            tabs
                 .find('span')
                 .removeClass('hide');
 
@@ -623,7 +624,7 @@ $(document).ready(() => {
 
                 tabHint = tab.find('span');
 
-                if (!tabHint.is(':visible')) {
+                if (tabHint.css('display') == 'none') {
                     M.Toast.dismissAll();
 
                     toast('Ordenando ' + tabHint.text());
@@ -633,117 +634,6 @@ $(document).ready(() => {
                     sortByFromTab(tab);
                 }
             });
-
-            if (INDEX['SWIPE_ENABLE']) {
-                $.detectSwipe.threshold         = INDEX['SWIPE_THRESHOLD'];
-                $.detectSwipe.preventDefault    = false;
-
-                $('.gridContainer').on('swipeleft', () => {
-                    if (window.innerWidth <= 600) {
-                        activeTab = $('.tab .active');
-
-                        if (activeTab.parent().next().find('a').length > 0) {
-                            targetTab = activeTab
-                                            .removeClass('active')
-                                            .parent()
-                                            .next()
-                                            .find('a');
-
-                                targetTab.addClass('active');
-
-                                tabs = M.Tabs.getInstance($('.tabs'));
-                                tabs.$activeTabLink[0] = document.getElementById(targetTab.attr('id'));
-                                tabs.updateTabIndicator();
-
-                                sortByFromTab(targetTab);
-                        }
-                    }
-                });
-
-                $('.gridContainer').on('swiperight', () => {
-                    if (window.innerWidth <= 600) {
-                        activeTab = $('.tab .active');
-
-                        if (activeTab.parent().prev().find('a').length > 0) {
-                            targetTab = activeTab
-                                            .removeClass('active')
-                                            .parent()
-                                            .prev()
-                                            .find('a');
-
-                            targetTab.addClass('active');
-
-                            tabs = M.Tabs.getInstance($('.tabs'));
-                            tabs.$activeTabLink[0] = document.getElementById(targetTab.attr('id'));
-                            tabs.updateTabIndicator();
-
-                            sortByFromTab(targetTab);
-                        }
-                    }
-                });
-            }
-
-            $('#nsfwSwitch').on('change', (event) => {
-                nsfwMode = $(event.currentTarget).is(':checked');
-
-                if (nsfwMode) {
-                    $(`
-                        nav,
-                        #createMessageBtn,
-                        label[for="imageInput"],
-                        #createPostBtn
-                    `).addClass('bg-nsfw');
-
-                    $('meta[name="msapplication-TileColor"], meta[name="theme-color"]')
-                        .attr('content', '#' + THEME_NSFW_COLOR);
-
-                    $('.nsfw-logo').fadeIn();
-
-                    if (localStorage.getItem('canSeeNSFW') == null) {
-                        $('#nsfwSwitchModal').modal('open');
-                    } else {
-                        window.history.replaceState(
-                            null,
-                            $('title').html().trim(),
-                            SYSTEM_HOSTNAME + 'nsfw'
-                        );
-
-                        sortByFromTab($('.tab .active'));
-                    }
-                } else {
-                    $(`
-                        nav,
-                        #createMessageBtn,
-                        label[for="imageInput"],
-                        #createPostBtn
-                    `).removeClass('bg-nsfw');
-
-                    $('meta[name="msapplication-TileColor"], meta[name="theme-color"]')
-                        .attr('content', '#' + THEME_COLOR);
-
-                    $('.nsfw-logo').fadeOut();
-
-                    if (readyForNSFW) {
-                        sortByFromTab($('.tab .active'));
-                    }
-
-                    window.history.replaceState(
-                        null,
-                        $('title').html().trim(),
-                        SYSTEM_HOSTNAME.substr(0, SYSTEM_HOSTNAME.length - 1)
-                    );
-                }
-            });
-
-            $('#nsfwSwitchModal').modal({
-                onCloseStart: () => {
-                    if (!nsfwMode || !readyForNSFW) {
-                        $('#nsfwSwitch')
-                            .prop('checked', false)
-                            .change();
-                    }
-                }
-            })
         }
     };
 
@@ -759,7 +649,9 @@ $(document).ready(() => {
             });
     }
 
-    $(window).resize(calculateOnscreenImages);
+    $(window).on('resize', calculateOnscreenImages);
 
-    $('.tooltipped').tooltip();
+    $('.tooltipped').each(function () {
+        M.Tooltip.init($(this)[0]);
+    });
 });

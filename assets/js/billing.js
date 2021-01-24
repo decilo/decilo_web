@@ -85,10 +85,10 @@ $(document).ready(() => {
                     .addClass('grey-text')
                     .html('Cancelando subscripción...');
             })
-            .done((response) => {
+            .then((response) => {
                 console.info(response);
 
-                switch (response.status) {
+                switch (response.data.status) {
                     case OK:
                         paymentMethodsContainer.find('.collection').fadeOut(() => {
                             $(event.currentTarget)
@@ -98,7 +98,7 @@ $(document).ready(() => {
 
                             toast('Tu subscripción fue cancelada con éxito.');
 
-                            $('#billingForm').slideDown();
+                            $('#billingForm').fadeIn();
 
                             $('#alreadySubscribedCollection').fadeOut(() => {
                                 $('#tariffsInformationCollection, #trialInformationCollection').fadeIn();
@@ -120,7 +120,9 @@ $(document).ready(() => {
     }
 
     function initializeSelects() {
-        $('select').formSelect();
+        $('select').each(function () {
+            M.FormSelect.init($(this)[0]);
+        });
 
         $('.select-dropdown')
             .addClass('light-4 dark-5 valid')
@@ -213,7 +215,7 @@ $(document).ready(() => {
                         validateCardCVC(cardCVC.val(), cardCVC);
                     }
 
-                    $('#cardExpiration').focus();
+                    $('#cardExpiration')[0].focus();
                 } else {
                     markInvalid($(this));
                 }
@@ -234,7 +236,7 @@ $(document).ready(() => {
 
                     markValid($(this));
 
-                    $('#cardCVC').focus();
+                    $('#cardCVC')[0].focus();
                 } else {
                     $('#cardExpirationMonth').removeClass('valid');
                     $('#cardExpirationYear').removeClass('valid');
@@ -245,7 +247,7 @@ $(document).ready(() => {
                 break;
             case 'cardCVC':
                 if (validateCardCVC(value, $(this))) {
-                    $('#cardFullName').focus();
+                    $('#cardFullName')[0].focus();
                 }
 
                 break;
@@ -293,9 +295,7 @@ $(document).ready(() => {
             $('#billingForm input').filter('.valid').length
         ) {
             if (!$('#saveBillingMethodBtn').hasClass('pulse')) {
-                $('#saveBillingMethodBtn')
-                    .addClass('pulse')
-                    .focus();
+                $('#saveBillingMethodBtn').addClass('pulse')[0].focus();
             }
         } else {
             if ($('#saveBillingMethodBtn').hasClass('pulse')) {
@@ -320,30 +320,38 @@ $(document).ready(() => {
         }
     });
 
-    if (SUBSCRIPTIONS.length > 0) {
+    let hasActiveSubscription = false;
+
+    SUBSCRIPTIONS.forEach((subscription) => {
+        if (subscription['active'] == 1) {
+            hasActiveSubscription = true;
+        }
+    });
+
+    renderedHTML = '';
+
+    SUBSCRIPTIONS.forEach((subscription) => {
+        renderedHTML += getRenderedSubscription(
+            subscription['id'],
+            subscription['active'] == 1,
+            subscription['modified']
+        );
+    });
+
+    paymentMethodsContainer
+        .find('.collection')
+        .html(renderedHTML);
+
+    attachSubscriptionsActions();
+
+    paymentMethodsContainer.show();
+
+    if (hasActiveSubscription) {
         $('#alreadySubscribedCollection').show();
-
-        renderedHTML = '';
-
-        SUBSCRIPTIONS.forEach((subscription) => {
-            renderedHTML += getRenderedSubscription(
-                subscription['id'],
-                subscription['active'] == 1,
-                subscription['modified']
-            );
-        });
-
-        paymentMethodsContainer
-            .find('.collection')
-            .html(renderedHTML);
-
-        attachSubscriptionsActions();
-
-        paymentMethodsContainer.show();
     } else {
         $('#tariffsInformationCollection, #trialInformationCollection').show();
 
-        $('#billingForm').slideDown();
+        $('#billingForm').fadeIn();
 
         displayRemovableWarning('No agregaste ningún método de pago.', paymentMethodsContainer);
 
@@ -372,7 +380,11 @@ $(document).ready(() => {
                 );
             });
 
-            documentTypeSelect.formSelect('destroy');
+            instance = M.FormSelect.getInstance(documentTypeSelect[0]);
+            
+            if (instance != null) {
+                instance.destroy();
+            }
 
             initializeSelects();
 
@@ -397,8 +409,11 @@ $(document).ready(() => {
             if (status == 200) {
                 let payer_cost = response[0].payer_costs[0];
 
-                $('#invoiceHint')
-                    .slideDown()
+                invoiceHint = $('#invoiceHint');
+
+                invoiceHint.fadeIn();
+
+                invoiceHint
                     .find('blockquote')
                     .html(
                         payer_cost.recommended_message + ' por mes. <br><br>' + payer_cost.labels[0].replace('|', ' | ').replaceAll('_', ' ')
@@ -525,10 +540,10 @@ $(document).ready(() => {
                                 }
                             }, PROGRESSBAR_TRIGGER_INTERVAL);
                         })
-                        .done((response) => {
+                        .then((response) => {
                             console.info(response);
 
-                            switch (response.status) {
+                            switch (response.data.status) {
                                 case OK:
                                     toast('¡Listo!');
 
@@ -541,7 +556,7 @@ $(document).ready(() => {
                                             paymentMethodsContainer
                                                 .find('.collection')
                                                 .html(
-                                                    getRenderedSubscription(response.result.subscription.internalId)
+                                                    getRenderedSubscription(response.data.result.subscription.internalId)
                                                 )
                                                 .fadeIn();
 
@@ -552,11 +567,11 @@ $(document).ready(() => {
                                         $('#alreadySubscribedCollection').fadeIn();
                                     });
 
-                                    $('#billingForm').slideUp();
+                                    $('#billingForm').fadeOut();
 
                                     break;
                                 case ERROR:
-                                    switch (response.result.subscription.code) {
+                                    switch (response.data.result.subscription.code) {
                                         case 'cc_rejected_bad_filled_card_number':
                                             toast('Revisá el número de tu tarjeta.');
 
@@ -622,7 +637,7 @@ $(document).ready(() => {
                                     break;
                             }
                         })
-                        .always(() => {
+                        .then(() => {
                             transactionProgressBar.width(0);
 
                             clearInterval(transactionProgressInterval);

@@ -382,4 +382,24 @@ $globalBuffer = ob_start();
                 </li>
             </ul>
         </header>
-        <main style="display: none; opacity: 0;">
+        <main style="<?=
+            !defined('NO_CORE_SCRIPTS') || !NO_CORE_SCRIPTS
+                ? 'display: none; opacity: 0;'
+                : ''
+        ?>">
+
+            <script>
+                function checkES6() {
+                    try {
+                        eval('()=>{1}');
+                    } catch (exception) {
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                if (!checkES6() && window.location.href != SYSTEM_HOSTNAME + 'exceptions/outdated_browser') {
+                    window.location.href = SYSTEM_HOSTNAME + 'exceptions/outdated_browser';
+                }
+            </script>

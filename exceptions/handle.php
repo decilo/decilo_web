@@ -2,7 +2,7 @@
 
 define('MAINTENANCE', true);
 
-$css = 'maintenance.min.css';
+$css = 'maintenance.min.css'; $js = 'handle.min.js';
 
 chdir('..');
 
@@ -87,6 +87,19 @@ if (isset($_GET['e'])) {
       ];
 
       break;
+    case 1000:
+      $exception = [
+        'title' => 'Tu navegador es muy antiguo',
+        'icon'  => 'update',
+        'info'  =>
+          '<span class="roboto thin dark-5"> Lamentablemente, el navegador que estás usando no es compatible. <br>
+           <br>
+           Te recomendamos actualizarlo lo antes posible y probar otra vez.'
+      ];
+
+      define('SKIP_CORE_SCRIPTS', true);
+
+      break;
   }
 }
 
@@ -116,5 +129,9 @@ require_once 'views/header.php';
     </div>
   </div>
 </div>
+
+<script>
+  const EXCEPTION_CODE = <?= json_encode($_GET['e']) ?>;
+</script>
 
 <?php require_once 'views/footer.php'; ?>

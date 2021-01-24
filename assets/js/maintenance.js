@@ -42,15 +42,15 @@ $(document).ready(() => {
                         isRetrying = true;
                         
                         run('accountManager', 'areYouThere?', undefined, () => {}, true)
-                        .done((response) => {
+                        .then((response) => {
                             console.log(response);
 
                             animateRedirect(SYSTEM_HOSTNAME);
                         })
-                        .fail(() => {
+                        .catch(() => {
                             $('#remainingTime').html(5);
                         })
-                        .always(() => {
+                        .then(() => {
                             $('#retryingHint').fadeOut(() => {
                                 $('#retryCountdown').fadeIn(() => {
                                     isRetrying = false;

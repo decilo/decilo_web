@@ -115,7 +115,7 @@ foreach (THEME as $mode => $colors) {
 
 ?>
 
-body, main, nav, .material-icons, button, .btn {
+body, main, nav, .material-icons, button, .btn, #noInternetBtn {
     transition:
         color            <?= UI_SETTINGS['MATERIALIZE_TRANSITION_TIME'] / 1000 ?>s linear,
         background-color <?= UI_SETTINGS['MATERIALIZE_TRANSITION_TIME'] / 1000 ?>s linear,

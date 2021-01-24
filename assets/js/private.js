@@ -13,7 +13,7 @@ isPrivate = true;
 function requestRemoval(id) {
     toRemove = id;
 
-    $('#requestRemovalModal').modal('open');
+    M.Modal.getInstance($('#requestRemovalModal')[0]).open();
 }
 
 function tryToRemove() {
@@ -25,10 +25,10 @@ function tryToRemove() {
         run('messagesManager', 'tryToRemove', { id: toRemove }, () => {
             disable($('#requestRemovalModal').find('button'));
         })
-        .done((response) => {
+        .then((response) => {
             console.info(response);
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case NOT_ALLOWED:
                     toast('No tenés permitido hacer eso, probá recargando la página.');
 
@@ -42,7 +42,7 @@ function tryToRemove() {
 
                     break;
                 case OK:
-                    $('#requestRemovalModal').modal('close');
+                    M.Modal.getInstance($('#requestRemovalModal')[0]).close();
 
                     $('.message[data-message="' + toRemove + '"]').fadeOut(() => {
                         $('.message[data-message="' + toRemove + '"]').remove();
@@ -51,7 +51,7 @@ function tryToRemove() {
 
                         toast('¡Eliminado!');
 
-                        if ($('.message:visible').length < 1) {
+                        if ($('.message').length < 1) {
                             displayRemovableWarning(NO_MESSAGES_HINT);
                         } else {
                             reloadLayout();
@@ -61,7 +61,7 @@ function tryToRemove() {
                     break;
             }
         })
-        .always(() => {
+        .then(() => {
             enable($('#requestRemovalModal').find('button'));
         });
     }
@@ -75,7 +75,7 @@ $(document).ready(() => {
             $('.message').length > 0
             &&
             (
-                $(window).scrollTop() > (
+                $(window)[0].scrollTop > (
                     $('.message').last().offset()['top']
                     -
                     (
@@ -83,7 +83,7 @@ $(document).ready(() => {
                     )
                 )
                 ||
-                $(window).scrollTop() == document.documentElement.scrollHeight - document.documentElement.clientHeight
+                $(window)[0].scrollTop == document.documentElement.scrollHeight - document.documentElement.clientHeight
             )
             &&
             !isPullingChunks
@@ -125,16 +125,16 @@ $(document).ready(() => {
         }, () => {
             disable($('#createPostBtn'));
         })
-        .done((response) => {
+        .then((response) => {
             console.log(response);
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case OK:
                     $('.gridContainer')
                         .find('.row')
                         .prepend(
                             getRenderedMessage(
-                                response.id, messageContent, declaredName
+                                response.data.id, messageContent, declaredName
                             )
                         );
 
@@ -155,7 +155,7 @@ $(document).ready(() => {
                     break;
             }
         })
-        .always(() => {
+        .then(() => {
             setTimeout(() => {
                 enable($('#createPostBtn'));
             }, INDEX['POST_OK_COOLDOWN']);
@@ -201,7 +201,7 @@ $(document).ready(() => {
     loader = () => {
         console.info('index/window: success loading assets.');
 
-        $('#requestRemovalModal').modal();
+        M.Modal.init($('#requestRemovalModal')[0]);
     };
 
     let searchParams = new URL(window.location).searchParams;

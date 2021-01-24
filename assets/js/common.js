@@ -1,3 +1,5 @@
+var jQuery = $;
+
 const NO_MESSAGES_HINT = 
     `¡Nada por acá!
      <br>
@@ -94,13 +96,13 @@ FONTS.forEach((font) => {
         });
 });
 
-jQuery.fn.fadeIn = function(callback = () => {}, opacity = 1, duration = MATERIALIZE_TRANSITION_TIME) {
+$.fn.fadeIn = function(callback = () => {}, opacity = 1, duration = MATERIALIZE_TRANSITION_TIME) {
     $(this).css({ display: '', opacity: opacity });
 
     setTimeout(callback, duration);
 }
 
-jQuery.fn.fadeOut = function(callback = () => {}, opacity = 0) {
+$.fn.fadeOut = function(callback = () => {}, opacity = 0) {
     element = $(this);
 
     element.css({
@@ -130,44 +132,26 @@ function pushFakeHistory() {
 function displayNoInternetFAB() {
     $('#noInternetBtn')
         .css({ oapcity: 0, display: 'block'})
-        .animate({ opacity: 0.5 });
+        .css({ opacity: 0.5 });
 }
 
-function run(url, action, values, before = () => {}, overridesFailure = false, xhr = () => {
-    return $.ajaxSettings.xhr();
-}) {
+function run(url, action, values, before = () => {}, overridesFailure = false, onUploadProgress = () => {}) {
     console.info('run \n\nurl:', url, 'action:', action, 'values:', values, 'before:', before);
 
-    return $.ajax(
-        {
-            url: 'services/' + url + '.php',
-            type: 'POST',
-            processData: false,
-            contentType: 'application/json',
-            beforeSend: before,
-            data: JSON.stringify(
-                {
-                    'action'    : action,
-                    'values'    : values
-                }
-            ),
-            xhr: xhr
-        }
-    )
-    .done((response, status, xhr) => {
-        if (!overridesFailure && !xhr.getResponseHeader('content-type').includes('json')) {
-            console.error(response);
+    return axios.post('services/' + url + '.php', JSON.stringify({
+        action: action,
+        values: values
+    }), {
+        transformRequest: [ (data) => {
+            before();
 
-            if ($('.toast').length < 1) {
-                if (isOnline) {
-                    toast('Algo salió mal, por favor probá otra vez.');
-                } else {
-                    toast(NO_INTERNET_HINT);
-                }
-            }
+            return data;
+        }],
+        headers: {
+            'Content-Type': 'application/json'
         }
     })
-    .fail((error) => {
+    .catch((error) => {
         if (!overridesFailure) {
             console.error(error);
 
@@ -214,11 +198,9 @@ function animateRedirect(url, fullBody = false, timeout = null) {
             });
         };
 
-        sidenav = $('.sidenav');
+        sidenav = M.Sidenav.getInstance($('.sidenav')[0]);
 
-        if (sidenav.length > 0) {
-            sidenav = M.Sidenav.getInstance(sidenav);
-
+        if (typeof(sidenav) != 'undefined') {
             sidenav.close();
 
             setTimeout(redirCall, sidenav.options.outDuration);
@@ -282,7 +264,9 @@ function reloadLayout(toAppend = null) {
 
             setupInstance();
 
-            $('.tooltipped').tooltip();
+            $('.tooltipped').each(function () {
+                M.Tooltip.init($(this)[0]);
+            });
         }
 
         calculateOnscreenImages();
@@ -398,7 +382,7 @@ function isElementInViewport(element) {
     elementTop     = element.offset().top;
     elementBottom  = elementTop + element.outerHeight();
 
-    viewportTop    = $(window).scrollTop();
+    viewportTop    = document.scrollingElement.scrollTop;
     viewportBottom = viewportTop + $(window).height();
 
     return elementBottom > (viewportTop - viewportThreshold) && (elementTop - viewportThreshold) < viewportBottom;
@@ -527,7 +511,7 @@ function getRenderedComment(id = null, declaredName = null, content, active = fa
 function openCommentsModal(message, private) {
     loadRecaptcha();
 
-    $('#commentsModal').modal('open');
+    M.Modal.getInstance($('#commentsModal')[0]).open();
 
     let card = $('.message[data-message="' + message + '"]');
     let image = card.find('img');
@@ -574,7 +558,16 @@ function openCommentsModal(message, private) {
             </div>
          </div>
 
-         <ul id="commentsCollapsible" class="collapsible border-dark-8" style="display: none;"> </ul>`
+         <ul
+            id="commentsCollapsible"
+            class="collapsible border-dark-8"
+            style="
+                height: 0px;
+                transition: height 2s ease-out;
+                overflow: hidden;
+            "
+         >
+         </ul>`
     );
 
     $('#commentInput').on('change keyup keydown', function () {
@@ -610,21 +603,23 @@ function openCommentsModal(message, private) {
                 }, () => {
                     disable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
                 })
-                .done((response) => {
+                .then((response) => {
                     console.info(response);
 
-                    if (response.status == OK) {
+                    if (response.data.status == OK) {
                         console.info('postComment: alright, we got a response!');
 
                         $('#commentInput, #commentDeclaredName')
                             .val('')
-                            .change();
+                            .trigger('change');
 
                         console.info('postComment: now, we\'ll clean up those inputs.');
 
                         commentsCollapsible = $('#commentsCollapsible');
 
-                        instance = M.Collapsible.getInstance($('#commentsCollapsible'));
+                        instance = M.Collapsible.getInstance($('#commentsCollapsible')[0]);
+
+                        console.log(instance);
 
                         for (let index = 0; index < commentsCollapsible.find('li').length; index++) {
                             instance.close(index);
@@ -637,33 +632,24 @@ function openCommentsModal(message, private) {
                             .removeClass('active');
 
                         commentsCollapsible.prepend(
-                            getRenderedComment(response.result.id, declaredName, content)
+                            getRenderedComment(response.data.result.id, declaredName, content)
                         );
 
                         console.info('postComment: cool, we got the DOM changed.');
                         
                         // Reset the container and the instance because of reasons.
-                        commentsCollapsible.collapsible({ accordion: false });
-                        commentsCollapsible = $('#commentsCollapsible');
+                        commentsCollapsible = M.Collapsible.init(commentsCollapsible[0], { accordion: false });
+                        commentsCollapsible.open(0);
 
-                        instance = M.Collapsible.getInstance($('#commentsCollapsible'));
-
-                        instance.open(0);
-                        
                         console.info('postComment: so we\'ve just re-initialized the instance back again, this is getting frustrating.');
 
-                        firstComment = commentsCollapsible.find('li').first();
+                        firstComment = $(commentsCollapsible.el).find('li').first();
 
-                        $('#commentsModal')
-                            .find('.modal-content')
-                            .animate({
-                                scrollTop:
-                                    firstComment.offset()['top']
-                                    -
-                                    firstComment.find('.collapsible-header').height()
-                            });
+                        $('#commentsModal').find('.modal-content')[0].scrollTo({
+                            top: firstComment.offset()['top'] - firstComment.find('.collapsible-header').height()
+                        });
 
-                        commentCount = $('.message[data-message=' + message + ']').find('.commentCount');
+                        commentCount = $('.message[data-message="' + message + '"]').find('.commentCount');
                         commentCount.html(
                             parseInt(commentCount.html()) + 1
                         );
@@ -677,7 +663,7 @@ function openCommentsModal(message, private) {
                         toast('Algo anda mal, probá de nuevo.');
                     }
                 })
-                .always(() => {
+                .then(() => {
                     enable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
                 });
             } else {
@@ -696,35 +682,34 @@ function openCommentsModal(message, private) {
         }
     });
 
-    commentsCollapsible = $('#commentsCollapsible');
-    commentsCollapsible.collapsible({ accordion: false });
+    M.Collapsible.init(commentsCollapsible[0], { accordion: false });
 
     if (isOnline) {
         run('commentsManager', 'getComments', {
             message: message,
             private: private || (typeof(RECIPIENT) != 'undefined' && RECIPIENT != null)
         })
-        .done((response) => {
+        .then((response) => {
             console.info(response);
 
             commentsCollapsible = $('#commentsCollapsible');
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case OK:
                     let renderedHTML = '';
 
-                    response.result.forEach((comment) => {
+                    response.data.result.forEach((comment) => {
                         renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content'], false, comment['likes']);
                     });
 
                     commentsCollapsible.append(renderedHTML);
-                    commentsCollapsible.slideDown();
+                    commentsCollapsible.css({ 'height': '' });
 
-                    commentsCollapsible.collapsible({ accordion: false });
-            
+                    M.Collapsible.init(commentsCollapsible[0], { accordion: false });
+
                     if (commentsCollapsible.find('li').length > 0) {
                         M.Collapsible
-                            .getInstance($('#commentsCollapsible'))
+                            .getInstance($('#commentsCollapsible')[0])
                             .open(0);
                     }
 
@@ -920,19 +905,23 @@ function getRenderedAd(
 
 function tryToPushRandomAd(then = () => {}) {
     run('adsManager', 'getRandomAd', {}, () => {}, true)
-    .done((response) => {
+    .then((response) => {
         console.info(response);
 
         messages = $('.message');
 
         if (messages.length > 0) {
-            if (response.result) {
+            if (response.data.result) {
                 messages.eq(
                     Math.round(
                         Math.random() * (messages.length - 1)
                     )
                 ).after(
-                    getRenderedAd(response['result']['id'], response['result']['content'], response['result']['companyName'])
+                    getRenderedAd(
+                        response.data.result.id,
+                        response.data.result.content,
+                        response.data.result.companyName
+                    )
                 );
 
                 reloadLayout();
@@ -943,10 +932,10 @@ function tryToPushRandomAd(then = () => {}) {
             console.info('tryToPushRandomAd: there are no messages in this view, this is a sad moment for advertisers. :(');
         }
     })
-    .fail((error) => {
+    .catch((error) => {
         console.error(error);
     })
-    .always(then);
+    .then(then);
 }
 
 async function tryToPullChunks(firstCall = false, then = () => {}) {
@@ -977,13 +966,13 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                     sortBy:     sortBy,
                     nsfw:       nsfwMode
                 }, () => { isPullingChunks = true; })
-                .done((response) => {
+                .then((response) => {
                     console.log(response);
 
-                    if (response.result.length > 0) {
+                    if (response.data.result.length > 0) {
                         let renderedHTML = '';
                         
-                        response.result.forEach((message) => {
+                        response.data.result.forEach((message) => {
                             renderedHTML += getRenderedMessage(
                                 message['id'], message['content'], message['declaredName'], message['created'], true, parseInt(message['reported']) == 1, message['image'], parseInt(message['verified']) == 1, message['comments'], true, message['likes'], message['position']
                             );
@@ -1006,7 +995,7 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                                 deferredFetcher = null;
                             }
 
-                            console.info('tryToPullChunks: successfully pulled ' + response.result.length + ' chunks.');
+                            console.info('tryToPullChunks: successfully pulled ' + response.data.result.length + ' chunks.');
 
                             then();
 
@@ -1033,7 +1022,7 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                             }
                         };
 
-                        if (preloader.is(':visible')) {
+                        if (preloader.css('display') != 'none') {
                             preloader.fadeOut(() => {
                                 preloader.hide();
 
@@ -1057,7 +1046,7 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
                         }
 
                         if (firstCall) {
-                            if (preloader.is(':visible')) {
+                            if (preloader.css('display') != 'none') {
                                 preloader.fadeOut(() => {
                                     preloader.hide();
 
@@ -1071,7 +1060,7 @@ async function tryToPullChunks(firstCall = false, then = () => {}) {
 
                     isPullingChunks = false;
                 })
-                .fail((error) => {
+                .catch((error) => {
                     isPullingChunks = false;
 
                     console.error(error);
@@ -1090,16 +1079,19 @@ function getLastMessageData() {
 }
 
 function cum() {
-    $('*').animate({ color: 'white', backgroundColor: 'white' });
+    $('*').css({ color: 'white', backgroundColor: 'white' });
 }
 
 function tryToDeferAutoTooltip() {
-    createMessageBtn = $('#createMessageBtn');
-    createMessageBtn.tooltip();
+    createMessageBtn = M.Tooltip.init($('#createMessageBtn')[0]);
 
     $(window).on('load', () => {
-        if (createMessageBtn.length > 0) {
-            createMessageBtn.tooltip('open');
+        if (typeof(createMessageBtn) != 'undefined' && createMessageBtn != null) {
+            createMessageBtn = M.Tooltip.getInstance($('#createMessageBtn')[0]);
+            
+            if (typeof(createMessageBtn) != 'undefined') {
+                createMessageBtn.open();
+            }
         }
     });
 }
@@ -1113,12 +1105,12 @@ function initializeIdleRunner() {
     }
 
     idleRunner = setTimeout(() => {
-        $('.tap-target').tapTarget('open');
+        M.TapTarget.getInstance($('.tap-target')).open();
 
         localStorage.setItem('hasSeenFeatures', true);
 
-        if ($(window).scrollTop() > 0) {
-            $('html, body').animate({ 'scrollTop' : 0 }, SCROLLTOP_DURATION);
+        if (document.scrollingElement.scrollTop > 0) {
+            $('html, body')[0].scrollTo({ 'top' : 0 });
         }
     }, IDLE_TIMEOUT);
 }
@@ -1128,7 +1120,9 @@ function hasSeenFeatures() {
 }
 
 function goBackToTop() {
-    $('html, body').scrollTop(0);
+    $('html, body').each(function () {
+        $(this)[0].scrollTo({ top: 0 });
+    });
 }
 
 function convertMDtoHTML(content) {
@@ -1145,17 +1139,17 @@ function toggleCommentLike(event, commentId) {
     run('commentsManager', 'toggleLike', {
         id: commentId, private: PRIVATE || (typeof(RECIPIENT) != 'undefined' && RECIPIENT != null)
     })
-    .done((response) => {
+    .then((response) => {
         console.info(response);
 
-        if (response.status == OK) {
+        if (response.data.status == OK) {
             likesCountElement = $('[data-comment="' + commentId + '"]').find('.likesCount');
 
             likesCount = parseInt(likesCountElement.html());
 
             M.Toast.dismissAll();
 
-            if (response.result.wasLiked) {
+            if (response.data.result.wasLiked) {
                 toast('Ya no te gusta este comentario.');
 
                 likesCount--;
@@ -1227,7 +1221,9 @@ $(document).ready(() => {
         // Prevent this error, it doesn't really matter.
         try {
             if ($('.tooltipped').length > 0) {
-                $('.tooltipped').tooltip('close');
+                $('.tooltipped').each(function () {
+                    M.Tooltip.getInstance($(this)[0]).close();
+                });
             }
         } catch (exception) {}
 
@@ -1239,17 +1235,17 @@ $(document).ready(() => {
                     run('adsManager', 'reportImpression', { id: id }, () => {
                         isReportingImpressions = true;
                     }, true)
-                    .done((response) => {
+                    .then((response) => {
                         console.info(response);
 
-                        if (response.status == OK) {
+                        if (response.data.status == OK) {
                             reportedImpressions.push(id);
                         }
                     })
-                    .fail((error) => {
+                    .catch((error) => {
                         console.error(error);
                     })
-                    .always(() => { isReportingImpressions = false; });
+                    .then(() => { isReportingImpressions = false; });
                 }
             });
         }
@@ -1261,18 +1257,21 @@ $(document).ready(() => {
     //     toast('Hey there, it\'s an Android device!');
     //  }
 
-    $('.sidenav').sidenav({
+    M.Sidenav.init($('.sidenav')[0], {
         onOpenStart: () => {
-            tooltips = $('.tooltipped');
+            $('.tooltipped').each(function () {
+                instance = M.Tooltip.getInstance($(this));
 
-            tooltips.tooltip();
-            tooltips.tooltip('close');
+                if (instance != null) {
+                    instance.close();
+                }
+            });
         },
         onCloseEnd: () => {
-            createMessageBtn = $('#createMessageBtn');
+            createMessageBtn = M.Tooltip.getInstance($('#createMessageBtn')[0]);
 
-            if (createMessageBtn.length > 0 && createMessageBtn.hasClass('pulse')) {
-                createMessageBtn.tooltip('open');
+            if (createMessageBtn != null && $(createMessageBtn.el).hasClass('pulse')) {
+                createMessageBtn.open();
             }
         }
     });
@@ -1285,7 +1284,7 @@ $(document).ready(() => {
         if (
             event.target.id == 'continueLoginBtn'
             &&
-            loginPassword.parent().is(':visible')
+            loginPassword.parent().parent().css('maxHeight') != '85px'
         ) {
             if (loginPassword.val().length > 0) {
                 deferLoginPreloader();
@@ -1307,10 +1306,10 @@ $(document).ready(() => {
                             'password'      : $('#loginPassword').val(),
                             'token'         : token
                         })
-                        .done((response) => {
+                        .then((response) => {
                             console.log(response);
 
-                            switch (response.status) {
+                            switch (response.data.status) {
                                 case SUSPICIOUS_OPERATION:
                                     toast('Necesitamos que resuelvas un desafío.');
 
@@ -1337,7 +1336,7 @@ $(document).ready(() => {
                                     break;
                             }
                         })
-                        .always(() => {
+                        .then(() => {
                             enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
 
                             stopPreloader();
@@ -1366,14 +1365,18 @@ $(document).ready(() => {
                 }, () => {
                     console.info('accountManager/trySendLoginMail: account creation/recovery started.');
 
-                    $('.tooltipped').tooltip('close');
+                    $('.tooltipped').each(function () {
+                        M.Tooltip
+                            .getInstance($(this)[0])
+                            .close();
+                    });
 
                     disable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
                 })
-                .done((response) => {
+                .then((response) => {
                     console.log(response);
 
-                    switch (response.status) {
+                    switch (response.data.status) {
                         case BAD_REQUEST:
                             toast('Algo anda mal, probá otra vez.');
 
@@ -1381,18 +1384,22 @@ $(document).ready(() => {
                         case ALREADY_EXISTS:
                             loginPassword
                                 .parent()
-                                .slideDown(() => {
-                                    loginPassword
-                                        .focus()
-                                        .click();
-                                });
+                                .parent()
+                                .css({ maxHeight: '' });
+
+                            setTimeout(() => {
+                                loginPassword = loginPassword[0];
+
+                                loginPassword.focus();
+                                loginPassword.click();
+                            }, MATERIALIZE_TRANSITION_TIME);
 
                             $('#continueLoginBtn').html('Iniciar sesión');
                             $('#tryAccountRecoveryBtn').fadeIn();
 
                             break;
                         case OK:
-                            $('#loginModal').modal('close');
+                            M.Modal.getInstance($('#loginModal')[0]).close();
 
                             loginMailAddress = $('#loginMailAddress').val();
 
@@ -1403,7 +1410,7 @@ $(document).ready(() => {
                                 'https://' + loginMailAddress.split('@')[1]
                             );
 
-                            noPasswordLoginModal.modal('open');
+                            M.Modal.getInstance(noPasswordLoginModal[0]).open();
 
                             break;
                         case ERROR:
@@ -1413,12 +1420,16 @@ $(document).ready(() => {
                     }
                     
                 })
-                .always(() => {
+                .then(() => {
                     enable($('#tryAccountRecoveryBtn, #continueLoginBtn, #loginMailAddress, #loginPassword'));
 
                     $('#signupMailAddress').val('');
 
-                    $('.tooltipped').tooltip('close');
+                    $('.tooltipped').each(function () {
+                        M.Tooltip
+                            .getInstance($(this)[0])
+                            .close();
+                    });
 
                     stopPreloader();
                 });
@@ -1427,39 +1438,57 @@ $(document).ready(() => {
     });
 
     $('#loginBtn, #loginBtnMobile').on('click', () => {
-        $('.sidenav').sidenav('close');
-        $('#loginModal').modal('open');
+        M.Sidenav
+            .getInstance($('.sidenav')[0])
+            .close();
+
+        M.Modal.getInstance($('#loginModal')[0]).open();
     });
 
-    $('.modal').modal({
-        onOpenStart: () => {
-            try {
-                $('.tooltipped').tooltip('close');
-            } catch (exception) {
-                console.warn('modal/onOpenStart: unable to close tooltips due to the following reason: \n\n', exception);
-            }
-        },
-        onOpenEnd: pushFakeHistory
+    $('.modal').each(function () {
+        M.Modal.init($(this)[0], {
+            onOpenStart: () => {
+                try {
+                    $('.tooltipped').each(function () {
+                        M.Tooltip
+                            .getInstance($(this)[0])
+                            .close();
+                    });
+                } catch (exception) {
+                    console.warn('modal/onOpenStart: unable to close tooltips due to the following reason: \n\n', exception);
+                }
+            },
+            onOpenEnd: pushFakeHistory
+        });
     });
 
-    $('#commentsModal').modal({
+    M.Modal.init($('#commentsModal')[0], {
         onOpenEnd: () => {
             $('#commentsModal')
-                .find('.modal-content')
-                .scrollTop(0);
+                .find('.modal-content')[0]
+                .scrollTo({ top: 0 });
 
             pushFakeHistory();
         }
     });
 
-    $('#loginModal').modal({
+    M.Modal.init($('#loginModal')[0], {
         onOpenStart: () => {
-            $('.tooltipped').tooltip('close');
+            $('.tooltipped').each(function () {
+                M.Tooltip
+                    .getInstance($(this)[0])
+                    .close();
+            });
+
+            $('#loginForm').css({
+                maxHeight: '85px' // MaterializeCSS' default size + margins
+            });
         },
         onOpenEnd: () => {
-            $('#loginMailAddress')
-                .focus()
-                .click();
+            loginMailAddress = $('#loginMailAddress')[0];
+
+            loginMailAddress.focus();
+            loginMailAddress.click();
 
             pushFakeHistory();
         },
@@ -1470,9 +1499,8 @@ $(document).ready(() => {
                 .css({ opacity: 1 })
                 .find('.input-field')
                 .first()
-                .css({ height: '' });
+                .css({ maxHeight: '85px' });
 
-            $('#loginForm').show();
             $('#loginStatus').html('');
 
             loginMailAddress = $('#loginMailAddress');
@@ -1482,15 +1510,14 @@ $(document).ready(() => {
             loginPassword = $('#loginPassword');
             loginPassword.val('');
             loginPassword.removeClass('valid invalid');
-            loginPassword.parent().hide();
 
             $('#tryAccountRecoveryBtn').hide();
             $('#continueLoginBtn').html('Continuar');
 
             createMessageBtn = $('#createMessageBtn');
 
-            if (createMessageBtn.length > 0 && createMessageBtn.hasClass('pulse')) {
-                createMessageBtn.tooltip('open');
+            if (createMessageBtn.length > 0 && $(createMessageBtn.el).hasClass('pulse')) {
+                M.Tooltip.getInstance(createMessageBtn).open();
             }
 
             allowDeferredPreloader = true;
@@ -1499,17 +1526,17 @@ $(document).ready(() => {
 
     $('#loginMailAddress, #loginPassword').on('keyup', (event) => {
         if (event.key == 'Enter') {
-            $('#continueLoginBtn').click();
+            $('#continueLoginBtn')[0].click();
         }
     });
 
     $('#logoutBtn, #logoutBtnMobile').on('click', () => {
-        $('.sidenav').sidenav('close');
+        M.Sidenav.getInstance($('.sidenav')[0]).close();
 
         if (isOnline) {
             run('accountManager', 'tryLogout', undefined)
-            .done((response) => {
-                if (response.status == OK) {
+            .then((response) => {
+                if (response.data.status == OK) {
                     animateRedirect(SYSTEM_HOSTNAME);
                 }
             });
@@ -1572,12 +1599,14 @@ $(document).ready(() => {
 
         $('input[type="text"], textarea').each(function () {
             if (typeof($(this).attr('data-length')) != 'undefined') {
-                $(this).characterCounter();
+                M.CharacterCounter.init($(this)[0]);
             }
         });
     
         if ($('.tooltipped').length > 0) {
-            $('.tooltipped').tooltip();
+            $('.tooltipped').each(function () {
+                M.Tooltip.init($(this)[0]);
+            });
 
             $('.tooltip-content').addClass('thin');
         }
@@ -1648,7 +1677,7 @@ $(document).ready(() => {
     }
 
     $('.brand-logo').on('click', () => {
-        if ($(window).scrollTop() >= document.documentElement.clientHeight) {
+        if (document.scrollingElement.scrollTop >= document.documentElement.clientHeight) {
             goBackToTop();
         } else {
             animateRedirect(SYSTEM_HOSTNAME + (getStatusForNSFW() ? 'nsfw' : ''));
@@ -1671,13 +1700,15 @@ $(document).ready(() => {
         let areModalsOpen = false;
 
         $('.modal').each(function () {
-            if ($(this).is(':visible')) {
+            if ($(this).css('display') != 'none') {
                 areModalsOpen = true;
             }
         });
 
         if (areModalsOpen) {
-            $('.modal').modal('close');
+            $('.modal').each(function () {
+                M.Modal.getInstance($(this)[0]).close();
+            });
 
             gotHistoryPushState = false;
         } else {
@@ -1799,10 +1830,12 @@ $(document).ready(() => {
 
         $('.sidenav-trigger, #nav-mobile, main').fadeIn();
 
-        $('.tap-target').tapTarget({
-            onOpen: () => {
-                $('.tap-target-origin').addClass('black-text');
-            }
+        $('.tap-target').each(function () {
+            M.TapTarget.init($(this)[0], {
+                onOpen: () => {
+                    $('.tap-target-origin').addClass('black-text');
+                }
+            });
         });
     }
 
@@ -1839,8 +1872,6 @@ $(document).ready(() => {
     function setupNav() {
         let nav = $('nav');
 
-        nav.pushpin();
-
         $('main').css({ 'padding-top' : nav.height() });
 
         $('.dropdown-button').each(function () {
@@ -1864,7 +1895,7 @@ $(document).ready(() => {
                     'background': 'url(' + userNavBackground.data('background-url') + ')'
                 });
 
-                userNavBackground.removeData('backgroundUrl');
+                userNavBackground.data('backgroundUrl', null);
 
                 console.log('setupNav: small screen detected, loading user-view background.');
             }

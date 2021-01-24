@@ -60,12 +60,12 @@ $(document).ready(() => {
 
                 $('#profileUpdateTryBtn').html('Guardando');
             })
-            .done((response) => {
+            .then((response) => {
                 console.log(response);
 
-                switch (response.status) {
+                switch (response.data.status) {
                     case OK:
-                        if (response.result.needsMailVerification) {
+                        if (response.data.result.needsMailVerification) {
                             toast('Mirá ' + mailAddress + ' para confirmar el cambio.');
                         } else {
                             toast('¡Listo!');
@@ -78,7 +78,7 @@ $(document).ready(() => {
 
                         break;
                     case ALREADY_EXISTS:
-                        if (response.result.matchesUsername) {
+                        if (response.data.result.matchesUsername) {
                             toast('Ya existe otra cuenta usando ese nombre de usuario.');
                         } else {
                             toast('Ya existe otra cuenta usando esa dirección de correo electrónico.');
@@ -86,7 +86,7 @@ $(document).ready(() => {
 
                         break;
                     case ERROR:
-                        if (typeof(response.result.containsSpaces) != 'undefined' && response.response.containsSpaces) {
+                        if (typeof(response.data.result.containsSpaces) != 'undefined' && response.data.result.containsSpaces) {
                             toast('Tu nombre de usuario no puede contener espacios.');
                         } else {
                             toast('Algo salió mal.');
@@ -95,7 +95,7 @@ $(document).ready(() => {
                         break;
                 }
             })
-            .always(() => {
+            .then(() => {
                 enable($('#profileUpdateTryBtn'));
 
                 $('#profileUpdateTryBtn').html('Guardar');
@@ -109,12 +109,12 @@ $(document).ready(() => {
 
             $('#requestDataDownloadBtn').find('span').html('Generando');
         })
-        .done((response) => {
+        .then((response) => {
             console.info(response);
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case OK:
-                    toast('¡Listo! Te lo dejamos en ' + response.result.mailAddress + '.');
+                    toast('¡Listo! Te lo dejamos en ' + response.data.result.mailAddress + '.');
 
                     break;
                 case NOT_ALLOWED:
@@ -127,7 +127,7 @@ $(document).ready(() => {
                     break;
             }
         })
-        .always(() => {
+        .then(() => {
             enable($('#requestDataDownloadBtn, #requestAccountRemovalBtn'));
 
             $('#requestDataDownloadBtn').find('span').html('Generar informe');
@@ -142,21 +142,21 @@ $(document).ready(() => {
                 $('#requestAccountRemovalBtn').find('span').html('Preparando');
             }
         })
-        .done((response) => {
+        .then((response) => {
             console.info(response);
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case OK:
-                    if (typeof(response.result.waitFor) == 'undefined') {
+                    if (typeof(response.data.result.waitFor) == 'undefined') {
                         isAllowedToDelete = false;
 
                         enable($('#requestDataDownloadBtn, #requestAccountRemovalBtn'));
 
                         $('#requestAccountRemovalBtn').find('span').html('Eliminar cuenta');
 
-                        toast('¡Listo! Confirmálo en ' + response.result.mailAddress + '.');
+                        toast('¡Listo! Confirmálo en ' + response.data.result.mailAddress + '.');
                     } else {
-                        let remaining = response.result.waitFor;
+                        let remaining = response.data.result.waitFor;
 
                         countdown = setInterval(() => {
                             if (remaining >= 0) {
@@ -202,7 +202,9 @@ $(document).ready(() => {
 
     $('#mailAddress').on('keyup change', validateMailAddress);
 
-    $('select').formSelect();
+    $('select').each(function () {
+        M.FormSelect.init($(this)[0]);
+    });
 
     $('.select-dropdown')
         .addClass('light-4 dark-5')
@@ -285,10 +287,10 @@ $(document).ready(() => {
 
             savingChangesToast = toast('Guardando cambios...');
         })
-        .done((response) => {
+        .then((response) => {
             console.info(response);
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case OK:
                     toast('¡Listo!');
 
@@ -303,7 +305,7 @@ $(document).ready(() => {
                     break;
             }
         })
-        .always(() => {
+        .then(() => {
             if (savingChangesToast != null) {
                 savingChangesToast.dismiss();
             }

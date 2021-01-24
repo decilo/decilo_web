@@ -30,7 +30,10 @@ div {
     font-display: swap;
 }
 
-nav { z-index: 999; }
+nav {
+    position: fixed;
+    z-index: 999;
+}
 
 .brand-logo { padding-left: 0.5em !important; }
 
@@ -380,4 +383,19 @@ span.small.nsfw-logo.badge {
     left: 100%;
     margin-left: 0.50em;
     min-width: auto;
+}
+
+#loginModal
+.modal-content
+.row {
+    max-height: 100vh;
+    transition: max-height 0.75s ease-in-out;
+    overflow: hidden;
+}
+
+#removeFileBtn {
+    transition:
+        opacity linear .25s,
+        left    linear .25s,
+        right   linear .25s;
 }

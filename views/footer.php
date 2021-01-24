@@ -8,7 +8,7 @@
                                 <label for="loginMailAddress"> Correo electrónico </label>
                                 <span class="helper-text" data-error="La dirección no es válida" data-success="La dirección es válida">Tu dirección de correo electrónico</span>
                             </div>
-                            <div class="input-field col s12" style="display: none;">
+                            <div class="input-field col s12">
                                 <input id="loginPassword" type="password" class="dark-5">
                                 <label for="loginPassword"> Contraseña </label>
                                 <span class="helper-text" data-error="Tenés que ingresar una contraseña" data-success="La contraseña es válida">Tu contraseña</span>
@@ -90,24 +90,26 @@
 
         <?php
 
-        if (USE_BUNDLE) {
-            print '
-            <!-- Bundle -->
-            <script type="text/javascript" src="assets/js/bundle.min.js?v=' . BUNDLE_VERSION . '" onload="console.info(\'Bundle: loaded successfully.\');"></script>';
-        } else {
-            foreach (CORE_SCRIPTS as $name => $src) {
+        if (!defined('NO_CORE_SCRIPTS') || !NO_CORE_SCRIPTS) {
+            if (USE_BUNDLE) {
                 print '
-                <!-- ' . $name . ' -->
-                <script
-                    type="text/javascript"
-                    src="' . $src . (
-                        strpos($src, 'http') === false
-                            ? '?v=' . getVersionFromPath($src)
-                            : ''
-                    ) . '"
-                    onload="console.info(\'' . $name . ': loaded successfully.\');"
-                >
-                </script>';
+                <!-- Bundle -->
+                <script type="text/javascript" src="assets/js/bundle.min.js?v=' . BUNDLE_VERSION . '" onload="console.info(\'Bundle: loaded successfully.\');"></script>';
+            } else {
+                foreach (CORE_SCRIPTS as $name => $src) {
+                    print '
+                    <!-- ' . $name . ' -->
+                    <script
+                        type="text/javascript"
+                        src="' . $src . (
+                            strpos($src, 'http') === false
+                                ? '?v=' . getVersionFromPath($src)
+                                : ''
+                        ) . '"
+                        onload="console.info(\'' . $name . ': loaded successfully.\');"
+                    >
+                    </script>';
+                }
             }
         }
 

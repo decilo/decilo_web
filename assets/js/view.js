@@ -5,8 +5,6 @@ $(document).ready(() => {
 
     function bindAccordionDisabler() {
         $('.collapsible .collapsible-header').on('click', (event) => {
-            console.log(event);
-    
             event.stopPropagation();
         });
     }
@@ -26,23 +24,23 @@ $(document).ready(() => {
                 }, () => {
                     disable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
                 })
-                .done((response) => {
+                .then((response) => {
                     console.info(response);
 
-                    if (response.status == OK) {
+                    if (response.data.status == OK) {
                         console.info('postComment: alright, we got a response!');
 
                         $('#commentInput, #commentDeclaredName')
                             .val('')
-                            .change();
+                            .trigger('change');
 
                         commentsCollapsible = $('#commentsCollapsible');
                         commentsCollapsible.prepend(
-                            getRenderedComment(response.result.id, declaredName, content, true)
+                            getRenderedComment(response.data.result.id, declaredName, content, true)
                         );
                         
-                        // Reset the container and the instance because of reasons.
-                        commentsCollapsible.collapsible({ accordion: false });
+                        commentsCollapsible = M.Collapsible.init(commentsCollapsible[0], { accordion: false });
+                        commentsCollapsible.open(0);
 
                         bindAccordionDisabler();
 
@@ -51,7 +49,7 @@ $(document).ready(() => {
                         toast('Algo anda mal, probá de nuevo.');
                     }
                 })
-                .always(() => {
+                .then(() => {
                     enable($('#commentInput, #commentDeclaredName, #sendCommentBtn'));
                 });
             } else {
@@ -71,7 +69,7 @@ $(document).ready(() => {
     });
 
     commentsCollapsible = $('#commentsCollapsible');
-    commentsCollapsible.collapsible({ accordion: false });
+    commentsCollapsible = M.Collapsible.init(commentsCollapsible[0], { accordion: false });
 
     bindAccordionDisabler();
 
@@ -80,27 +78,26 @@ $(document).ready(() => {
             message: MESSAGE,
             private: PRIVATE
         })
-        .done((response) => {
+        .then((response) => {
             console.info(response);
 
             commentsCollapsible = $('#commentsCollapsible');
 
-            switch (response.status) {
+            switch (response.data.status) {
                 case OK:
                     let renderedHTML = '';
 
-                    response.result.forEach((comment) => {
+                    response.data.result.forEach((comment) => {
                         renderedHTML += getRenderedComment(comment['id'], comment['declaredName'], comment['content'], true, comment['likes']);
                     });
 
                     commentsCollapsible.append(renderedHTML);
-                    commentsCollapsible.slideDown();
 
-                    commentsCollapsible.collapsible({ accordion: false });
+                    commentsCollapsible = M.Collapsible.init(commentsCollapsible[0], { accordion: false });
 
                     bindAccordionDisabler();
             
-                    if (commentsCollapsible.find('li').length > 0) {
+                    if ($(commentsCollapsible.el).find('li').length > 0) {
                         M.Collapsible
                             .getInstance($('#commentsCollapsible'))
                             .open(0);

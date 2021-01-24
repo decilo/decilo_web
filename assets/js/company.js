@@ -17,16 +17,16 @@ $(document).ready(() => {
 
                     deleteCompanyBtn.html('Eliminando');
                 })
-                .done((response) => {
+                .then((response) => {
                     console.info(response);
 
-                    if (response.status != OK) {
+                    if (response.data.status != OK) {
                         enable(deleteCompanyBtn);
         
                         deleteCompanyBtn.html('Eliminar');
                     }
 
-                    switch (response.status) {
+                    switch (response.data.status) {
                         case OK:
                             animateRedirect('/?e=' + COMPANY['REMOVAL_SUCCEEDED']);
 
@@ -54,7 +54,7 @@ $(document).ready(() => {
             if (company['isBillingEnabled'] == 1) {
                 toast('Antes de eliminar tu empresa, tenés que cancelar tus subscripciones.');
             } else {
-                deleteCompanyModal.modal('open');
+                M.Modal.getInstance(deleteCompanyModal[0]).open();
             }
         });
 
@@ -116,12 +116,12 @@ $(document).ready(() => {
             }, () => {
                 disable($('#companyUpdateBtn'));
             })
-            .done((response) => {
+            .then((response) => {
                 console.info(response);
 
-                switch (response.status) {
+                switch (response.data.status) {
                     case OK:
-                        if (response.result.isIdentifierValid) {
+                        if (response.data.result.isIdentifierValid) {
                             toast('¡Listo!');
 
                             $('input').removeClass('valid invalid');
@@ -130,11 +130,17 @@ $(document).ready(() => {
                                 $('#companyStatusHeader').html('Tu empresa');
                                 $('#companyUpdateBtn').html('Actualizar datos');
 
-                                $('.tooltipped').tooltip('destroy');
+                                $('.tooltipped').each(function () {
+                                    instance = M.Tooltip.getInstance($(this)[0]);
+                                    
+                                    if (instance == null) {
+                                        instance.destroy();
+                                    }
+                                });
 
                                 enable($('.btn'));
 
-                                company = response.result.companies[0];
+                                company = response.data.result.companies[0];
                             }
 
                             initializeCompanyRemover();
@@ -163,7 +169,7 @@ $(document).ready(() => {
                         break;
                 }
             })
-            .always(() => {
+            .then(() => {
                 enable($('#companyUpdateBtn'));
             });
         } else {

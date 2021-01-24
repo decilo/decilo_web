@@ -16,7 +16,7 @@ $(document).ready(() => {
 
             $('#confirmAdRemovalBtn').data({ 'ad': button.data('ad') });
 
-            $('#requestRemovalModal').modal('open');
+            M.Modal.getInstance($('#requestRemovalModal')[0]).open();
         });
     }
 
@@ -32,9 +32,11 @@ $(document).ready(() => {
         });
     });
 
-    $('select')
-        .trigger('change')
-        .formSelect();
+    $('select').trigger('change');
+
+    $('select').each(function () {
+        M.FormSelect.init($(this)[0]);
+    });
 
     $('.select-dropdown')
         .addClass('light-4 dark-5')
@@ -74,10 +76,10 @@ $(document).ready(() => {
             }, () => {
                 disable($('#createAdBtn'));
             })
-            .done((response) => {
+            .then((response) => {
                 console.info(response);
 
-                switch (response.status) {
+                switch (response.data.status) {
                     case OK:
                         container = $('.gridContainer');
 
@@ -86,7 +88,7 @@ $(document).ready(() => {
                             .fadeOut(() => {
                                 container.prepend(
                                     getRenderedAd(
-                                        response.result.id,
+                                        response.data.result.id,
                                         content.val(),
                                         company['name'],
                                         null,
@@ -104,17 +106,13 @@ $(document).ready(() => {
 
                                 content
                                     .val('')
-                                    .removeClass('valid invalid')
-                                    .trigger('change');
+                                    .removeClass('valid invalid');
 
                                 if (company['isBillingEnabled'] == 1) {
-                                    reviewingWarningCollection.show();      
-
-                                    if (reviewingWarningCollection.parent().css('opacity') == 0) {
-                                        reviewingWarningCollection.parent().fadeIn();
-                                    } else {
-                                        reviewingWarningCollection.parent().slideDown();
-                                    }
+                                    reviewingWarningCollection
+                                        .show()
+                                        .parent()
+                                        .fadeIn();
 
                                     onReview++;
 
@@ -130,7 +128,17 @@ $(document).ready(() => {
                                             .show();
                                     }
                                 } else {
-                                    if ($('.message').filter('[data-ad!="null"]').length > 1) {
+                                    pausedADs = $('.message[data-ad]');
+
+                                    filteredPausedADs = [];
+
+                                    pausedADs.each(function () {
+                                        if ($(this).data('ad') != null) {
+                                            filteredPausedADs.push($(this));
+                                        }
+                                    });
+
+                                    if (filteredPausedADs.length > 1) {
                                         pausedWarningCollection.find('.plurals').show();
                                     } else {
                                         pausedWarningCollection.find('.plurals').hide();
@@ -161,7 +169,7 @@ $(document).ready(() => {
                         toast('Algo salió mal, por favor probá de nuevo.');
                 }
             })
-            .always(() => {
+            .then(() => {
                 enable($('#createAdBtn'));
             });
         } else {
@@ -268,7 +276,7 @@ $(document).ready(() => {
     }
 
     $('#confirmAdRemovalBtn').on('click', (event) => {
-        requestRemovalModal = $('#requestRemovalModal');
+        requestRemovalModal = M.Modal.getInstance($('#requestRemovalModal')[0]);
 
         button  = $(event.currentTarget);
         ad      = button.data('ad');
@@ -279,10 +287,10 @@ $(document).ready(() => {
 
                 button.html('Eliminando');
             })
-            .done((response) => {
+            .then((response) => {
                 console.info(response);
 
-                switch (response.status) {
+                switch (response.data.status) {
                     case OK:
                         toast('¡Listo! El anuncio fue eliminado.');
 
@@ -296,7 +304,17 @@ $(document).ready(() => {
                             if (company['isBillingEnabled'] == 1) {
                                 onReview = $('.onReview').length;
 
-                                if ($('.message').filter('[data-ad!="null"]').length == 0) {
+                                adList = $('.message[data-ad]');
+
+                                filteredAdList = [];
+
+                                adList.each(function () {
+                                    if ($(this).data('ad') != null) {
+                                        filteredAdList.push($(this));
+                                    }
+                                });
+
+                                if (filteredAdList.length == 0) {
                                     reviewingWarningCollection.parent().fadeOut(() => {
                                         reviewingWarningCollection.parent().hide();
 
@@ -307,8 +325,8 @@ $(document).ready(() => {
                                             .fadeIn();
                                     });
                                 } else if (onReview == 0) {
-                                    reviewingWarningCollection.slideUp(() => {
-                                        if (!pausedWarningCollection.is(':visible')) {
+                                    reviewingWarningCollection.fadeOut(() => {
+                                        if (!pausedWarningCollection.css('display') != 'none') {
                                             reviewingWarningCollection.parent().hide();
                                         }
                                     });
@@ -326,9 +344,17 @@ $(document).ready(() => {
                                     }
                                 }
                             } else {
-                                pausedADs = $('.message').filter('[data-ad!="null"]');
+                                pausedADs = $('.message').filter('[data-ad]');
 
-                                if (pausedADs.length > 1) {
+                                let filteredPausedADs = [];
+
+                                pausedADs.each(function () {
+                                    if ($(this).data('ad') != null) {
+                                        filteredPausedADs.push($(this));
+                                    }
+                                });
+
+                                if (filteredPausedADs.length > 1) {
                                     pausedWarningCollection.find('.plurals').show();
                                 } else if (pausedADs == 1) {
                                     pausedWarningCollection.find('.plurals').hide();
@@ -359,10 +385,10 @@ $(document).ready(() => {
                         break;
                 }
             })
-            .always(() => {
+            .then(() => {
                 enable(button);
 
-                requestRemovalModal.modal('close');
+                requestRemovalModal.close();
 
                 setTimeout(() => {
                     button.html('Eliminar');
@@ -371,7 +397,7 @@ $(document).ready(() => {
         } else {
             toast('Algo anda mal, por favor probá de nuevo.');
 
-            requestRemovalModal.modal('close');
+            requestRemovalModal.close();
         }
     });
 });
