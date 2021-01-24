@@ -96,13 +96,15 @@ if (USE_BUNDLE) {
 
         $curlOptions[CURLOPT_URL] = $src;
 
-        print ' > Downloading and appending from: ' . $src . PHP_EOL;
+        print ' > Downloading and appending from: ' . $src;
 
         $request = curl_init();
 
         curl_setopt_array($request, $curlOptions);
 
-        $bundleContent .= curl_exec($request);
+        $bundleContent .= curl_exec($request) . PHP_EOL;
+
+        print ' | HTTP: ' . curl_getinfo($request, CURLINFO_HTTP_CODE) . PHP_EOL;
     }
 
     file_put_contents(JS_BUNDLE_PATH, $bundleContent, FILE_APPEND);
