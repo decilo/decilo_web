@@ -58,9 +58,13 @@ class Main {
     public function __construct() {
         $this->loadDependencies();
         $this->loadHeaders();
-        $this->connectDatabase();
+
+        if (!defined('REQUIRES_ENVIRONMENT') || REQUIRES_ENVIRONMENT) {
+            $this->connectDatabase();
+            $this->buildConstants();
+        }
+
         $this->refreshSession();
-        $this->buildConstants();
     }
 
     public function getDatabase() {

@@ -4,6 +4,8 @@ use MatthiasMullie\Minify;
 
 require_once 'vendor/autoload.php';
 
+define('REQUIRES_ENVIRONMENT', false);
+
 require_once 'includes/main.php';
 
 define('SETTINGS_PATH', 'includes/settings.php');
@@ -43,29 +45,32 @@ if (USE_BUNDLE) {
     $bundleContent = '';
 
     foreach (CORE_STYLESHEETS as $name => $src) {
-        $curlOptions = [
-            CURLOPT_FOLLOWLOCATION  => true,
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_SSL_VERIFYHOST  => false,
-            CURLOPT_SSL_VERIFYPEER  => false
-        ];
+        if (strpos($src, 'http') !== false) {
+            $curlOptions = [
+                CURLOPT_FOLLOWLOCATION  => true,
+                CURLOPT_RETURNTRANSFER  => true,
+                CURLOPT_SSL_VERIFYHOST  => false,
+                CURLOPT_SSL_VERIFYPEER  => false
+            ];
 
-        if (strpos($src, 'http') === false) {
-            $src = SHARED_VALUES['SYSTEM_HOSTNAME'] . $src;
+            $curlOptions[CURLOPT_URL] = $src;
 
-            $curlOptions[CURLOPT_SSL_VERIFYHOST] = false;
-            $curlOptions[CURLOPT_SSL_VERIFYPEER] = false;
+            print ' > Downloading and appending from: ' . $src;
+
+            $request = curl_init();
+
+            curl_setopt_array($request, $curlOptions);
+
+            $bundleContent .= curl_exec($request);
+
+            print ' | HTTP: ' . curl_getinfo($request, CURLINFO_HTTP_CODE) . PHP_EOL;
+        } else {
+            print ' > Adding from: ' . $src . PHP_EOL;
+
+            $bundleContent .= file_get_contents($src);
         }
 
-        $curlOptions[CURLOPT_URL] = $src;
-
-        print ' > Downloading and appending from: ' . $src . PHP_EOL;
-
-        $request = curl_init();
-
-        curl_setopt_array($request, $curlOptions);
-
-        $bundleContent .= curl_exec($request);
+        $bundleContent .= PHP_EOL;
     }
 
     file_put_contents(CSS_BUNDLE_PATH, $bundleContent, FILE_APPEND);
@@ -80,31 +85,32 @@ if (USE_BUNDLE) {
     $bundleContent = '';
 
     foreach (CORE_SCRIPTS as $name => $src) {
-        $curlOptions = [
-            CURLOPT_FOLLOWLOCATION  => true,
-            CURLOPT_RETURNTRANSFER  => true,
-            CURLOPT_SSL_VERIFYHOST  => false,
-            CURLOPT_SSL_VERIFYPEER  => false
-        ];
+        if (strpos($src, 'http') !== false) {
+            $curlOptions = [
+                CURLOPT_FOLLOWLOCATION  => true,
+                CURLOPT_RETURNTRANSFER  => true,
+                CURLOPT_SSL_VERIFYHOST  => false,
+                CURLOPT_SSL_VERIFYPEER  => false
+            ];
 
-        if (strpos($src, 'http') === false) {
-            $src = SHARED_VALUES['SYSTEM_HOSTNAME'] . $src;
+            $curlOptions[CURLOPT_URL] = $src;
 
-            $curlOptions[CURLOPT_SSL_VERIFYHOST] = false;
-            $curlOptions[CURLOPT_SSL_VERIFYPEER] = false;
+            print ' > Downloading and appending from: ' . $src;
+
+            $request = curl_init();
+
+            curl_setopt_array($request, $curlOptions);
+
+            $bundleContent .= curl_exec($request);
+
+            print ' | HTTP: ' . curl_getinfo($request, CURLINFO_HTTP_CODE) . PHP_EOL;
+        } else {
+            print ' > Adding from: ' . $src . PHP_EOL;
+
+            $bundleContent .= file_get_contents($src);
         }
 
-        $curlOptions[CURLOPT_URL] = $src;
-
-        print ' > Downloading and appending from: ' . $src;
-
-        $request = curl_init();
-
-        curl_setopt_array($request, $curlOptions);
-
-        $bundleContent .= curl_exec($request) . PHP_EOL;
-
-        print ' | HTTP: ' . curl_getinfo($request, CURLINFO_HTTP_CODE) . PHP_EOL;
+        $bundleContent .= PHP_EOL;
     }
 
     file_put_contents(JS_BUNDLE_PATH, $bundleContent, FILE_APPEND);
@@ -145,26 +151,28 @@ if (USE_BUNDLE) {
         );
     }
 
-    print '-> Building report reasons static cache...' . PHP_EOL;
+    if (RENDER_REPORT_REASONS_CACHE) {
+        print '-> Building report reasons static cache...' . PHP_EOL;
 
-    $reportReasonsCache = '';
-    foreach (getReportReasons() as $reportReason) {
-        $reportReasonsCache .= trim(
-            preg_replace(
-                '/\s+/'
-                ,
-                ' ', '
-                <p>
-                    <label>
-                        <input name="reportReason" type="radio" value="' . $reportReason['id'] . '" />
-                        <span class="' . ($reportReason['score'] < 0 ? 'red-text medium' : 'regular') . '"> ' . $reportReason['reason'] . ' </span>
-                    </label>
-                </p>'
-            )
-        );
+        $reportReasonsCache = '';
+        foreach (getReportReasons() as $reportReason) {
+            $reportReasonsCache .= trim(
+                preg_replace(
+                    '/\s+/'
+                    ,
+                    ' ', '
+                    <p>
+                        <label>
+                            <input name="reportReason" type="radio" value="' . $reportReason['id'] . '" />
+                            <span class="' . ($reportReason['score'] < 0 ? 'red-text medium' : 'regular') . '"> ' . $reportReason['reason'] . ' </span>
+                        </label>
+                    </p>'
+                )
+            );
+        }
+
+        file_put_contents(REPORT_REASONS_CACHE_PATH, $reportReasonsCache);
     }
-
-    file_put_contents(REPORT_REASONS_CACHE_PATH, $reportReasonsCache);
 }
 
 ?>
