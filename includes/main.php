@@ -48,7 +48,9 @@ class Main {
         // Backend constants.
         foreach ([SHARED_VALUES, ALLOWANCE_LEVEL] as $constantArray) {
             foreach ($constantArray as $const => $value) {
-                define($const, $value);
+                if (!defined($const)) {
+                    define($const, $value);
+                }
             }
         }
     }
