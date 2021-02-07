@@ -1,0 +1,8 @@
+[{
+    "relation": [ "delegate_permission/common.handle_all_urls" ],
+    "target" : {
+        "namespace": "android_app",
+        "package_name": "ar.decilo.twa",
+        "sha256_cert_fingerprints": [ "DC:03:82:C9:AA:11:E0:2C:38:49:7B:E1:F1:7E:21:CA:13:87:10:EA:5F:B6:38:32:FC:D5:46:61:B4:8D:67:7F" ]
+    }
+}]
