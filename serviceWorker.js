@@ -9,7 +9,8 @@ const URLS = [
     '/exceptions/failed_dependency',
     '/exceptions/internal_server_error',
     '/exceptions/maintenance',
-    '/assets/css/maintenance.min.css'
+    '/assets/css/maintenance.min.css',
+    '/assets/misc/site.webmanifest.php'
 ];
 
 self.addEventListener('install', (event) => {
