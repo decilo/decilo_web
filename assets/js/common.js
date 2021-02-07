@@ -394,6 +394,8 @@ function isElementInViewport(element) {
 function getRenderedMessage(id, content, declaredName, created = null, display = false, reported, image = null, verified = true, comments = 0, deferImage = false, likes = 0, position = -1) {
     content = content.toString();
 
+    let isDemo = typeof(DEMO) != 'undefined' && DEMO;
+
     return `<div
                 class="col s12 ` + (PRIVATE ? `m12 l6` : `m6 l3`) + ` message ` + (id == null ? 'not-posted' : '') + `"
                 ` + (display ? '' : 'style="display: none;"') + `
@@ -450,8 +452,14 @@ function getRenderedMessage(id, content, declaredName, created = null, display =
                         >
                     </div>`) + `
                     <div class="card-content white-text">
-                        <span class="card-title roboto light-3">` + (declaredName == null ? 'Anónimo' : declaredName) + `</span>
-                        <p class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4">` + 
+                        <span class="card-title roboto light-3">` + (declaredName == null || isDemo ? 'Anónimo' : declaredName) + `</span>
+                        <p
+                            class="lato thin word-wrap process-whitespaces overflow-ellipsis message-content light-4"` + (isDemo ? `
+                            style="
+                                background-color: #D9D9D9;
+                                color: transparent !important;
+                            "` : ``) + `
+                        >` + 
                             (
                                 content.length > MESSAGES['MAX_LENGTH']
                                     ? convertMDtoHTML(

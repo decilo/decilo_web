@@ -202,6 +202,7 @@ if (isset($_GET['to'])) {
     const RECIPIENT = <?= json_encode($recipientUsername)   ?>;
     const LOGGED_IN = <?= json_encode(getUserId() != null)  ?>;
     const NSFW      = <?= json_encode(isNSFW())             ?>;
+    const DEMO      = <?= json_encode(isset($_GET['demo'])) ?>;
     const PRIVATE   = false;
 </script>
 
