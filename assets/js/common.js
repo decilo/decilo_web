@@ -1116,7 +1116,7 @@ function initializeIdleRunner() {
     }
 
     idleRunner = setTimeout(() => {
-        M.TapTarget.getInstance($('.tap-target')).open();
+        M.TapTarget.getInstance($('.tap-target')[0]).open();
 
         localStorage.setItem('hasSeenFeatures', true);
 
