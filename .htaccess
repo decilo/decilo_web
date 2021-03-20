@@ -1,5 +1,7 @@
 RedirectMatch 403 ^/.git/.*$
 RedirectMatch 403 ^/resources/.*$
+RedirectMatch 403 ^/composer.(lock|json)$
+RedirectMatch 403 ^/README.md$
 
 # As suggested here: https://serverfault.com/a/646227
 Header always edit Set-Cookie "(?i)^((?:(?!;\s?HttpOnly).)+)$" "$1; HttpOnly"
