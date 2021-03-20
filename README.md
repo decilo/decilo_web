@@ -20,7 +20,7 @@ Por último, para realizar la instalación, es recomendable proceder de la sigui
  - Instalá las dependencias base: `sudo apt install php-gd php-curl php-mysql php-pdo php-xml php-zip php-mbstring php-bcmath php-intl`.
  - Instalá las dependencias del backend (movéte a la raíz del proyecto y ejecutá el siguiente comando): `composer install`.
  - Cuando termines, reniciá el servidor usando uno de los siguientes comandos: `sudo service apache2 restart` o `sudo systemctl restart apache2`.
- - Por último, la primera vez que intentes acceder, se te va a informa de qué variables de entorno necesitás. Las podés configurar colocando cada una de ellas con su valor correspondiente por medio de la instrucción `SetEnv` en tu **archivo de host virtual**. Recordá que, al realizar cambios en este archivo, es importante que reinicies el servidor para aplicarlos.
+ - Por último, la primera vez que intentes acceder, se te va a informar de qué variables de entorno necesitás. Las podés configurar colocando cada una de ellas con su valor correspondiente por medio de la instrucción `SetEnv` en tu **archivo de host virtual**. Recordá que, al realizar cambios en este archivo, es importante que reinicies el servidor para aplicarlos.
 
 ## Recursos
 ¡Probálo! Importá la base de datos desde la carpeta **resources** y empezá a usarlo.
