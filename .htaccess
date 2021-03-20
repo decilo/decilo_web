@@ -1,4 +1,5 @@
 RedirectMatch 403 ^/.git/.*$
+RedirectMatch 403 ^/resources/.*$
 
 # As suggested here: https://serverfault.com/a/646227
 Header always edit Set-Cookie "(?i)^((?:(?!;\s?HttpOnly).)+)$" "$1; HttpOnly"
