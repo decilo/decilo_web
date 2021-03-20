@@ -26,6 +26,6 @@ Por último, para realizar la instalación, es recomendable proceder de la sigui
 ¡Probálo! Importá la base de datos desde la carpeta **resources** y empezá a usarlo.
 
 ## Licencia
-El código fuente de este proyecto es propiedad de @FacuM, excluyendo el código fuente del software obtenido durante la instalación de dependencias, el cual puede contener diferentes tipos de licencia compatibles con el uso comercial y privado.
+El código fuente de este proyecto es propiedad de [@FacuM](https://github.com/FacuM), excluyendo el código fuente del software obtenido durante la instalación de dependencias, el cual puede contener diferentes tipos de licencia compatibles con el uso comercial y privado.
 
 Si querés usar un fragmento de código tal y como está presente en este repositorio y no estás seguro de si está cubierto o no por esta licencia, no dudes en enviar un correo electrónico a [support@decilo.ar](mailto:support@decilo.ar) y a [facumo.fm@gmail.com](mailto:facumo.fm@gmail.com).
