@@ -35,6 +35,8 @@ let gotHistoryPushState = false;
 
 let userNavBackground = null;
 
+let acceptedGDPR = localStorage.getItem('acceptedGDPR_fc');
+
 const FONTS = [
     {
         family:  'Lato',
@@ -338,17 +340,23 @@ function queueRetry() {
 }
 
 function setupGoogleAnalytics() {
-    window.dataLayer = window.dataLayer || [];
+    acceptedGDPR = localStorage.getItem('acceptedGDPR_fc');
 
-    function gtag() {
-        dataLayer.push(arguments);
+    if (acceptedGDPR != null && acceptedGDPR == 'true') {
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', GOOGLE_ANALYTICS_KEY);
+
+        console.info('setupGoogleAnalytics: success setting up Google Analytics.');
+    } else {
+        console.info('setupGoogleAnalytics: Google Analytics will be disabled for this session based off the user request.');
     }
-
-    gtag('js', new Date());
-
-    gtag('config', GOOGLE_ANALYTICS_KEY);
-
-    console.info('setupGoogleAnalytics: success setting up Google Analytics.');
 }
 
 function deferLoginPreloader() {
@@ -1641,21 +1649,27 @@ $(document).ready(() => {
             console.info('common/pushLoader: Google Tag Manager will be injected in ' + (IDLE_TIMEOUT / 1000) + ' seconds.');
 
             setTimeout(() => {
-                console.info('common/pushLoader: trying to load Google Tag Manager.');
+                acceptedGDPR = localStorage.getItem('acceptedGDPR_fc');
 
-                var script = null;
+                if (acceptedGDPR != null && acceptedGDPR == 'false') {
+                    console.info('common/pushLoader: GDPR complicance wasn\'t accepted, analytics tracking will be disabled for this session.');
+                } else {
+                    console.info('common/pushLoader: trying to load Google Tag Manager.');
 
-                // Global Tag Manager (gtag.js)
-                script          = document.createElement('script');
-                script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
-                script.onload   = setupGoogleAnalytics;
-                script.onerror  = () => {
-                    console.warn('common/pushLoader: cannot track this session, we couldn\'t download GTM. Is the user having strict privacy settings without exposing a DNT header?\n\nFor more information, please refer to the console error above.');
+                    var script = null;
+
+                    // Global Tag Manager (gtag.js)
+                    script          = document.createElement('script');
+                    script.src      = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALYTICS_KEY;
+                    script.onload   = setupGoogleAnalytics;
+                    script.onerror  = () => {
+                        console.warn('common/pushLoader: cannot track this session, we couldn\'t download GTM. Is the user having strict privacy settings without exposing a DNT header?\n\nFor more information, please refer to the console error above.');
+                    }
+
+                    script.defer    = true;
+
+                    document.getElementsByTagName('body')[0].appendChild(script);
                 }
-
-                script.defer    = true;
-
-                document.getElementsByTagName('body')[0].appendChild(script);
             }, IDLE_TIMEOUT);
         }
     }
@@ -1850,7 +1864,7 @@ $(document).ready(() => {
         });
     }
 
-    if (DISPLAY_GDPR_MODAL && localStorage.getItem('acceptedGDPR') == null) {
+    if (DISPLAY_GDPR_MODAL && acceptedGDPR == null) {
         main = $('main');
 
         main.css({ filter: 'blur(0.5rem)' });
@@ -1861,8 +1875,11 @@ $(document).ready(() => {
 
         gdprModal = M.Modal.getInstance(gdprModal).open();
 
-        $('#acceptCollectionBtn').on('click', () => {
-            localStorage.setItem('acceptedGDPR', true);
+        $(gdprModal.el).find('.modal-footer button').on('click', (event) => {
+            localStorage.setItem(
+                'acceptedGDPR_fc',
+                $(event.target).attr('id') == 'acceptCollectionBtn'
+            );
 
             main.css({ transition: MATERIALIZE_TRANSITION_TIME + 'ms filter linear', filter: '' });
 

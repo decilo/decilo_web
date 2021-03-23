@@ -72,14 +72,15 @@
                 <div class="modal-content dark-5">
                     <h4>Sobre tu privacidad</h4>
                     <p>
-                        Usamos cookies y otras técnicas de rastreo para mejorar tu experiencia de navegación y mostrarte contenidos personalizados, para analizar el tráfico en nuestra web y para comprender de dónde vienen nuestros visitantes. <br>
+                        Nos gustaría usar cookies y otras técnicas de rastreo para mejorar tu experiencia de navegación y mostrarte contenidos personalizados, para analizar el tráfico en nuestra web y para comprender de dónde vienen nuestros visitantes. <br>
                         <br>
-                        Si querés saber más, leé nuestra <a href="/privacy">política de privacidad</a>.
+                        Si querés saber más, leé nuestra <a href="/privacy">política de privacidad</a>. Si no querés participar, rechazálo (podés continuar navegando).
                     </p>
                 </div>
             </div>
             <div class="modal-footer bg-light-5 bg-dark-4">
-                <button id="acceptCollectionBtn" class="waves-effect waves-light btn-flat dark-5"> Continuar </button>
+                <button id="rejectCollectionBtn" class="waves-effect waves-light btn-flat dark-5"> Rechazar </button>
+                <button id="acceptCollectionBtn" class="waves-effect waves-light btn-flat dark-5"> Aceptar </button>
             </div>
         </div>
 
