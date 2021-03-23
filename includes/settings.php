@@ -25,7 +25,7 @@ define('RENDER_REPORT_REASONS_CACHE', false);
 define('CURRENT_TIME_YMD_ARRAY', explode('-', strftime('%Y-%m-%d')));
 
 // Mail addresses
-define('SENDGRID_NOREPLY_ADDRESS', 'no-reply@decilo.ar');
+define('SENDGRID_NOREPLY_ADDRESS', 'no-reply@decilo.app');
 
 if (!defined('REQUIRES_ENVIRONMENT') || REQUIRES_ENVIRONMENT) {
     // Cloud storage
@@ -144,7 +144,7 @@ if (!defined('REQUIRES_ENVIRONMENT') || REQUIRES_ENVIRONMENT) {
             'THEMES'                 => [ 'AUTO' => null, 'DARK' => 0, 'LIGHT' => 1 ],
 
             'SYSTEM_HOSTNAME'        => SYSTEM_HOSTNAME,
-            'STATUS_SERVER'          => 'https://status.decilo.ar/',
+            'STATUS_SERVER'          => 'https://status.decilo.app/',
             'WHATSAPP_LINK'          => WHATSAPP_LINK,
 
             'IS_XMAS'                => (

@@ -7,7 +7,7 @@ Este es el código fuente de **Decilo**, sentíte libre de analizarlo, tomar ide
  - Apache 2.4.41 o superior
  - PHP 7.4.3 o superior (podría funcionar con versiones más antiguas, requiere de las extensiones **gd**, **curl**, **mysql**, **pdo**, **xml**, **zip**, **mbstring**, **bcmath** e **intl**)
  - MariaDB 15.1 o superior (podría funcionar con versiones más antiguas)
- - Existen otras dependencias internas con diversas licencias compatibles con el uso comercial y privado. Para más información, visitá nuestro [Acerca de](https://decilo.ar/about.php).
+ - Existen otras dependencias internas con diversas licencias compatibles con el uso comercial y privado. Para más información, visitá nuestro [Acerca de](https://decilo.app/about.php).
 
 ## Instalación
 La configuración del servidor presenta diferentes complicaciones y obstáculos, principalmente si el concepto de [Variables de entorno](https://httpd.apache.org/docs/current/env.html), la utilización del sistema de dependencias de [Composer](https://getcomposer.org/doc/00-intro.md) y el [concepto de "bundling"](https://medium.com/madhash/understanding-the-concept-of-bundling-for-beginners-f2db1adad724) no te resultan familiares. Si es así, podés referirte a los enlaces adjuntos a cada uno de los temas anteriores.
@@ -28,4 +28,4 @@ Por último, para realizar la instalación, es recomendable proceder de la sigui
 ## Licencia
 El código fuente de este proyecto es propiedad de [@FacuM](https://github.com/FacuM), excluyendo el código fuente del software obtenido durante la instalación de dependencias, el cual puede contener diferentes tipos de licencia compatibles con el uso comercial y privado.
 
-Si querés usar un fragmento de código tal y como está presente en este repositorio y no estás seguro de si está cubierto o no por esta licencia, no dudes en enviar un correo electrónico a [support@decilo.ar](mailto:support@decilo.ar) y a [facumo.fm@gmail.com](mailto:facumo.fm@gmail.com).
+Si querés usar un fragmento de código tal y como está presente en este repositorio y no estás seguro de si está cubierto o no por esta licencia, no dudes en enviar un correo electrónico a [support@decilo.app](mailto:support@decilo.app) y a [facumo.fm@gmail.com](mailto:facumo.fm@gmail.com).
