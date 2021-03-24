@@ -74,7 +74,7 @@ $(document).ready(() => {
                         let passwordFields = $('#password, #passwordVerifier');
 
                         passwordFields.val('');
-                        passwordFields.change();
+                        passwordFields.trigger('change');
 
                         break;
                     case ALREADY_EXISTS:

@@ -62,6 +62,7 @@ require_once 'views/header.php';
         Tené en cuenta que pueden existir copias de seguridad físicas, ajenas al servidor principal que pueden contener tus datos. Sin embargo, estas se reciclan, usualmente, cada un mes. <br>
         <br>
         Siempre vas a poder cambiar tu consentimiento a la utilización de los sistemas especificados arriba a través de esta página. <br>
+        <br>
 
         <p class="center">
             <label>
