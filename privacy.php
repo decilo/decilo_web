@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Privacidad';
+$title = 'Privacidad'; $js = 'privacy.min.js';
 
 require_once 'includes/main.php';
 require_once 'views/header.php';
@@ -59,7 +59,18 @@ require_once 'views/header.php';
         <br>
         Para hacerlo, tocá "Eliminar cuenta" en "Mi cuenta". Te vamos a pedir que confirmes la operación a través de un correo electrónico. <br>
         <br>
-        Tené en cuenta que pueden existir copias de seguridad físicas, ajenas al servidor principal que pueden contener tus datos. Sin embargo, estas se reciclan usualmente cada un mes.
+        Tené en cuenta que pueden existir copias de seguridad físicas, ajenas al servidor principal que pueden contener tus datos. Sin embargo, estas se reciclan, usualmente, cada un mes. <br>
+        <br>
+        Siempre vas a poder cambiar tu consentimiento a la utilización de los sistemas especificados arriba a través de esta página. <br>
+
+        <p class="center">
+            <label>
+                <input id="gdprComplianceCheckbox" type="checkbox" class="filled-in" />
+                <span>
+                    Acepto compartir información estadística
+                </span>
+            </label>
+        </p>
     </p>
 </div>
 

@@ -1,5 +1,7 @@
 var jQuery = $;
 
+const GDPR_COMPLICANCE_KEY = 'acceptedGDPR_fc';
+
 const NO_MESSAGES_HINT = 
     `¡Nada por acá!
      <br>
@@ -35,7 +37,7 @@ let gotHistoryPushState = false;
 
 let userNavBackground = null;
 
-let acceptedGDPR = localStorage.getItem('acceptedGDPR_fc');
+let acceptedGDPR = localStorage.getItem(GDPR_COMPLICANCE_KEY);
 
 const FONTS = [
     {
@@ -340,7 +342,7 @@ function queueRetry() {
 }
 
 function setupGoogleAnalytics() {
-    acceptedGDPR = localStorage.getItem('acceptedGDPR_fc');
+    acceptedGDPR = localStorage.getItem(GDPR_COMPLICANCE_KEY);
 
     if (acceptedGDPR != null && acceptedGDPR == 'true') {
         window.dataLayer = window.dataLayer || [];
@@ -1649,7 +1651,7 @@ $(document).ready(() => {
             console.info('common/pushLoader: Google Tag Manager will be injected in ' + (IDLE_TIMEOUT / 1000) + ' seconds.');
 
             setTimeout(() => {
-                acceptedGDPR = localStorage.getItem('acceptedGDPR_fc');
+                acceptedGDPR = localStorage.getItem(GDPR_COMPLICANCE_KEY);
 
                 if (acceptedGDPR != null && acceptedGDPR == 'false') {
                     console.info('common/pushLoader: GDPR complicance wasn\'t accepted, analytics tracking will be disabled for this session.');
@@ -1877,7 +1879,7 @@ $(document).ready(() => {
 
         $(gdprModal.el).find('.modal-footer button').on('click', (event) => {
             localStorage.setItem(
-                'acceptedGDPR_fc',
+                GDPR_COMPLICANCE_KEY,
                 $(event.target).attr('id') == 'acceptCollectionBtn'
             );
 

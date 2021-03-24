@@ -80,11 +80,21 @@ foreach (THEME as $mode => $colors) {
             [type="radio"]:disabled+span {
                 color: #' . $colors[7] . ';
             }
-            
+
+            [type="checkbox"]:checked+span:not(.lever):before {
+                border-right: 2px solid #' . $colors[5] . ' !important;
+                border-bottom: 2px solid #' . $colors[5] . ' !important;
+            }
+
+            [type="checkbox"].filled-in:checked+span:not(.lever):after {
+                background-color: #' . $colors[4] . ' !important;
+                border-color: #' . $colors[4] . ' !important;
+            }
+ 
             .input-field .helper-text {
                 color: #' . $colors[8] . ';
             }
-            
+
             .btn:hover, .btn-large:hover, .btn-small:hover, .btn-floating:hover 
             .btn:focus, .btn-large:focus, .btn-small:focus, .btn-floating:focus {
                 background-color: #' . $colors[5] . ';
