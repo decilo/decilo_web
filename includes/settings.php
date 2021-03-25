@@ -19,6 +19,8 @@ define('LIKED_MESSAGES_STORE', 'likedMessages');
 define('LIKED_COMMENTS_STORE', 'likedComments');
 define('COMPANIES_BOOLEAN_STORE', 'hasCompanies');
 
+define('PUBLIC_REPO_URL', 'https://github.com/decilo/decilo_web');
+
 define('RENDER_REPORT_REASONS_CACHE', false);
 
 // Time constraints - [ 0 => year, 1 => month, 2 => day ]

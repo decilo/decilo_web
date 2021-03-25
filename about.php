@@ -285,6 +285,12 @@ require_once 'views/header.php';
             </div>
         </div>
     </p>
+
+    <div class="divider"></div>
+
+    <p>
+        Creado con ❤️ en Buenos Aires, Argentina. <a href="<?= PUBLIC_REPO_URL ?>">¿Cómo?</a>
+    </p>
 </div>
 
 <?php require_once 'views/footer.php'; ?>
