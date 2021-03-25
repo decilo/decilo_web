@@ -230,8 +230,20 @@ if ($request == null) {
                                 $writeMention = false;
                             }
                             
-                            // We need to look for raw users, so let's just take the '@' away.
-                            if ($writeMention && $content[$index] != '@') {
+                            // We need to look for raw users, so let's just take SOME special symbols away.
+                            if (
+                                $writeMention
+                                &&
+                                $content[$index] != '@'
+                                &&
+                                $content[$index] != '¡'
+                                &&
+                                $content[$index] != '!'
+                                &&
+                                $content[$index] != '?'
+                                &&
+                                $content[$index] != '¿'
+                            ) {
                                 $mentions[count($mentions) - 1] .= $content[$index];
                             }
                         }
