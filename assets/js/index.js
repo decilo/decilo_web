@@ -325,7 +325,7 @@ $(document).ready(() => {
 
     $('#messageInput, #declaredName').on('keyup change', function (event) {
         if (event.ctrlKey && event.key == 'Enter') {
-            $('#createPostBtn').click();
+            $('#createPostBtn')[0].click();
         } else {
             length = $(this).val().trim().length;
 
