@@ -171,7 +171,9 @@ if (!defined('REQUIRES_ENVIRONMENT') || REQUIRES_ENVIRONMENT) {
             'THEME_COLOR'            => 'C121A7',
             'THEME_NSFW_COLOR'       => '272727',
 
-            'DO_NOT_TRACK'           => isset($_SERVER['HTTP_DNT'])
+            'DO_NOT_TRACK'           => isset($_SERVER['HTTP_DNT']),
+
+            'USERNAME_MAX_LENGTH'    => 255 // It COULD be better if this restriction wasn't hardcoded but eh... performance right?
         ]
     );
 

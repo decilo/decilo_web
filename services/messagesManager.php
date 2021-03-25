@@ -209,6 +209,51 @@ if ($request == null) {
                     isset($values['token'])     && !empty($values['token'])
                 ) {
                     if (verifyCaptcha($values['token'])) {
+                        $content = trim(strip_tags($values['content']));
+
+                        $mentions = []; $writeMention = false;
+
+                        for ($index = 0; $index < strlen($content); $index++) {
+                            if (
+                                $content[$index] == '@'     // if it looks like a mention (aka begins with an '@')
+                                &&
+                                isset($content[$index + 1]) // if there's a following index
+                                &&
+                                $content[$index + 1] != '@' // and if it's not an '@' again (which would break everything)
+                                &&
+                                $content[$index + 1] != ' ' // and most importantly, if it's not a space
+                            ) {
+                                $writeMention = true;
+
+                                $mentions[] = '';
+                            } else if ($content[$index] == ' ') { // if it's a space, it could be a normal word, reset and try again
+                                $writeMention = false;
+                            }
+                            
+                            // We need to look for raw users, so let's just take the '@' away.
+                            if ($writeMention && $content[$index] != '@') {
+                                $mentions[count($mentions) - 1] .= $content[$index];
+                            }
+                        }
+
+                        foreach ($mentions as $mention) {
+                            $mentionStatement = $database->prepare(
+                                'SELECT COUNT(*) AS count
+                                 FROM   `d_users`
+                                 WHERE  `d_users`.`username` = :username'
+                            );
+
+                            $mentionStatement->execute([ 'username' => $mention ]);
+
+                            if ($mentionStatement->fetch()['count'] > 0) {
+                                $content = str_replace(
+                                    '@' . $mention,
+                                    '[@' . $mention . '](' . SYSTEM_HOSTNAME . 'to/' . $mention . ')',
+                                    $content
+                                );
+                            }
+                        }
+
                         if (isset($values['recipient'])) {
                             $statement = $database
                                 ->prepare(
@@ -229,7 +274,7 @@ if ($request == null) {
 
                             $statement->execute(
                                 [
-                                    'content'       => trim(strip_tags($values['content'])),
+                                    'content'       => $content,
                                     'declaredName'  => $values['declaredName'],
                                     'recipient'     => $values['recipient']
                                 ]
@@ -253,9 +298,9 @@ if ($request == null) {
                                      )'
                                 );
 
-                            $statement->bindValue('content'     ,   trim(strip_tags($values['content']))                 );
-                            $statement->bindValue('declaredName',   $values['declaredName']                              );
-                            $statement->bindValue('nsfw'        ,   $nsfw                               , PDO::PARAM_BOOL);
+                            $statement->bindValue('content'     ,   $content                                );
+                            $statement->bindValue('declaredName',   $values['declaredName']                 );
+                            $statement->bindValue('nsfw'        ,   $nsfw                  , PDO::PARAM_BOOL);
 
                             $statement->execute();
                         }
