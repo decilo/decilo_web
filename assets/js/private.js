@@ -134,7 +134,7 @@ $(document).ready(() => {
                         .find('.row')
                         .prepend(
                             getRenderedMessage(
-                                response.data.id, messageContent, declaredName
+                                response.data.id, response.data.content, declaredName
                             )
                         );
 

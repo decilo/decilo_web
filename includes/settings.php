@@ -255,7 +255,7 @@ define('CRITICAL_ORIGINS', [
 
 define('USE_BUNDLE', true);
 define('BUNDLE_HASH_ALGO', 'crc32');
-define('BUNDLE_VERSION', '4b942f1f');
+define('BUNDLE_VERSION', '5659eb78');
 
 define('CORE_STYLESHEETS', [
     'MaterializeCSS'            => 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',

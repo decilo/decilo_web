@@ -167,7 +167,7 @@ function postMessage(messageContent, declaredName, token, image = null) {
 
                     $('.message[data-message="null"]').replaceWith(
                         getRenderedMessage(
-                            response.data.result.id, messageContent, declaredName, null, false, false, image, false
+                            response.data.result.id, response.data.result.content, declaredName, null, false, false, image, false
                         )
                     );
 

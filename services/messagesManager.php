@@ -308,8 +308,9 @@ if ($request == null) {
                         if ($values['image'] == null) {
                             reply(
                                 [
-                                    'id'    => (int) $database->lastInsertId(),
-                                    'image' => null
+                                    'id'        => (int) $database->lastInsertId(),
+                                    'content'   => $content,
+                                    'image'     => null
                                 ]
                             );
                         } else {
@@ -363,8 +364,9 @@ if ($request == null) {
 
                                     reply(
                                         [
-                                            'id'    => (int) $database->lastInsertId(),
-                                            'image' => $url
+                                            'id'        => (int) $database->lastInsertId(),
+                                            'content'   => $content,
+                                            'image'     => $url
                                         ]
                                     );
                                 } catch (Exception $exception) {
