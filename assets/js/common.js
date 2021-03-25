@@ -1209,6 +1209,7 @@ $(document).ready(() => {
 
     // Initialize Showdown
     showdown.setOption('simplifiedAutoLink', true);
+    showdown.setOption('simpleLineBreaks', true);
     showdown.setOption('strikethrough', true);
     showdown.setOption('openLinksInNewWindow', true);
     showdown.setOption('emoji', true);
