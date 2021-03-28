@@ -874,8 +874,20 @@ function getRenderedAd(
     forceClass = null,
     badgeData = { bgClass: 'bg-dark-10 bg-light-11', text: 'Publicidad' },
     impressions = null,
-    showRemoveButton = false
+    showRemoveButton = false,
+    directLink = null,
+    directLinkLabel = null
 ) {
+    if (directLink != null) {
+        directLink = (
+            directLink
+                .trim()
+                .replace(new RegExp('http.?://'), '') // remove original protocol
+        );
+
+        directLink = 'https://' + directLink;
+    }
+
     return `<div class="col ` + (forceClass == null ? (isPrivate ? 's12 m12 l6' : 's12 m6 l3') : forceClass) + ` message" data-ad="` + id + `">
                 <div class="card bg-dark-3 card-box">` + (showRemoveButton ? `
                     <button
@@ -917,8 +929,17 @@ function getRenderedAd(
                             ) + `
                         </p>
                     </div>
-                    <div class="card-action center">
-                        <span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>
+                    <div
+                        class="card-action center ` + (directLink == null ? '' : 'bg-dark-1 bg-light-1 light-5 hand') + `" ` + (
+                            directLink == null
+                                ? ''
+                                : `onclick="window.open('` + directLink + `');"`
+                        ) + `
+                    >` + (
+                        directLink == null
+                            ? `<span class="lato regular small">` + dayjs(created == null ? new Date() : created).format('L LT') + `</span>`
+                            : (directLinkLabel == null ? 'Ver más' : directLinkLabel)
+                    ) + `
                     </div>
                 </div>
             </div>`;
@@ -941,7 +962,15 @@ function tryToPushRandomAd(then = () => {}) {
                     getRenderedAd(
                         response.data.result.id,
                         response.data.result.content,
-                        response.data.result.companyName
+                        response.data.result.companyName,
+                        response.data.result.created,
+                        null,
+                        null,
+                        { bgClass: 'bg-dark-10 bg-light-11', text: 'Publicidad' },
+                        null,
+                        false,
+                        response.data.result.directLink,
+                        response.data.result.directLinkLabel
                     )
                 );
 

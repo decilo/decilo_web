@@ -119,6 +119,22 @@ require_once 'views/header.php';
                 </span>
             </div>
 
+            <div class="input-field col s12">
+                <input id="directLink" type="text" class="dark-5" value="">
+                <label for="directLink"> Enlace directo </label>
+                <span class="helper-text" data-error="El enlace no es válido" data-success="El enlace es válido">
+                    <b> (opcional) </b> Este es el enlace que van a ver los visitantes en la parte inferior de tu anuncio. Podés incluír enlaces externos y se van a ver como un botón resaltado.
+                </span>
+            </div>
+
+            <div id="directLinkLabelContainer" class="input-field col s12" style="display: none;">
+                <input id="directLinkLabel" type="text" class="dark-5" placeholder="Ver más">
+                <label for="directLinkLabel"> Texto del enlace </label>
+                <span class="helper-text" data-error="El texto no es válido" data-success="El texto es válido">
+                    <b> (opcional) </b> Este es el texto que vas a ver en el botón del anuncio.
+                </span>
+            </div>
+
             <div class="col s12" style="height: 1em;"></div>
 
             <button

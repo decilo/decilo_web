@@ -26,6 +26,8 @@ if ($request == null) {
                     'SELECT
                         d_ads.id,
                         d_ads.content,
+                        d_ads.directLink,
+                        d_ads.directLinkLabel,
                         d_ads.company AS companyId,
                         d_companies.name AS companyName
                      FROM       d_ads
@@ -65,22 +67,36 @@ if ($request == null) {
                         &&
                         !empty($values['company']) && !empty($values['content'])
                         &&
-                        is_numeric($values['company'])
+                        (isset($values['directLink']) || $values['directLink'] == null)
+                        &&
+                        (isset($values['directLinkLabel']) || $values['directLinkLabel'] == null)
                     ) {
                         if (isOwnerOf($values['company'])) {
+                            foreach ([ 'directLink', 'directLinkLabel'] as $possibleNullKey) {
+                                if (empty($values[$possibleNullKey]) || $values[$possibleNullKey] == null) {
+                                    $values[$possibleNullKey] = null;
+                                }
+                            }
+
                             $statement = $database->prepare(
                                 'INSERT INTO `d_ads` (
                                     `content`,
-                                    `company`
+                                    `company`,
+                                    `directLink`,
+                                    `directLinkLabel`
                                  ) VALUES (
                                     :content,
-                                    :company
+                                    :company,
+                                    :directLink,
+                                    :directLinkLabel
                                  )'
                             );
 
                             $statement->execute([
-                                'content'   => $values['content'],
-                                'company'   => $values['company']
+                                'content'           => $values['content'],
+                                'company'           => $values['company'],
+                                'directLink'        => $values['directLink'],
+                                'directLinkLabel'   => $values['directLinkLabel']
                             ]);
 
                             reply(

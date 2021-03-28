@@ -10,6 +10,10 @@ $(document).ready(() => {
     pausedWarningCollection     = $('#pausedWarningCollection');
     reviewingWarningCollection  = $('#reviewingWarningCollection');
 
+    directLink                  = $('#directLink');
+    directLinkLabel             = $('#directLinkLabel');
+    directLinkLabelContainer    = $('#directLinkLabelContainer');
+
     function attachADsActions() {
         $('button[data-ad]').on('click', (event) => {
             button = $(event.currentTarget);
@@ -43,16 +47,38 @@ $(document).ready(() => {
         .find('span')
         .addClass('light-4 dark-5');
 
-    $('input').on('keyup change', () => {
-        content = $('#content').val();
+    $('input').each(function () {
+        $(this).on('keyup keydown change', () => {
+            content = $('#content').val();
 
-        $('#adPreview').html(
-            getRenderedAd(
-                null, content.length > 0 ? content : 'Contenido del anuncio', company['name'], null, null, 's12 m8 offset-m2'
-            )
-        );
-    })
-    .trigger('change');
+            directLinkLabel = $('#directLinkLabel');
+
+            directLinkVal   = directLink.val();
+            directLinkLabel = directLinkLabel.val();
+
+            $('#adPreview').html(
+                getRenderedAd(
+                    null,
+                    content.length > 0 ? content : 'Contenido del anuncio',
+                    company['name'],
+                    null,
+                    null,
+                    's12 m8 offset-m2',
+                    { bgClass: 'bg-dark-10 bg-light-11', text: 'Publicidad' },
+                    0,
+                    false,
+                    directLinkVal.length > 0 ? directLinkVal : null,
+                    directLinkLabel.length > 0 ? directLinkLabel : null
+                )
+            );
+
+            // if (
+            //     $(this).attr('id') == 'directLink'
+            //     ||
+            //     $(this).attr('id') == 'directLink'
+            // )
+        });
+    });
 
     $('#content').on('keyup change', function () {
         if ($(this).val().length > 0) {
@@ -60,19 +86,35 @@ $(document).ready(() => {
 
             isDirty = true;
         } else {
-            markInvalid($(this));
-
             isDirty = false;
+
+            markInvalid($(this));
         }
     });
 
     $('#createAdBtn').on('click', () => {
         content = $('#content');
 
+        directLinkLabel = $('#directLinkLabel');
+
+        directLinkVal   = directLink.val();
+
+        if (directLinkVal.length < 1) {
+            directLinkVal = null;
+        }
+
+        directLinkLabel = directLinkLabel.val();
+
+        if (directLinkLabel.length < 1) {
+            directLinkLabel = null;
+        }
+
         if (content.hasClass('valid')) {
             run('adsManager', 'createAd', {
-                'company': company['id'],
-                'content': content.val()
+                'company':          company['id'],
+                'content':          content.val(),
+                'directLink':       directLinkVal,
+                'directLinkLabel':  directLinkLabel
             }, () => {
                 disable($('#createAdBtn'));
             })
@@ -98,7 +140,9 @@ $(document).ready(() => {
                                             ? { bgClass: 'orange darken-3 dark-5 light-10',     text: 'En revisión' }
                                             : { bgClass: 'light-blue darken-2 dark-5 light-10', text: 'En pausa'    },
                                         null,
-                                        true
+                                        true,
+                                        directLinkVal,
+                                        directLinkLabel
                                     )
                                 );
 
@@ -225,7 +269,9 @@ $(document).ready(() => {
                             ? ad['impressions']
                             : null
                     ),
-                true
+                true,
+                ad['directLink'],
+                ad['directLinkLabel']
             );
 
             if (ad['approved'] == null) {
@@ -400,4 +446,18 @@ $(document).ready(() => {
             requestRemovalModal.close();
         }
     });
+
+    directLink.on('change keyup', (event) => {
+        target = $(event.target);
+
+        if (target.val().length > 0) {
+            if (directLinkLabelContainer.css('display') == 'none') {
+                directLinkLabelContainer.fadeIn();
+            }
+        } else {
+            directLinkLabelContainer.fadeOut();
+        }
+    });
+
+    $('input.select-dropdown').trigger('change');
 });
