@@ -265,6 +265,16 @@ require_once 'views/header.php';
                     <a href="https://github.com/axios/axios/" rel="noreferrer" target="_blank"> Más información </a>
                 </div>
             </div>
+            <div class="col s12 m6">
+                <h5> instant.page </h5>
+                <p>
+                    Una biblioteca capaz de optimizar la transición entre diferentes páginas físicas.
+                </p>
+                <div>
+                    <a href="https://github.com/instantpage/instant.page" rel="noreferrer" target="_blank"> Más información </a>
+                </div>
+            </div>
+
         </div>
     </p>
 
