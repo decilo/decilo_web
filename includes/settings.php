@@ -255,7 +255,7 @@ define('CRITICAL_ORIGINS', [
 
 define('USE_BUNDLE', true);
 define('BUNDLE_HASH_ALGO', 'crc32');
-define('BUNDLE_VERSION', 'fef3f04f');
+define('BUNDLE_VERSION', 'fc451d63');
 
 define('CORE_STYLESHEETS', [
     'MaterializeCSS'            => 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
@@ -263,6 +263,7 @@ define('CORE_STYLESHEETS', [
 ]);
 
 define('CORE_SCRIPTS', [
+    'instant.page'              => 'https://instant.page/5.1.0',
     'Default Passive Events'    => 'https://unpkg.com/default-passive-events@2.0.0/dist/index.umd.js',
     'cash-dom'                  => 'https://cdnjs.cloudflare.com/ajax/libs/cash/8.1.0/cash.min.js',
     'axios'                     => 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js',

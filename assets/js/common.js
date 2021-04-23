@@ -1643,7 +1643,7 @@ $(document).ready(() => {
         $('.custom-link').on('click', function (event) {
             event.preventDefault();
 
-            animateRedirect(
+            redirect(
                 $(this).attr('href')
             );
         });
@@ -1737,7 +1737,7 @@ $(document).ready(() => {
         if (document.scrollingElement.scrollTop >= document.documentElement.clientHeight) {
             goBackToTop();
         } else {
-            animateRedirect(SYSTEM_HOSTNAME + (getStatusForNSFW() ? 'nsfw' : ''));
+            redirect(SYSTEM_HOSTNAME + (getStatusForNSFW() ? 'nsfw' : ''));
         }
     });
 
