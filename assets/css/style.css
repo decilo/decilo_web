@@ -21,6 +21,8 @@ body {
     scroll-behavior: smooth;
 }
 
+main { padding-top: 32px; }
+
 p,
 button,
 a,

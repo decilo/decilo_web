@@ -1932,8 +1932,6 @@ $(document).ready(() => {
     function setupNav() {
         let nav = $('nav');
 
-        $('main').css({ 'padding-top' : nav.height() });
-
         $('.dropdown-button').each(function () {
             M.Dropdown.init($(this)[0], {
                 constrainWidth: false,

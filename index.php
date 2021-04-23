@@ -1,6 +1,6 @@
 <?php 
 
-$title = 'Página principal'; $js = 'index.min.js';
+$title = 'Página principal'; $css = 'index.min.css'; $js = 'index.min.js';
 
 if (!isset($_GET['to'])) {
     $tabs = [
